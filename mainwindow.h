@@ -10,6 +10,7 @@
 #include <QColor>
 #include <QBrush>
 #include <QDebug>
+#include <QFontDatabase>
 
 #include "boardcell.h"
 #include "chessfigure.h"
@@ -45,6 +46,7 @@ private slots:
     void on_NewGameButton_clicked();
 
 private:
+    void SetFont();
     void SetWhitePawnTransformChoice();
     void SetBlackPawnTransformChoice();
 

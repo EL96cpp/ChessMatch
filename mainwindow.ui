@@ -141,7 +141,7 @@
         </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgb(65, 65, 65);
-font: 16pt;
+font: 20px;
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
@@ -214,7 +214,7 @@ color: rgb(255, 255, 255);</string>
       <item>
        <widget class="QPushButton" name="NewGameButton">
         <property name="styleSheet">
-         <string notr="true">font: 18px;
+         <string notr="true">font: 20px;
 background-color: rgb(65, 65, 65);
 color: rgb(255, 255, 255);
 
@@ -251,7 +251,7 @@ color: rgb(255, 255, 255);
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 18px;
+           <string notr="true">font: 20px;
 background-color: rgb(65, 65, 65);
 color: rgb(255, 255, 255);
 </string>
@@ -290,7 +290,7 @@ color: rgb(255, 255, 255);
           </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
-font: 18px;</string>
+font: 20px;</string>
           </property>
           <property name="text">
            <string>Player color</string>
@@ -318,7 +318,7 @@ font: 18px;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 18px;
+           <string notr="true">font: 20px;
 background-color: rgb(65, 65, 65);
 color: rgb(255, 255, 255);
 </string>
@@ -367,7 +367,7 @@ color: rgb(255, 255, 255);
           </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
-font: 18px;</string>
+font: 20px;</string>
           </property>
           <property name="text">
            <string>Board style</string>

@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     setWindowTitle("Chess Match");
-
+    SetFont();
 
     ui->boardGraphicsView->setScene(board_scene);
     ui->playerTakenView->setScene(opponent_taken_figures_scene);
@@ -130,9 +130,28 @@ void MainWindow::on_PlayerColorComboBox_currentTextChanged(const QString &player
 
 void MainWindow::on_NewGameButton_clicked()
 {
-    ui->game_info_label->setText(ui->PlayerColorComboBox->currentText() + " turn");
+    ui->game_info_label->setText("White turn");
     board->StartNewGame();
     taken_figures_manager->StartNewGame();
+}
+
+void MainWindow::SetFont()
+{
+
+    qint32 logo_font_id = QFontDatabase::addApplicationFont(":/Fonts/LogoFont.ttf");
+    qint32 typing_font_id = QFontDatabase::addApplicationFont(":/Fonts/Font.ttf");
+    QStringList logo_font_list = QFontDatabase::applicationFontFamilies(logo_font_id);
+    QStringList typing_font_list = QFontDatabase::applicationFontFamilies(typing_font_id);
+    QString logo_font_family = logo_font_list.first();
+    QString typing_font_family = typing_font_list.first();
+
+    ui->game_info_label->setFont(QFont(typing_font_family));
+    ui->NewGameButton->setFont(QFont(typing_font_family));
+    ui->board_style_label->setFont(QFont(typing_font_family));
+    ui->player_color_label->setFont(QFont(typing_font_family));
+    ui->BoardStyleComboBox->setFont(QFont(typing_font_family));
+    ui->PlayerColorComboBox->setFont(QFont(typing_font_family));
+
 }
 
 void MainWindow::SetWhitePawnTransformChoice()

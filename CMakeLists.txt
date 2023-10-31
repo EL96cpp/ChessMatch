@@ -22,6 +22,7 @@ set(PROJECT_SOURCES
         chessfigure.cpp
         chessfigure.h
         ChessFigures.qrc
+        resources.qrc
         board.cpp
         board.h
         takenfiguresmanager.cpp
