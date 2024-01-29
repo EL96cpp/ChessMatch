@@ -1,7 +1,12 @@
 #include "Server.h"
 
-Server::Server(boost::asio::io_context& io_context) : io_context(io_context), acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 40000)) {
+Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)) {
 
-    
+
+}
+
+void Server::start_accept() {
+
+
 
 }

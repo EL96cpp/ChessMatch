@@ -5,8 +5,15 @@
 
 int main() {
 
-    boost::asio::io_context io_context;
-    Server server(io_context);
+    try {
+
+        Server server(40000);
+    
+    } catch (std::exception& e) {
+    
+        std::cerr << e.what() << "\n";
+
+    }
 
     return 0;
 
