@@ -9,9 +9,10 @@ class Server {
 public:
     Server(const size_t& prot_id);
     
+    bool Start();
     
 private:
-    void start_accept();
+    void WaitForClients();
 
 private:
     boost::asio::io_context io_context;

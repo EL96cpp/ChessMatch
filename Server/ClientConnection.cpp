@@ -1,6 +1,6 @@
 #include "ClientConnection.h"
 
-ClientConnection::ClientConnection(boost::asio::io_context& io_context) : socket(io_context), logged_in(false), state(ClientState::DEFAULT) {}
+ClientConnection::ClientConnection(boost::asio::ip::tcp::socket&& socket) : socket(std::move(socket)), logged_in(false), state(ClientState::DEFAULT) {}
 
 void ClientConnection::SetLogin(const std::string& login) {
 

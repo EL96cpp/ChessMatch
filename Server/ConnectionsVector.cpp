@@ -1,28 +1,48 @@
-#include "ClientsVector.h"
+#include "ConnectionsVector.h"
 
-ClientsVector::ClientsVector() {}
+ConnectionsVector::ConnectionsVector() {}
     
-void ClientsVector::PushBack(std::shared_ptr<ClientConnection>& connection) {
+void ConnectionsVector::PushBack(std::shared_ptr<ClientConnection>& connection) {
 
-    std::lock_guard<std::mutex> lg(&mutex);
+    std::lock_guard<std::mutex> lg(mutex);
     connections.push_back(connection);
 
 }
 
-bool ClientsVector::CheckIfClientAlreadyLogged(const std::string& login) {
+bool ConnectionsVector::CheckIfClientAlreadyLogged(const std::string& login) {
 
-    std::lock_gurad<std::mutex> lg(&mutex);
-    for (auto& connection : connections) {
+    std::lock_guard<std::mutex> lg(mutex);
     
-        if (login == connection->GetLogin()) {
+    for (int i = 0; i < connections.size(); ++i) {
+    
+        if (login == connections[i]->GetLogin()) {
         
             return true;
 
         }
 
     }
+
     return false;
 
 }
 
+std::shared_ptr<ClientConnection> ConnectionsVector::GetOpponentForPlayer(std::shared_ptr<ClientConnection>& player) {
+
+    std::lock_guard<std::mutex> lg(mutex);
+    
+    for (int i = 0; i < connections.size(); ++i) {
+
+        if (player->GetLogin() != connections[i]->GetLogin() && connections[i]->GetClientState() == ClientState::WAITING_FOR_AN_OPPONENT) {
+
+            return connections[i];
+
+        }
+
+
+    }
+
+    return nullptr;
+
+}
 

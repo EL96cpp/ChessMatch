@@ -4,14 +4,16 @@
 #include <memory>
 #include <vector>
 
-ConnectionsVector {
+#include "ClientConnection.h"
+
+class ConnectionsVector {
 
 public:
     ConnectionsVector();
 
     void PushBack(std::shared_ptr<ClientConnection>& connections);
     bool CheckIfClientAlreadyLogged(const std::string& login);
-
+    std::shared_ptr<ClientConnection> GetOpponentForPlayer(std::shared_ptr<ClientConnection>& player);
 
 private:
     std::vector<std::shared_ptr<ClientConnection>> connections;
