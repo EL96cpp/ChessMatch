@@ -27,6 +27,9 @@ class ChessFigure {
 public:
     ChessFigure(const FigureColor& color, const FigureType& type);
 
+    FigureColor GetColor();
+    FigureType GetType();
+
 private:
     FigureColor color;
     FigureType type;
