@@ -3,6 +3,7 @@
 #include <boost/asio.hpp>
 
 #include "ClientConnection.h"
+#include "SqlService.h"
 
 class Server {
 
@@ -15,10 +16,11 @@ private:
     void WaitForClients();
 
 private:
+
     boost::asio::io_context io_context;
     std::thread context_thread;
 
     boost::asio::ip::tcp::acceptor acceptor;
-
+    SqlService sql_service;
 
 };
