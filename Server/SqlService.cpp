@@ -62,6 +62,27 @@ RegisterResult SqlService::Register(const std::string& nickname, const std::stri
     }    
 
 
+}
+
+
+UpdateRatingResult SqlService::UpdatePlayerRating(const std::string& nickname, const size_t& new_rating) {
+
+    if (CheckIfUserExists(nickname)) {
+
+        sql_connection.prepare("insert", "UPDATE users SET rating = $1 WHERE nickname = $2");
+        pqxx::work work{sql_connection};
+
+        work.exec_prepared("insert", new_rating,  nickname);
+        work.commit();
+
+        return RegisterResult::SUCCESS; 
+        
+
+    } else {
+
+        return UpdateRatingResult::NO_NICKNAME_IN_DATABASE;
+
+    }    
 
 
 }
