@@ -50,4 +50,10 @@ ClientState ClientConnection::GetClientState() {
 
 }
 
+void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
+
+    this->game = game;
+
+}
+
 

@@ -2,7 +2,10 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
 #include <boost/asio.hpp>
+
+#include "Game.h"
 
 enum class ClientState {
 
@@ -16,7 +19,7 @@ enum class ClientState {
 class ClientConnection {
 
 public:
-    ClientConnection(boost::asio::ip::tcp::socket&& socket );
+    ClientConnection(boost::asio::ip::tcp::socket&& socket);
 
     void SetLogin(const std::string& login);
     void SetRating(const size_t& rating);
@@ -27,6 +30,7 @@ public:
     size_t GetRating();
     bool LoggedIn();
     ClientState GetClientState();
+    void SetGame(std::shared_ptr<Game>& game);
 
 
 private:
@@ -36,5 +40,7 @@ private:
     size_t rating;
     bool logged_in;
     ClientState state;
+    
+    std::shared_ptr<Game> game; //Pointer to Game object provides the ability to send game messages
 
 };
