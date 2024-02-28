@@ -33,6 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->pawnTransformView->hide();
 
+    //Start page
+
+    ui->stackedWidget->setCurrentWidget(ui->start_page);
+
 }
 
 MainWindow::~MainWindow()
@@ -145,6 +149,12 @@ void MainWindow::SetFont()
     QString logo_font_family = logo_font_list.first();
     QString typing_font_family = typing_font_list.first();
 
+    ui->logo_label->setFont(QFont(logo_font_family));
+
+    ui->loginButton->setFont(QFont(typing_font_family));
+    ui->registerButton->setFont(QFont(typing_font_family));
+    ui->exitButton->setFont(QFont(typing_font_family));
+
     ui->game_info_label->setFont(QFont(typing_font_family));
     ui->NewGameButton->setFont(QFont(typing_font_family));
     ui->board_style_label->setFont(QFont(typing_font_family));
@@ -219,4 +229,38 @@ void MainWindow::SetBlackPawnTransformChoice()
     pawn_transform_scene->addItem(queen);
 }
 
+
+
+void MainWindow::on_loginButton_clicked() {
+
+    ui->stackedWidget->setCurrentWidget(ui->authorization_page);
+
+}
+
+
+void MainWindow::on_registerButton_clicked() {
+
+    ui->stackedWidget->setCurrentWidget(ui->authorization_page);
+
+}
+
+
+void MainWindow::on_exitButton_clicked() {
+
+    qApp->exit();
+
+}
+
+
+void MainWindow::on_registerRegButton_clicked()
+{
+
+}
+
+
+void MainWindow::on_regReturnButton_clicked() {
+
+    ui->stackedWidget->setCurrentWidget(ui->start_page);
+
+}
 

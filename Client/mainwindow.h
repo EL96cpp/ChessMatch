@@ -12,6 +12,8 @@
 #include <QDebug>
 #include <QFontDatabase>
 
+#include <QGraphicsEffect>
+
 #include "boardcell.h"
 #include "chessfigure.h"
 #include "board.h"
@@ -44,6 +46,16 @@ private slots:
     void on_PlayerColorComboBox_currentTextChanged(const QString &arg1);
 
     void on_NewGameButton_clicked();
+
+    void on_loginButton_clicked();
+
+    void on_registerButton_clicked();
+
+    void on_exitButton_clicked();
+
+    void on_registerRegButton_clicked();
+
+    void on_regReturnButton_clicked();
 
 private:
     void SetFont();
