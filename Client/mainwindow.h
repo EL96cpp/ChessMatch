@@ -11,6 +11,7 @@
 #include <QBrush>
 #include <QDebug>
 #include <QFontDatabase>
+#include <QTimer>
 
 #include <QGraphicsEffect>
 
@@ -57,6 +58,10 @@ private slots:
 
     void on_regReturnButton_clicked();
 
+    void on_logReturnButton_clicked();
+
+    void on_logLoginButton_clicked();
+
 private:
     void SetFont();
     void SetWhitePawnTransformChoice();
@@ -67,6 +72,8 @@ private:
     Board* board;
     TakenFiguresManager* taken_figures_manager;
     QVector<ChessFigure*> pawn_transform_figures;
+
+    QTimer waiting_state_timer;
 
     QGraphicsScene* board_scene;
     QGraphicsScene* player_taken_figures_scene;

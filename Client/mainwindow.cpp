@@ -37,6 +37,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->stackedWidget->setCurrentWidget(ui->start_page);
 
+    //Login/register pages
+
+    ui->passwordLogLineEdit->setEchoMode(QLineEdit::Password);
+    ui->passwordRegLineEdit->setEchoMode(QLineEdit::Password);
+    ui->passwordConfirmRegLineEdit->setEchoMode(QLineEdit::Password);
+
 }
 
 MainWindow::~MainWindow()
@@ -151,9 +157,30 @@ void MainWindow::SetFont()
 
     ui->logo_label->setFont(QFont(logo_font_family));
 
+    ui->login_label->setFont(QFont(logo_font_family));
+    ui->nickname_log_label->setFont(QFont(logo_font_family));
+    ui->password_log_label->setFont(QFont(logo_font_family));
+
+    ui->register_label->setFont(QFont(logo_font_family));
+    ui->nickname_reg_label->setFont(QFont(logo_font_family));
+    ui->password_reg_label->setFont(QFont(logo_font_family));
+    ui->password_confirm_reg_label->setFont(QFont(logo_font_family));
+
+    ui->waiting_label->setFont(QFont(logo_font_family));
+
+    ui->nicknameLogLineEdit->setFont(QFont(typing_font_family));
+    ui->passwordLogLineEdit->setFont(QFont(typing_font_family));
+    ui->nicknameRegLineEdit->setFont(QFont(typing_font_family));
+    ui->passwordRegLineEdit->setFont(QFont(typing_font_family));
+    ui->passwordConfirmRegLineEdit->setFont(QFont(typing_font_family));
+
     ui->loginButton->setFont(QFont(typing_font_family));
     ui->registerButton->setFont(QFont(typing_font_family));
     ui->exitButton->setFont(QFont(typing_font_family));
+    ui->logLoginButton->setFont(QFont(typing_font_family));
+    ui->logReturnButton->setFont(QFont(typing_font_family));
+    ui->registerRegButton->setFont(QFont(typing_font_family));
+    ui->regReturnButton->setFont(QFont(typing_font_family));
 
     ui->game_info_label->setFont(QFont(typing_font_family));
     ui->NewGameButton->setFont(QFont(typing_font_family));
@@ -194,6 +221,7 @@ void MainWindow::SetWhitePawnTransformChoice()
     queen->setScale(0.6);
     pawn_transform_figures.push_back(queen);
     pawn_transform_scene->addItem(queen);
+
 }
 
 
@@ -233,14 +261,14 @@ void MainWindow::SetBlackPawnTransformChoice()
 
 void MainWindow::on_loginButton_clicked() {
 
-    ui->stackedWidget->setCurrentWidget(ui->authorization_page);
+    ui->stackedWidget->setCurrentWidget(ui->login_page);
 
 }
 
 
 void MainWindow::on_registerButton_clicked() {
 
-    ui->stackedWidget->setCurrentWidget(ui->authorization_page);
+    ui->stackedWidget->setCurrentWidget(ui->register_page);
 
 }
 
@@ -252,8 +280,9 @@ void MainWindow::on_exitButton_clicked() {
 }
 
 
-void MainWindow::on_registerRegButton_clicked()
-{
+void MainWindow::on_registerRegButton_clicked() {
+
+
 
 }
 
@@ -261,6 +290,21 @@ void MainWindow::on_registerRegButton_clicked()
 void MainWindow::on_regReturnButton_clicked() {
 
     ui->stackedWidget->setCurrentWidget(ui->start_page);
+
+}
+
+
+void MainWindow::on_logReturnButton_clicked() {
+
+    ui->stackedWidget->setCurrentWidget(ui->start_page);
+
+}
+
+
+void MainWindow::on_logLoginButton_clicked() {
+
+    //Only for debug purposes
+    ui->stackedWidget->setCurrentWidget(ui->profile_page);
 
 }
 

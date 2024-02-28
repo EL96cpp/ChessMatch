@@ -90,7 +90,7 @@
 }</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="start_page">
      <property name="styleSheet">
@@ -101,8 +101,8 @@
        <rect>
         <x>390</x>
         <y>150</y>
-        <width>581</width>
-        <height>121</height>
+        <width>621</width>
+        <height>161</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -256,7 +256,7 @@ QPushButton:hover {
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="authorization_page">
+    <widget class="QWidget" name="register_page">
      <property name="styleSheet">
       <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
      </property>
@@ -280,9 +280,9 @@ border-radius: 10px;
       <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>690</x>
-         <y>470</y>
-         <width>202</width>
+         <x>710</x>
+         <y>490</y>
+         <width>211</width>
          <height>111</height>
         </rect>
        </property>
@@ -360,10 +360,10 @@ QPushButton:hover {
       <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>90</x>
-         <y>80</y>
+         <x>50</x>
+         <y>40</y>
          <width>631</width>
-         <height>321</height>
+         <height>401</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -402,7 +402,8 @@ font: 25pt ;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">color: rgb(0, 0, 0);	
-background-color: &quot;#FBFADA&quot;;</string>
+background-color: &quot;#FBFADA&quot;;
+font: 20pt;</string>
             </property>
            </widget>
           </item>
@@ -437,7 +438,8 @@ font: 25pt ;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">color: rgb(0, 0, 0);	
-background-color: &quot;#FBFADA&quot;;</string>
+background-color: &quot;#FBFADA&quot;;
+font: 20pt;</string>
             </property>
            </widget>
           </item>
@@ -472,7 +474,8 @@ font: 25pt ;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">color: rgb(0, 0, 0);	
-background-color: &quot;#FBFADA&quot;;</string>
+background-color: &quot;#FBFADA&quot;;
+font: 20pt;</string>
             </property>
            </widget>
           </item>
@@ -481,27 +484,446 @@ background-color: &quot;#FBFADA&quot;;</string>
        </layout>
       </widget>
      </widget>
-     <widget class="QLabel" name="authorization_label">
+     <widget class="QLabel" name="register_label">
       <property name="geometry">
        <rect>
         <x>220</x>
-        <y>220</y>
-        <width>201</width>
-        <height>61</height>
+        <y>210</y>
+        <width>211</width>
+        <height>71</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">color: rgb(255, 255, 255);	
-font: 35pt ;</string>
+font: 40pt ;</string>
       </property>
       <property name="text">
        <string>Register</string>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="profile_page"/>
-    <widget class="QWidget" name="rating_page"/>
+    <widget class="QWidget" name="login_page">
+     <property name="styleSheet">
+      <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
+     </property>
+     <widget class="QLabel" name="login_label">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>170</y>
+        <width>221</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);	
+font: 40pt ;</string>
+      </property>
+      <property name="text">
+       <string>Login</string>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>270</y>
+        <width>911</width>
+        <height>521</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: &quot;#ADBC9F&quot;;
+border-radius: 10px;
+</string>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>370</y>
+         <width>211</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <widget class="QPushButton" name="logLoginButton">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+          </property>
+          <property name="text">
+           <string>Login</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="logReturnButton">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+          </property>
+          <property name="text">
+           <string>Return</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>70</y>
+         <width>631</width>
+         <height>261</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QLabel" name="nickname_log_label">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(0, 0, 0);	
+font: 25pt ;</string>
+            </property>
+            <property name="text">
+             <string>Nickname</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="nicknameLogLineEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>600</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>600</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(0, 0, 0);	
+background-color: &quot;#FBFADA&quot;;
+font: 20pt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QLabel" name="password_log_label">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(0, 0, 0);	
+font: 25pt ;</string>
+            </property>
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="passwordLogLineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>600</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>600</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(0, 0, 0);	
+background-color: &quot;#FBFADA&quot;;
+font: 20pt;</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="profile_page">
+     <property name="styleSheet">
+      <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
+     </property>
+     <widget class="QGroupBox" name="playerInfoGroupBox">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>50</y>
+        <width>271</width>
+        <height>151</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: &quot;#ADBC9F&quot;;
+border-radius: 10px;</string>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>241</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="nickname_label">
+            <property name="text">
+             <string>Nickname:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="nickname_value_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="rating_label">
+            <property name="text">
+             <string>Rating:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="rating_value_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="games_played_label">
+            <property name="text">
+             <string>Games played:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="games_played_value_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>210</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#00000000&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#00000000&quot;;
+
+}</string>
+      </property>
+      <property name="text">
+       <string>Logout</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="ratingTableWidget">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>50</y>
+        <width>621</width>
+        <height>661</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>1120</x>
+        <y>50</y>
+        <width>221</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <item>
+        <widget class="QPushButton" name="startGameButton">
+         <property name="styleSheet">
+          <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Start game</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="exitProfileButton">
+         <property name="styleSheet">
+          <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Exit</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="waiting_page">
+     <property name="styleSheet">
+      <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
+     </property>
+     <widget class="QLabel" name="waiting_label">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>180</y>
+        <width>601</width>
+        <height>261</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);	
+font: 75pt ;</string>
+      </property>
+      <property name="text">
+       <string>Waiting for
+opponent...</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="game_page">
+     <property name="styleSheet">
+      <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
+     </property>
      <widget class="QGraphicsView" name="pawnTransformView">
       <property name="geometry">
        <rect>
