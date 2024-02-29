@@ -78,7 +78,8 @@ private:
     TakenFiguresManager* taken_figures_manager;
     QVector<ChessFigure*> pawn_transform_figures;
 
-    QTimer waiting_state_timer;
+    QTimer waiting_dots_timer;
+    QTimer waiting_rectangles_timer;
 
     QGraphicsScene* board_scene;
     QGraphicsScene* player_taken_figures_scene;

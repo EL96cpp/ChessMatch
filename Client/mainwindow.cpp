@@ -29,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::SetPawnTransformChoice, board, &Board::SetPawnTransformChoice);
     connect(board, &Board::GameOver, this, &MainWindow::GameOver);
 
-    connect(&waiting_state_timer, &QTimer::timeout, this, &MainWindow::updateWaitingLabel);
+    connect(&waiting_dots_timer, &QTimer::timeout, this, &MainWindow::updateWaitingLabel);
+    connect(&waiting_rectangles_timer, &QTimer::timeout, ui->waiting_widget, &WaitingWidget::updateRectCount);
 
     ui->boardGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->boardGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -331,8 +332,11 @@ void MainWindow::on_startGameButton_clicked() {
     //Only for debug purposes
     ui->stackedWidget->setCurrentWidget(ui->waiting_page);
 
-    waiting_state_timer.setInterval(std::chrono::milliseconds(500));
-    waiting_state_timer.start();
+    waiting_dots_timer.setInterval(std::chrono::milliseconds(250));
+    waiting_rectangles_timer.setInterval(std::chrono::milliseconds(500));
+
+    waiting_dots_timer.start();
+    waiting_rectangles_timer.start();
 
 }
 

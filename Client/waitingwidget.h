@@ -21,7 +21,7 @@ public:
     void SetSecondColor(const QColor& second_color);
 
 public slots:
-    void update();
+    void updateRectCount();
 
 signals:
 
@@ -35,9 +35,9 @@ private:
     int current_rect;
     int animation_interval;
     int rect_size;
+    int margin_size;
     QColor first_color;
     QColor second_color;
-
 
     // QWidget interface
 protected:

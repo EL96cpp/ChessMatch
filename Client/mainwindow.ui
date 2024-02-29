@@ -964,7 +964,7 @@ QPushButton:hover {
      <property name="styleSheet">
       <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
      </property>
-     <widget class="WaitingWidget" name="widget" native="true">
+     <widget class="WaitingWidget" name="waiting_widget" native="true">
       <property name="geometry">
        <rect>
         <x>940</x>
