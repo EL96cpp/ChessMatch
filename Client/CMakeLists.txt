@@ -17,6 +17,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        waitingwidget.cpp
+        waitingwidget.h
         client.cpp
         client.h
         boardcell.cpp
@@ -49,6 +51,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(ChessMatch
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ChessMatch APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -87,3 +90,5 @@ install(TARGETS ChessMatch
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(ChessMatch)
 endif()
+
+file(COPY "${CMAKE_SOURCE_DIR}/waitingwidget.h" DESTINATION "${CMAKE_BINARY_DIR}/ChessMatch_autogen/include")

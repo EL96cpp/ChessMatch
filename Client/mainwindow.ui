@@ -90,7 +90,7 @@
 }</string>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="start_page">
      <property name="styleSheet">
@@ -140,7 +140,7 @@ border-radius: 10px;
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>70</x>
@@ -277,7 +277,7 @@ border-radius: 10px;
       <property name="title">
        <string/>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -357,7 +357,7 @@ QPushButton:hover {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>50</x>
@@ -377,6 +377,9 @@ font: 25pt ;</string>
             </property>
             <property name="text">
              <string>Nickname</string>
+            </property>
+            <property name="margin">
+             <number>5</number>
             </property>
            </widget>
           </item>
@@ -420,6 +423,9 @@ font: 25pt ;</string>
             <property name="text">
              <string>Password</string>
             </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -456,6 +462,9 @@ font: 25pt ;</string>
             <property name="text">
              <string>Password confirmation</string>
             </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -487,18 +496,22 @@ font: 20pt;</string>
      <widget class="QLabel" name="register_label">
       <property name="geometry">
        <rect>
-        <x>220</x>
-        <y>210</y>
-        <width>211</width>
-        <height>71</height>
+        <x>230</x>
+        <y>130</y>
+        <width>471</width>
+        <height>161</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">color: rgb(255, 255, 255);	
-font: 40pt ;</string>
+font: 40pt ;
+background-color: rbga(0, 0, 0, 0);</string>
       </property>
       <property name="text">
        <string>Register</string>
+      </property>
+      <property name="margin">
+       <number>10</number>
       </property>
      </widget>
     </widget>
@@ -510,9 +523,9 @@ font: 40pt ;</string>
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>170</y>
+        <y>130</y>
         <width>221</width>
-        <height>81</height>
+        <height>121</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -521,6 +534,9 @@ font: 40pt ;</string>
       </property>
       <property name="text">
        <string>Login</string>
+      </property>
+      <property name="margin">
+       <number>10</number>
       </property>
      </widget>
      <widget class="QGroupBox" name="groupBox_2">
@@ -641,6 +657,9 @@ font: 25pt ;</string>
             <property name="text">
              <string>Nickname</string>
             </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -683,6 +702,9 @@ font: 25pt ;</string>
             <property name="text">
              <string>Password</string>
             </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -719,9 +741,9 @@ font: 20pt;</string>
      <widget class="QGroupBox" name="playerInfoGroupBox">
       <property name="geometry">
        <rect>
-        <x>50</x>
+        <x>20</x>
         <y>50</y>
-        <width>271</width>
+        <width>301</width>
         <height>151</height>
        </rect>
       </property>
@@ -732,65 +754,109 @@ border-radius: 10px;</string>
       <property name="title">
        <string/>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>241</width>
-         <height>111</height>
+         <x>10</x>
+         <y>10</y>
+         <width>287</width>
+         <height>131</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_11">
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
            <widget class="QLabel" name="nickname_label">
+            <property name="styleSheet">
+             <string notr="true">	color: rgb(0, 0, 0);	
+	font: 18pt ;</string>
+            </property>
             <property name="text">
              <string>Nickname:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="nickname_value_label">
+           <widget class="QLabel" name="rating_label">
+            <property name="styleSheet">
+             <string notr="true">	color: rgb(0, 0, 0);	
+	font: 18pt ;</string>
+            </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string>Rating:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="games_played_label">
+            <property name="styleSheet">
+             <string notr="true">	color: rgb(0, 0, 0);	
+	font: 18pt ;</string>
+            </property>
+            <property name="text">
+             <string>Games played:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="margin">
+             <number>5</number>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QVBoxLayout" name="verticalLayout_14">
           <item>
-           <widget class="QLabel" name="rating_label">
+           <widget class="QLabel" name="nickname_value_label">
+            <property name="styleSheet">
+             <string notr="true">	color: rgb(0, 0, 0);	
+	font: 18pt ;</string>
+            </property>
             <property name="text">
-             <string>Rating:</string>
+             <string>TextLabel</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="rating_value_label">
+            <property name="styleSheet">
+             <string notr="true">	color: rgb(0, 0, 0);	
+	font: 18pt ;</string>
+            </property>
             <property name="text">
              <string>TextLabel</string>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="games_played_label">
-            <property name="text">
-             <string>Games played:</string>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="games_played_value_label">
+            <property name="styleSheet">
+             <string notr="true">	color: rgb(0, 0, 0);	
+	font: 18pt ;</string>
+            </property>
             <property name="text">
              <string>TextLabel</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -799,10 +865,10 @@ border-radius: 10px;</string>
        </layout>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="logoutButton">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>130</x>
         <y>210</y>
         <width>91</width>
         <height>31</height>
@@ -837,7 +903,7 @@ QPushButton:hover {
        </rect>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>1120</x>
@@ -854,7 +920,7 @@ QPushButton:hover {
 	border-radius: 10px;	
 	background-color: &quot;#12372A&quot;;
 	color: rgb(255, 255, 255);	
-	font: 18pt ;
+	font: 22pt ;
 }
 
 QPushButton:hover { 
@@ -876,7 +942,7 @@ QPushButton:hover {
 	border-radius: 10px;	
 	background-color: &quot;#12372A&quot;;
 	color: rgb(255, 255, 255);	
-	font: 18pt ;
+	font: 22pt ;
 }
 
 QPushButton:hover { 
@@ -898,25 +964,83 @@ QPushButton:hover {
      <property name="styleSheet">
       <string notr="true">background-color: &quot;#0e2c22&quot;;</string>
      </property>
+     <widget class="WaitingWidget" name="widget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>240</y>
+        <width>391</width>
+        <height>401</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>400</y>
+        <width>761</width>
+        <height>261</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="waiting_label_2">
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);	
+font: 95pt ;
+background-color: rgba(0, 0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>opponent</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>20</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="waiting_dots_label">
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);	
+font: 95pt ;
+background-color: rgba(0, 0, 0, 0);</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QLabel" name="waiting_label">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>180</y>
-        <width>601</width>
-        <height>261</height>
+        <x>110</x>
+        <y>170</y>
+        <width>791</width>
+        <height>361</height>
        </rect>
       </property>
       <property name="styleSheet">
        <string notr="true">color: rgb(255, 255, 255);	
-font: 75pt ;</string>
+font: 95pt ;
+background-color: rgba(0, 0, 0, 0);</string>
       </property>
       <property name="text">
-       <string>Waiting for
-opponent...</string>
+       <string>Waiting for</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="margin">
+       <number>30</number>
       </property>
      </widget>
     </widget>
@@ -1040,6 +1164,14 @@ opponent...</string>
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>WaitingWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">waitingwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

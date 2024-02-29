@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <QFontDatabase>
 #include <QTimer>
+#include <chrono>
 
 #include <QGraphicsEffect>
 
@@ -61,6 +62,10 @@ private slots:
     void on_logReturnButton_clicked();
 
     void on_logLoginButton_clicked();
+
+    void on_startGameButton_clicked();
+
+    void updateWaitingLabel();
 
 private:
     void SetFont();

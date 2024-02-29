@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(board, &Board::ShowTransformPawnChoice, this, &MainWindow::ShowTransformPawnChoice);
     connect(this, &MainWindow::SetPawnTransformChoice, board, &Board::SetPawnTransformChoice);
     connect(board, &Board::GameOver, this, &MainWindow::GameOver);
+
+    connect(&waiting_state_timer, &QTimer::timeout, this, &MainWindow::updateWaitingLabel);
 
     ui->boardGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->boardGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -166,7 +169,21 @@ void MainWindow::SetFont()
     ui->password_reg_label->setFont(QFont(logo_font_family));
     ui->password_confirm_reg_label->setFont(QFont(logo_font_family));
 
+
+    ui->startGameButton->setFont(QFont(typing_font_family));
+    ui->exitProfileButton->setFont(QFont(typing_font_family));
+    ui->logoutButton->setFont(QFont(typing_font_family));
+
+    ui->nickname_label->setFont(QFont(logo_font_family));
+    ui->rating_label->setFont(QFont(logo_font_family));
+    ui->games_played_label->setFont(QFont(logo_font_family));
+
+    ui->nickname_value_label->setFont(QFont(typing_font_family));
+    ui->rating_value_label->setFont(QFont(typing_font_family));
+    ui->games_played_value_label->setFont(QFont(typing_font_family));
+
     ui->waiting_label->setFont(QFont(logo_font_family));
+    ui->waiting_label_2->setFont(QFont(logo_font_family));
 
     ui->nicknameLogLineEdit->setFont(QFont(typing_font_family));
     ui->passwordLogLineEdit->setFont(QFont(typing_font_family));
@@ -305,6 +322,37 @@ void MainWindow::on_logLoginButton_clicked() {
 
     //Only for debug purposes
     ui->stackedWidget->setCurrentWidget(ui->profile_page);
+
+}
+
+
+void MainWindow::on_startGameButton_clicked() {
+
+    //Only for debug purposes
+    ui->stackedWidget->setCurrentWidget(ui->waiting_page);
+
+    waiting_state_timer.setInterval(std::chrono::milliseconds(500));
+    waiting_state_timer.start();
+
+}
+
+void MainWindow::updateWaitingLabel() {
+
+    QString waiting_text = ui->waiting_dots_label->text();
+
+    if (waiting_text.count(".") < 3) {
+
+        qDebug() << ui->waiting_dots_label->text().count(".");
+        waiting_text.append(".");
+        ui->waiting_dots_label->setText(waiting_text);
+
+    } else {
+
+        qDebug() << ui->waiting_dots_label->text().count(".");
+        waiting_text.remove(".");
+        ui->waiting_dots_label->setText(waiting_text);
+
+    }
 
 }
 
