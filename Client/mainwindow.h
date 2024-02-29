@@ -67,6 +67,8 @@ private slots:
 
     void updateWaitingLabel();
 
+    void on_waitingExitButton_clicked();
+
 private:
     void SetFont();
     void SetWhitePawnTransformChoice();

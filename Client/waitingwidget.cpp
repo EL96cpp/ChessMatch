@@ -14,7 +14,6 @@ WaitingWidget::WaitingWidget(QWidget *parent)
 
 void WaitingWidget::updateRectCount() {
     
-    qDebug() << "update";
     if (current_rect < 4) {
 
         ++current_rect;
@@ -51,7 +50,6 @@ void WaitingWidget::SetSecondColor(const QColor &second_color)
 
 void WaitingWidget::paintEvent(QPaintEvent *event)
 {
-    qDebug() << "current rect " << current_rect;
 
     QPainter painter(this);
     painter.setPen(Qt::NoPen);

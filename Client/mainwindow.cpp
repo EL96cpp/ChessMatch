@@ -360,3 +360,12 @@ void MainWindow::updateWaitingLabel() {
 
 }
 
+
+void MainWindow::on_waitingExitButton_clicked() {
+
+    waiting_dots_timer.stop();
+    waiting_rectangles_timer.stop();
+    ui->stackedWidget->setCurrentWidget(ui->profile_page);
+
+}
+

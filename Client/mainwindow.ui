@@ -265,8 +265,8 @@ QPushButton:hover {
        <rect>
         <x>220</x>
         <y>290</y>
-        <width>941</width>
-        <height>631</height>
+        <width>861</width>
+        <height>581</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -280,8 +280,8 @@ border-radius: 10px;
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>710</x>
-         <y>490</y>
+         <x>620</x>
+         <y>440</y>
          <width>211</width>
          <height>111</height>
         </rect>
@@ -360,10 +360,10 @@ QPushButton:hover {
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>50</x>
-         <y>40</y>
+         <x>30</x>
+         <y>30</y>
          <width>631</width>
-         <height>401</height>
+         <height>351</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1041,6 +1041,34 @@ background-color: rgba(0, 0, 0, 0);</string>
       </property>
       <property name="margin">
        <number>30</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="waitingExitButton">
+      <property name="geometry">
+       <rect>
+        <x>1160</x>
+        <y>890</y>
+        <width>181</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+      </property>
+      <property name="text">
+       <string>Exit</string>
       </property>
      </widget>
     </widget>
