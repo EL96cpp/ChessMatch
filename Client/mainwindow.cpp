@@ -346,13 +346,11 @@ void MainWindow::updateWaitingLabel() {
 
     if (waiting_text.count(".") < 3) {
 
-        qDebug() << ui->waiting_dots_label->text().count(".");
         waiting_text.append(".");
         ui->waiting_dots_label->setText(waiting_text);
 
     } else {
 
-        qDebug() << ui->waiting_dots_label->text().count(".");
         waiting_text.remove(".");
         ui->waiting_dots_label->setText(waiting_text);
 
@@ -366,6 +364,13 @@ void MainWindow::on_waitingExitButton_clicked() {
     waiting_dots_timer.stop();
     waiting_rectangles_timer.stop();
     ui->stackedWidget->setCurrentWidget(ui->profile_page);
+
+}
+
+
+void MainWindow::on_exitProfileButton_clicked() {
+
+    qApp->exit();
 
 }
 

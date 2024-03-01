@@ -69,6 +69,8 @@ private slots:
 
     void on_waitingExitButton_clicked();
 
+    void on_exitProfileButton_clicked();
+
 private:
     void SetFont();
     void SetWhitePawnTransformChoice();

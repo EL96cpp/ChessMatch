@@ -25,23 +25,28 @@ public slots:
 
 signals:
 
+    // QWidget interface
+protected:
+    void paintEvent(QPaintEvent *event);
+
 private:
 
+    QRect background_rect;
     QRect first_rect;
     QRect second_rect;
     QRect third_rect;
     QRect fourth_rect;
 
     int current_rect;
+    int alpha_value;
     int animation_interval;
     int rect_size;
     int margin_size;
+    QColor background_color;
     QColor first_color;
     QColor second_color;
 
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent *event);
+
 };
 
 #endif // WAITINGWIDGET_H

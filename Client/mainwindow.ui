@@ -59,7 +59,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>-10</y>
       <width>1400</width>
       <height>1000</height>
      </rect>
@@ -263,9 +263,9 @@ QPushButton:hover {
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>390</x>
         <y>290</y>
-        <width>861</width>
+        <width>691</width>
         <height>581</height>
        </rect>
       </property>
@@ -280,7 +280,7 @@ border-radius: 10px;
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>620</x>
+         <x>440</x>
          <y>440</y>
          <width>211</width>
          <height>111</height>
@@ -496,7 +496,7 @@ font: 20pt;</string>
      <widget class="QLabel" name="register_label">
       <property name="geometry">
        <rect>
-        <x>230</x>
+        <x>380</x>
         <y>130</y>
         <width>471</width>
         <height>161</height>
@@ -522,7 +522,7 @@ background-color: rbga(0, 0, 0, 0);</string>
      <widget class="QLabel" name="login_label">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>370</x>
         <y>130</y>
         <width>221</width>
         <height>121</height>
@@ -542,10 +542,10 @@ font: 40pt ;</string>
      <widget class="QGroupBox" name="groupBox_2">
       <property name="geometry">
        <rect>
-        <x>350</x>
+        <x>360</x>
         <y>270</y>
-        <width>911</width>
-        <height>521</height>
+        <width>691</width>
+        <height>461</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -559,8 +559,8 @@ border-radius: 10px;
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>660</x>
-         <y>370</y>
+         <x>470</x>
+         <y>330</y>
          <width>211</width>
          <height>111</height>
         </rect>
@@ -639,9 +639,9 @@ QPushButton:hover {
       <widget class="QWidget" name="layoutWidget_2">
        <property name="geometry">
         <rect>
-         <x>50</x>
-         <y>70</y>
-         <width>631</width>
+         <x>30</x>
+         <y>30</y>
+         <width>651</width>
          <height>261</height>
         </rect>
        </property>
@@ -743,7 +743,7 @@ font: 20pt;</string>
        <rect>
         <x>20</x>
         <y>50</y>
-        <width>301</width>
+        <width>321</width>
         <height>151</height>
        </rect>
       </property>
@@ -868,8 +868,8 @@ border-radius: 10px;</string>
      <widget class="QPushButton" name="logoutButton">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>210</y>
+        <x>150</x>
+        <y>220</y>
         <width>91</width>
         <height>31</height>
        </rect>
@@ -896,11 +896,15 @@ QPushButton:hover {
      <widget class="QTableWidget" name="ratingTableWidget">
       <property name="geometry">
        <rect>
-        <x>410</x>
+        <x>390</x>
         <y>50</y>
-        <width>621</width>
-        <height>661</height>
+        <width>671</width>
+        <height>811</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: &quot;#ADBC9F&quot;;
+border-radius: 10px;</string>
       </property>
      </widget>
      <widget class="QWidget" name="layoutWidget">
@@ -967,17 +971,35 @@ QPushButton:hover {
      <widget class="WaitingWidget" name="waiting_widget" native="true">
       <property name="geometry">
        <rect>
-        <x>940</x>
+        <x>900</x>
         <y>240</y>
-        <width>391</width>
-        <height>401</height>
+        <width>430</width>
+        <height>430</height>
        </rect>
       </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>430</width>
+        <height>430</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>430</width>
+        <height>430</height>
+       </size>
+      </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>140</x>
         <y>400</y>
         <width>761</width>
         <height>261</height>
@@ -1022,7 +1044,7 @@ background-color: rgba(0, 0, 0, 0);</string>
      <widget class="QLabel" name="waiting_label">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>130</x>
         <y>170</y>
         <width>791</width>
         <height>361</height>
