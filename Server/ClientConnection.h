@@ -19,7 +19,7 @@ enum class ClientState {
 class ClientConnection {
 
 public:
-    ClientConnection(boost::asio::ip::tcp::socket&& socket);
+    ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context);
 
     void SetLogin(const std::string& login);
     void SetRating(const size_t& rating);
@@ -35,6 +35,7 @@ public:
 
 private:
     boost::asio::ip::tcp::socket socket;
+    boost::asio::io_context& io_context;
 
     std::string login;
     size_t rating;
