@@ -1,16 +1,10 @@
 #include "ThreadSafeQueue.h"
 
 template<typename T>
-ThreadSafeQueue<T>::~ThreadSafeQueue() {
-
-
-}
-
-
-template<typename T>
 T& ThreadSafeQueue<T>::front() {
 
-    
+    std::scoped_lock lock(blocking_mutex);    
+    return deque.front();
 
 }
 
@@ -18,7 +12,8 @@ T& ThreadSafeQueue<T>::front() {
 template<typename T>
 T& ThreadSafeQueue<T>::back() {
 
-
+    std::scoped_lock lock(blocking_mutex);
+    return deque.back();
 
 }
 
@@ -26,7 +21,10 @@ T& ThreadSafeQueue<T>::back() {
 template<typename T>
 T ThreadSafeQueue<T>::pop_front() {
 
-
+    std::scoped_lock lock(blocking_mutex);
+    auto message = std::move(deque.front());
+    deque.pop_front();
+    return message;
 
 }
 
@@ -34,7 +32,10 @@ T ThreadSafeQueue<T>::pop_front() {
 template<typename T>
 T ThreadSafeQueue<T>::pop_back() {
 
-
+    std::scoped_lock lock(blocking_mutex);
+    auto message = std::move(deque.back());
+    deque.pop_back();
+    return message;
 
 }
 
@@ -42,7 +43,11 @@ T ThreadSafeQueue<T>::pop_back() {
 template<typename T>
 void ThreadSafeQueue<T>::push_back(const T& item) {
 
-    
+    std::scoped_lock lock(blocking_mutex);
+    deque.emplace_back(std::move(item));
+
+    std::unique_lock<std::mutex> ul(cv_mutex);
+    condition_variable.notify_one();
 
 }
 
@@ -50,7 +55,11 @@ void ThreadSafeQueue<T>::push_back(const T& item) {
 template<typename T>
 void ThreadSafeQueue<T>::push_front(const T& item) {
 
+    std::scoped_lock lock(blocking_mutex);
+    deque.emplace_front(std::move(item));
 
+    std::unique_lock<std::mutex> ul(cv_mutex);
+    condition_variable.notify_one();
 
 }
 
@@ -58,7 +67,8 @@ void ThreadSafeQueue<T>::push_front(const T& item) {
 template<typename T>
 bool ThreadSafeQueue<T>::empty() {
 
-
+    std::scoped_lock lock(blocking_mutex);
+    return deque.empty();
 
 }
 
@@ -66,7 +76,8 @@ bool ThreadSafeQueue<T>::empty() {
 template<typename T>
 size_t ThreadSafeQueue<T>::count() {
 
-    
+    std::scoped_lock lock(blocking_mutex);
+    return deque.size();
 
 }
 
@@ -74,6 +85,19 @@ size_t ThreadSafeQueue<T>::count() {
 template<typename T>
 void ThreadSafeQueue<T>::clear() {
 
+    std::scoped_lock lock(blocking_mutex);
+    deque.clear();
 
 }
     
+template<typename T>
+void ThreadSafeQueue<T>::wait() {
+
+    while (empty()) {
+
+        std::unique_lock<std::mutex> ul(cv_mutex);
+        condition_variable.wait(ul);
+
+    }
+
+}

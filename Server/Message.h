@@ -1,38 +1,20 @@
 #include <string>
 #include <iostream>
+#include <vector>
+#include <memory>
 
-enum class MessageTheme {
-
-    LOGIN,
-    LOGOUT,
-    REGISTER,
-    DISCONNECT,
-    START_WAITING_FOR_OPPONEN,
-    STOP_WAITING_FOR_OPPONENT,
-    GAME_MOVE
-
-};
-
-class MessageHeader {
-
-    MessageTheme theme;
-    
-
-
-};
-
+#include "ClientConnection.h"
 
 
 class Message {
 
 public:
-
+    Message(std::shared_ptr<ClientConnection>& client, std::vector<uint8_t>& body);
 
 
 private:
-
-
-
+    std::shared_ptr<ClientConnection> client;
+    std::vector<uint8_t> body;
 
 };
 

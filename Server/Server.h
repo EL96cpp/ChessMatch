@@ -4,6 +4,9 @@
 
 #include "ClientConnection.h"
 #include "SqlService.h"
+#include "ThreadSafeQueue.h"
+#include "Message.h"
+
 
 class Server {
 
@@ -16,6 +19,7 @@ private:
     void WaitForClients();
 
 private:
+    ThreadSafeQueue<Message> incoming_messages;
 
     boost::asio::io_context io_context;
     std::thread context_thread;

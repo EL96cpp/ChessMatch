@@ -2,7 +2,7 @@ project(ChessMatchServer)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19)
 SET (CXX_STANDARD 17)
 add_executable(ChessMatchServer main.cpp Server.cpp Server.h SqlService.cpp SqlService.h ClientConnection.cpp ClientConnection.h 
-               Message.cpp Message.h ThreadSafeQueue.cpp ThreadSafeQueue.h ThreadSafeList.cpp ThreadSafeList.h)
+               Message.cpp Message.h ThreadSafeQueue.cpp ThreadSafeQueue.h)
 
 find_package(Boost 1.74.0 REQUIRED)
 
