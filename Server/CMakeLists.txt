@@ -1,7 +1,7 @@
 project(ChessMatchServer)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19)
 SET (CXX_STANDARD 17)
-add_executable(ChessMatchServer main.cpp Server.cpp Server.h SqlService.cpp SqlService.h ClientConnection.cpp ClientConnection.h ConnectionsVector.cpp ConnectionsVector.h)
+add_executable(ChessMatchServer main.cpp Server.cpp Server.h SqlService.cpp SqlService.h ClientConnection.cpp ClientConnection.h ConnectionsVector.cpp ConnectionsVector.h Message.cpp Message.h)
 
 find_package(Boost 1.74.0 REQUIRED)
 

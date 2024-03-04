@@ -1,6 +1,8 @@
 #include "SqlService.h"
 
-SqlService::SqlService() : sql_connection("postgresql://accounting@localhost/chessmatch") {}
+
+SqlService::SqlService() : sql_connection("host=localhost user=postgres password=postgres dbname=chessmatch") {}   
+
 
 bool SqlService::CheckIfUserExists(const std::string& nickname) {
 
@@ -46,7 +48,7 @@ RegisterResult SqlService::Register(const std::string& nickname, const std::stri
 
     if (!CheckIfUserExists(nickname)) {
 
-        sql_connection.prepare("insert", "INSERT INTO users VALUES($1, $2)");
+        sql_connection.prepare("insert", "INSERT INTO users VALUES($1, $2, 0, 0)");
         pqxx::work work{sql_connection};
 
         work.exec_prepared("insert", nickname, password);
@@ -75,7 +77,7 @@ UpdateRatingResult SqlService::UpdatePlayerRating(const std::string& nickname, c
         work.exec_prepared("insert", new_rating,  nickname);
         work.commit();
 
-        return RegisterResult::SUCCESS; 
+        return UpdateRatingResult::SUCCESS; 
         
 
     } else {

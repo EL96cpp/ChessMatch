@@ -8,8 +8,9 @@
 #include "ClientConnection.h"
 #include "ChessFigure.h"
 
+class ClientConnection;
 
-class enum TurnColor {
+enum class TurnColor {
 
     WHITE,
     BLACK
