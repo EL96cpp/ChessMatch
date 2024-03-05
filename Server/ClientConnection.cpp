@@ -3,6 +3,12 @@
 ClientConnection::ClientConnection(boost::asio::ip::tcp::socket&& socket, 
                                    boost::asio::io_context& io_context) : socket(std::move(socket)), io_context(io_context), logged_in(false), state(ClientState::DEFAULT) {}
 
+bool ClientConnection::IsConnected() {
+
+    return socket.is_open();
+
+}
+
 void ClientConnection::SetLogin(const std::string& login) {
 
     this->login = login;

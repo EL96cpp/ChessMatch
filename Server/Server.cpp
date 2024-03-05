@@ -32,6 +32,7 @@ void Server::WaitForClients() {
                 
                 std::cout << "New connection " << socket.remote_endpoint() << "\n";
                 std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context);
+                client_connections.push_back(new_connection);
 
             } else {
 
@@ -45,3 +46,5 @@ void Server::WaitForClients() {
         });
 
 }
+
+

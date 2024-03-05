@@ -1,6 +1,7 @@
 #include <iostream>
 #include <boost/asio.hpp>
 
+#include "ThreadSafeQueue.h"
 #include "Server.h"
 
 int main() {

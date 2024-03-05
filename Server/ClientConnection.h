@@ -21,6 +21,8 @@ class ClientConnection {
 public:
     ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context);
 
+    bool IsConnected();
+
     void SetLogin(const std::string& login);
     void SetRating(const size_t& rating);
     void SetLoggedIn(const bool& logged_in);
