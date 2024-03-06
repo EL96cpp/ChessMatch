@@ -33,17 +33,39 @@ void Server::WaitForClients() {
                 std::cout << "New connection " << socket.remote_endpoint() << "\n";
                 std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context);
                 client_connections.push_back(new_connection);
+                client_connections.back()->StartReadingMessage();
 
             } else {
 
-                std::cout << "New connection error " << ec.message();
-                
+                std::cout << "New connection error " << ec.message();                
 
             }
 
             WaitForClients();
 
+            //client_connections.back()->StartReadingMessage();
+
         });
+
+}
+
+
+void Server::Update() {
+
+    while (!incoming_messages.empty()) {
+    
+        auto message = incoming_messages.pop_front();
+
+        OnMessage(message);
+
+    }
+
+}
+  
+
+void Server::OnMessage(std::shared_ptr<Message>& message) {
+
+
 
 }
 

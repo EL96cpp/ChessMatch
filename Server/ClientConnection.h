@@ -1,11 +1,14 @@
 #pragma once 
 
 #include <string>
+#include <vector>
 #include <iostream>
 #include <memory>
 #include <boost/asio.hpp>
 
+#include "Message.h"
 #include "Game.h"
+
 
 enum class ClientState {
 
@@ -28,6 +31,9 @@ public:
     void SetLoggedIn(const bool& logged_in);
     void SetClientState(const ClientState& state);
 
+    void StartReadingMessage();
+    void ReadMessageBody();
+
     std::string GetLogin();
     size_t GetRating();
     bool LoggedIn();
@@ -39,11 +45,13 @@ private:
     boost::asio::ip::tcp::socket socket;
     boost::asio::io_context& io_context;
 
+    Message temporary_message;
     std::string login;
     size_t rating;
     bool logged_in;
     ClientState state;
-    
+    std::vector<uint8_t> message_size;
+
     std::shared_ptr<Game> game; //Pointer to Game object provides the ability to send game messages
 
 };

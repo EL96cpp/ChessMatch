@@ -4,18 +4,13 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-
-#include "ClientConnection.h"
-
-
-class Message {
-
-public:
-    Message(std::shared_ptr<ClientConnection>& client, std::vector<uint8_t>& body);
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 
-private:
-    std::shared_ptr<ClientConnection> client;
+struct Message {
+
+    uint32_t message_size = 0;
     std::vector<uint8_t> body;
 
 };

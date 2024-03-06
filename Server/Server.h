@@ -22,6 +22,8 @@ public:
     
 private:
     void WaitForClients();
+    void Update();
+    void OnMessage(std::shared_ptr<Message>& message);
 
 private:
     ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
