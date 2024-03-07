@@ -9,7 +9,7 @@ bool Server::Start() {
         WaitForClients();
 
         context_thread = std::thread([this](){ io_context.run(); });
-        context_thread.join();
+        //context_thread.join();
 
     } catch (std::exception& e) {
 
@@ -31,7 +31,7 @@ void Server::WaitForClients() {
             if (!ec) {
                 
                 std::cout << "New connection " << socket.remote_endpoint() << "\n";
-                std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context);
+                std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context, incoming_messages);
                 client_connections.push_back(new_connection);
                 client_connections.back()->StartReadingMessage();
 
@@ -52,8 +52,14 @@ void Server::WaitForClients() {
 
 void Server::Update() {
 
-    while (!incoming_messages.empty()) {
+    incoming_messages.wait();
     
+    std::cout << "after waiting call in server Update\n";
+
+    while (!incoming_messages.empty()) {
+   
+        std::cout << "message processing\n";
+
         auto message = incoming_messages.pop_front();
 
         OnMessage(message);
@@ -64,6 +70,22 @@ void Server::Update() {
   
 
 void Server::OnMessage(std::shared_ptr<Message>& message) {
+
+    std::string message_str(message->body.begin(), message->body.end());
+    
+    std::stringstream message_stream(message_str);
+    boost::property_tree::ptree root;
+    boost::property_tree::read_json(message_stream, root);
+
+    if (root.empty()) {
+
+        std::cout << "empty\n";
+
+    } else {
+
+        std::cout << root.get<std::string>("Method") << "\n";
+
+    }
 
 
 

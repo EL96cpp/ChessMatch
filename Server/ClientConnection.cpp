@@ -1,8 +1,9 @@
 #include "ClientConnection.h"
 
 ClientConnection::ClientConnection(boost::asio::ip::tcp::socket&& socket, 
-                                   boost::asio::io_context& io_context) : socket(std::move(socket)), io_context(io_context), logged_in(false), 
-                                                                          state(ClientState::DEFAULT) { 
+                                   boost::asio::io_context& io_context,
+                                   ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages) : socket(std::move(socket)), io_context(io_context), logged_in(false), 
+                                                                                                   incoming_messages(incoming_messages), state(ClientState::DEFAULT) { 
 
                                                                                 //StartReadingMessage();
                                                                                 std::cout << temporary_message.message_size << " size\n"; 
@@ -111,6 +112,9 @@ void ClientConnection::ReadMessageBody() {
 
         if (!ec) {
 
+            incoming_messages.push_back(std::make_shared<Message>(temporary_message));
+
+            /*
             for (auto& letter : temporary_message.body) {
 
                 std::cout << letter;
@@ -118,7 +122,8 @@ void ClientConnection::ReadMessageBody() {
             }
 
             std::cout << "\n";
-            
+            */
+
             temporary_message.body.clear();
             temporary_message.message_size = 0;
 

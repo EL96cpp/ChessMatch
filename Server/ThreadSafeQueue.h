@@ -2,11 +2,12 @@
 
 #include <mutex>
 #include <deque>
+#include <iostream>
 #include <condition_variable>
 #include <memory>
 
-#include "Message.h"
-#include "ClientConnection.h"
+//#include "Message.h"
+//#include "ClientConnection.h"
 
         
 template<typename T>
@@ -54,17 +55,21 @@ public:
     }
     
     
-    void push_back(T& item) {
+    void push_back(const T& item) {
     
         std::scoped_lock lock(blocking_mutex);
         deque.emplace_back(std::move(item));
     
         std::unique_lock<std::mutex> ul(cv_mutex);
         condition_variable.notify_one();
-    
+   
+        std::cout << "Size of message queue " << deque.size() << "\n";  
+
+        std::cout << "notified inside push_back\n";
+
     }
 
-    void push_front(T& item) {
+    void push_front(const T& item) {
     
         std::scoped_lock lock(blocking_mutex);
         deque.emplace_front(std::move(item));
@@ -101,12 +106,16 @@ public:
         
     void wait() {
     
+        std::cout << "Start waiting...\n";
+
         while (empty()) {
     
             std::unique_lock<std::mutex> ul(cv_mutex);
             condition_variable.wait(ul);
     
         }
+
+        std::cout << "Return from wait cycle\n";
     
     }   
 

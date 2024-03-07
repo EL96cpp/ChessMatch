@@ -5,11 +5,11 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , client(new Client(this))
     , board_scene(new QGraphicsScene)
     , player_taken_figures_scene(new QGraphicsScene)
     , opponent_taken_figures_scene(new QGraphicsScene)
-    , pawn_transform_scene(new QGraphicsScene)
-{
+    , pawn_transform_scene(new QGraphicsScene) {
 
     ui->setupUi(this);
     setWindowTitle("Chess Match");
@@ -21,6 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
     board = new Board(std::move(board_scene));
     taken_figures_manager = new TakenFiguresManager(std::move(opponent_taken_figures_scene),
                                                     std::move(player_taken_figures_scene));
+
+    connect(this, &MainWindow::Login, client, &Client::Login);
+    connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
     connect(board, &Board::PlayerFigureTaken, taken_figures_manager, &TakenFiguresManager::AddPlayerTakenFigure);
@@ -51,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    client->Disconnect();
     delete ui;
 }
 
@@ -94,6 +98,26 @@ void MainWindow::GameOver(const QString &winner_color)
     QString winner = winner_color;
     winner += " wins!";
     ui->game_info_label->setText(winner);
+}
+
+void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, QMap<QString,int>& rating_values) {
+
+    ui->nickname_value_label->setText(nickname);
+    ui->rating_value_label->setText(rating);
+    ui->games_played_value_label->setText(games_played);
+
+    for (auto [key, value] : rating_values.asKeyValueRange()) {
+
+        QList<QStandardItem*> items;
+        items.append(new QStandardItem(key));
+        items.last()->setFlags(Qt::NoItemFlags);
+        items.append(new QStandardItem(value));
+        items.last()->setFlags(Qt::NoItemFlags);
+
+        rating_model->appendRow(items);
+
+    }
+
 }
 
 
@@ -322,7 +346,8 @@ void MainWindow::on_logReturnButton_clicked() {
 void MainWindow::on_logLoginButton_clicked() {
 
     //Only for debug purposes
-    ui->stackedWidget->setCurrentWidget(ui->profile_page);
+    //ui->stackedWidget->setCurrentWidget(ui->profile_page);
+    emit Login(ui->nicknameLogLineEdit->text(), ui->passwordLogLineEdit->text());
 
 }
 

@@ -1,13 +1,16 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <memory>
-
+#include <sstream>
 
 #include "ThreadSafeQueue.h"
 #include "ClientConnection.h"
 #include "SqlService.h"
 #include "Message.h"
+
 
 template<typename T>
 class ThreadSafeQueue;
@@ -19,10 +22,10 @@ public:
     Server(const size_t& prot_id);
     
     bool Start();
-    
+    void Update();
+
 private:
     void WaitForClients();
-    void Update();
     void OnMessage(std::shared_ptr<Message>& message);
 
 private:

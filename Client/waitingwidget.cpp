@@ -14,7 +14,7 @@ WaitingWidget::WaitingWidget(QWidget *parent)
 }
 
 void WaitingWidget::updateRectCount() {
-    
+
     if (current_rect < 4) {
 
         ++current_rect;

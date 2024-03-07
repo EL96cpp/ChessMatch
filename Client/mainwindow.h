@@ -12,13 +12,16 @@
 #include <QDebug>
 #include <QFontDatabase>
 #include <QTimer>
+#include <QStandardItemModel>
 #include <chrono>
+#include <boost/asio.hpp>
 
 #include <QGraphicsEffect>
 
 #include "boardcell.h"
 #include "chessfigure.h"
 #include "board.h"
+#include "client.h"
 #include "takenfiguresmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -35,12 +38,14 @@ public:
 
 signals:
     void SetPawnTransformChoice(const FigureType& figure_type);
+    void Login(const QString& nickname, const QString& password);
 
 public slots:
     void SetPlayerTurn(const QString& turn);
     void ShowTransformPawnChoice(const QString& pawn_color);
     void PawnTransformFigureClicked(ChessFigure* figure);
     void GameOver(const QString& winner_color);
+    void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, QMap<QString,int>& rating_values);
 
 private slots:
     void on_BoardStyleComboBox_currentTextChanged(const QString &arg1);
@@ -78,9 +83,12 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    Client* client;
     Board* board;
     TakenFiguresManager* taken_figures_manager;
     QVector<ChessFigure*> pawn_transform_figures;
+
+    QStandardItemModel* rating_model;
 
     QTimer waiting_dots_timer;
     QTimer waiting_rectangles_timer;

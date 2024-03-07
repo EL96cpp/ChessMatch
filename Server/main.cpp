@@ -10,7 +10,13 @@ int main() {
 
         Server server(40000);
         server.Start();
-    
+
+        while (true) {
+
+            server.Update();
+
+        }
+
     } catch (std::exception& e) {
     
         std::cout << "Can't start server in main.cpp!\n";
