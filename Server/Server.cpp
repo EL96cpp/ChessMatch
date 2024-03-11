@@ -9,7 +9,6 @@ bool Server::Start() {
         WaitForClients();
 
         context_thread = std::thread([this](){ io_context.run(); });
-        //context_thread.join();
 
     } catch (std::exception& e) {
 
@@ -52,12 +51,8 @@ void Server::UpdateIncomingMessages() {
 
     incoming_messages.wait();
     
-    std::cout << "after waiting call in server Update\n";
-
     while (!incoming_messages.empty()) {
    
-        std::cout << "message processing\n";
-
         auto message = incoming_messages.pop_front();
 
         OnMessage(message);
@@ -87,9 +82,16 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
         std::string method = root.get<std::string>("Method");
         std::string resource = root.get<std::string>("Resource");
 
+        std::cout << method << " " << resource << "\n";
+
         if (method == "POST") {
 
             if (resource == "Login") {
+
+                std::string nickname = root.get<std::string>("Nickname");
+                std::string password = root.get<std::string>("Password");
+
+                OnLogin(nickname, password);              
 
 
             } else if (resource == "Register") {
@@ -113,6 +115,36 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 
 
 void Server::OnLogin(const std::string& nickname, const std::string& password) {
+
+    LoginResult result = sql_service.Login(nickname, password);
+
+    if (result == LoginResult::SUCCESS) {
+    
+        
+        std::cout << "Success login!\n";
+
+        
+        int rating = sql_service.GetPlayerRating(nickname);
+        int games_played = sql_service.GetPlayersGamesPlayed(nickname);
+        std::map<std::string, int> top_players_rating = sql_service.GetTopHundredPlayersRating();
+        
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Login");
+        property_tree.put("Code", "200");
+        property_tree.put("Rating", rating);
+        property_tree.put("Games_played", games_played);
+        
+
+
+    } else if (result == LoginResult::INCORRECT_PASSWORD) {
+
+
+
+    } else if (result == LoginResult::NO_NICKNAME_IN_DATABASE) {
+
+
+    }
 
 
 }

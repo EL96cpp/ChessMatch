@@ -20,22 +20,20 @@ enum class ClientState {
 };
 
 
-class ClientConnection : std::enable_shared_from_this<ClientConnection> {
+class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 
 public:
     ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context, ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages);
 
     bool IsConnected();
 
-    void SetLogin(const std::string& login);
-    void SetRating(const size_t& rating);
-    void SetLoggedIn(const bool& logged_in);
+    void OnLoggedIn(const std::string& nickname, const size_t& rating);
     void SetClientState(const ClientState& state);
 
     void StartReadingMessage();
     void ReadMessageBody();
 
-    std::string GetLogin();
+    std::string GetNickname();
     size_t GetRating();
     bool LoggedIn();
     ClientState GetClientState();
@@ -48,7 +46,7 @@ private:
 
     Message temporary_message;
     ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages;
-    std::string login;
+    std::string nickname;
     size_t rating;
     bool logged_in;
     ClientState state;

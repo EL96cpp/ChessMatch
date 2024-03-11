@@ -16,33 +16,23 @@ bool ClientConnection::IsConnected() {
 
 }
 
-void ClientConnection::SetLogin(const std::string& login) {
+void ClientConnection::OnLoggedIn(const std::string& nickname, const size_t& rating) {
 
-    this->login = login;
+    this->nickname = nickname;
+    this->rating = rating;
+    logged_in = true;
 
 }
     
-void ClientConnection::SetRating(const size_t& rating) {
-
-    this->rating = rating;
-
-}
-
-void ClientConnection::SetLoggedIn(const bool& logged_in) {
-
-    this->logged_in = logged_in;
-
-}
-
 void ClientConnection::SetClientState(const ClientState& state) {
 
     this->state = state;
 
 }
 
-std::string ClientConnection::GetLogin() {
+std::string ClientConnection::GetNickname() {
 
-    return login;
+    return nickname;
 
 }
 
