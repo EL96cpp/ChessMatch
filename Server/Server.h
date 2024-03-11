@@ -10,6 +10,7 @@
 #include "ClientConnection.h"
 #include "SqlService.h"
 #include "Message.h"
+#include "GameIDs.h"
 
 
 template<typename T>
@@ -42,6 +43,8 @@ private:
 private:
     ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
     ThreadSafeQueue<std::shared_ptr<ClientConnection>> client_connections;
+
+    GameIDs game_ids;
 
     boost::asio::io_context io_context;
     std::thread context_thread;
