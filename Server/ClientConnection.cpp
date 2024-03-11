@@ -73,8 +73,7 @@ void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
 
 void ClientConnection::StartReadingMessage() {
 
-    //socket.wait(boost::asio::ip::tcp::socket::wait_read);
-
+    
     std::cout << temporary_message.message_size << " size of message\n";
 
     boost::asio::async_read(socket, boost::asio::buffer(&temporary_message.message_size, sizeof(uint32_t)), [this](std::error_code ec, size_t length) {		
@@ -110,19 +109,11 @@ void ClientConnection::ReadMessageBody() {
 
         std::cout << "Read " << temporary_message.body.size() << " \n";
 
+        temporary_message.sender = shared_from_this();
+
         if (!ec) {
 
             incoming_messages.push_back(std::make_shared<Message>(temporary_message));
-
-            /*
-            for (auto& letter : temporary_message.body) {
-
-                std::cout << letter;
-
-            }
-
-            std::cout << "\n";
-            */
 
             temporary_message.body.clear();
             temporary_message.message_size = 0;

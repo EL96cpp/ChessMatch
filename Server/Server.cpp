@@ -43,14 +43,12 @@ void Server::WaitForClients() {
 
             WaitForClients();
 
-            //client_connections.back()->StartReadingMessage();
-
         });
 
 }
 
 
-void Server::Update() {
+void Server::UpdateIncomingMessages() {
 
     incoming_messages.wait();
     
@@ -65,6 +63,9 @@ void Server::Update() {
         OnMessage(message);
 
     }
+
+    
+
 
 }
   
@@ -83,12 +84,79 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 
     } else {
 
-        std::cout << root.get<std::string>("Method") << "\n";
+        std::string method = root.get<std::string>("Method");
+        std::string resource = root.get<std::string>("Resource");
+
+        if (method == "POST") {
+
+            if (resource == "Login") {
+
+
+            } else if (resource == "Register") {
+
+
+            } else if (resource == "Start_waiting") {
+
+
+            } 
+
+
+
+        }
+
 
     }
 
 
 
 }
+
+
+void Server::OnLogin(const std::string& nickname, const std::string& password) {
+
+
+}
+
+void Server::OnLogout(const std::string& nickname) {
+
+
+}
+
+void Server::OnDisconnect(const std::string& nickname) {
+
+
+}
+
+void Server::OnRegister(const std::string& nickname, const std::string& password) {
+
+
+}
+    
+
+void Server::OnStartWaiting(const std::string& nickname) {
+
+
+}
+    
+void Server::OnStopWaiting(const std::string& nickname) {
+
+
+}
+
+void Server::OnResign(const std::string& sender_nickname) {
+
+
+}
+    
+void Server::OnOfferDraw(const std::string& sender_nickname) {
+
+
+}
+    
+void Server::OnCancelDraw(const std::string& sender_nickname) {
+
+
+}   
+
 
 

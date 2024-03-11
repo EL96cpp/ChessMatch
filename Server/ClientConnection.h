@@ -20,7 +20,7 @@ enum class ClientState {
 };
 
 
-class ClientConnection {
+class ClientConnection : std::enable_shared_from_this<ClientConnection> {
 
 public:
     ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context, ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages);

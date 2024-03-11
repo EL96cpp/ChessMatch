@@ -13,7 +13,7 @@ int main() {
 
         while (true) {
 
-            server.Update();
+            server.UpdateIncomingMessages();
 
         }
 
