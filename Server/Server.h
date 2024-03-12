@@ -5,6 +5,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 #include "ThreadSafeQueue.h"
 #include "ClientConnection.h"
@@ -29,7 +30,7 @@ private:
     void WaitForClients();
     void OnMessage(std::shared_ptr<Message>& message);
 
-    void OnLogin(const std::string& nickname, const std::string& password);
+    void OnLogin(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection);
     void OnLogout(const std::string& nickname);
     void OnDisconnect(const std::string& nickname);
     void OnRegister(const std::string& nickname, const std::string& password);

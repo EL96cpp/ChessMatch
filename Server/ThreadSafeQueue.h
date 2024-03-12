@@ -7,7 +7,8 @@
 #include <memory>
 
 //#include "Message.h"
-//#include "ClientConnection.h"
+
+class ClientConnection;
 
         
 template<typename T>
@@ -63,11 +64,21 @@ public:
         std::unique_lock<std::mutex> ul(cv_mutex);
         condition_variable.notify_one();
    
-        std::cout << "Size of message queue " << deque.size() << "\n";  
-
-        std::cout << "notified inside push_back\n";
-
     }
+
+    void push_back(const T& item, const std::shared_ptr<ClientConnection>& sender) {
+    
+        std::scoped_lock lock(blocking_mutex);
+
+        item->sender = sender;
+        deque.emplace_back(std::move(item));
+    
+        std::unique_lock<std::mutex> ul(cv_mutex);
+        condition_variable.notify_one();
+   
+    }
+
+
 
     void push_front(const T& item) {
     

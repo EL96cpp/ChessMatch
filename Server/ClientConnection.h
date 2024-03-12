@@ -50,6 +50,7 @@ private:
     boost::asio::io_context& io_context;
 
     Message temporary_message;
+    ThreadSafeQueue<std::shared_ptr<Message>> outcoming_messages;
     ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages;
     std::string nickname;
     size_t rating;

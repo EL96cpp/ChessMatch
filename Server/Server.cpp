@@ -88,10 +88,11 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 
             if (resource == "Login") {
 
+                
                 std::string nickname = root.get<std::string>("Nickname");
                 std::string password = root.get<std::string>("Password");
 
-                OnLogin(nickname, password);              
+                OnLogin(nickname, password, message->sender);             
 
 
             } else if (resource == "Register") {
@@ -114,7 +115,7 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 }
 
 
-void Server::OnLogin(const std::string& nickname, const std::string& password) {
+void Server::OnLogin(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection) {
 
     LoginResult result = sql_service.Login(nickname, password);
 
@@ -129,6 +130,15 @@ void Server::OnLogin(const std::string& nickname, const std::string& password) {
         boost::property_tree::ptree top_players = sql_service.GetTopHundredPlayersRating();
 
         
+        if (client_connection != nullptr) {
+                
+            std::cout << "Non empty client connection!\n";
+
+        }
+        //client_connection->OnLoggedIn(nickname, rating);
+
+        std::cout << "Creating p_trees\n";
+
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
         property_tree.put("Resource", "Login");
@@ -136,8 +146,27 @@ void Server::OnLogin(const std::string& nickname, const std::string& password) {
         property_tree.put("Rating", rating);
         property_tree.put("Games_played", games_played);
         property_tree.put_child("Top_players", top_players);
-               
+
+        std::cout << "Will create ostream\n";
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
         
+        
+        std::cout << "Message body will be created\n";
+
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        std::cout << "message: " << json_string << "\n";
+
+        client_connection->SendMessage(message); 
+        
+
 
     } else if (result == LoginResult::INCORRECT_PASSWORD) {
 

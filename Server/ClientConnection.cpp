@@ -63,19 +63,84 @@ void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
 
 void ClientConnection::WriteMessageHeader() {
 
+    boost::asio::async_write(socket, boost::asio::buffer(&outcoming_messages.front()->message_size, sizeof(uint32_t)), 
+        [this](std::error_code ec, size_t length) {
+
+            std::cout << "Message header writing handler\n";
+
+            if (!ec) {
+            
+                if (outcoming_messages.front()->body.size() > 0) {
+                
+                    WriteMessageBody();
+
+                } else {
+
+                    outcoming_messages.pop_front();
+
+                    if (!outcoming_messages.empty()) {
+                    
+                        WriteMessageHeader();
+
+                    }
+
+
+                }
+
+            } else {
+
+                std::cout << "Error while writing message header " << ec.message() << "\n";            
+
+            }
+
+
+        });
 
 }
 
 
 void ClientConnection::WriteMessageBody() {
 
+    boost::asio::async_write(socket, boost::asio::buffer(outcoming_messages.front()->body.data(), outcoming_messages.front()->body.size()),
+        [this](std::error_code ec, size_t length) {
+
+            if (!ec) {
+
+                std::cout << "Sent message body!\n";
+                outcoming_messages.pop_front();
+
+                if (!outcoming_messages.empty()) {
+
+                    WriteMessageHeader();
+
+                }
+
+
+            } else {
+
+               std::cout << "Error while writing message body " << ec.message() << "\n"; 
+
+            }
+
+
+        });
 
 }
 
 
 void ClientConnection::SendMessage(std::shared_ptr<Message>& message) {
 
+    std::cout << "Called SendMessage function\n";
     
+    bool writing_message = !outcoming_messages.empty();
+    outcoming_messages.push_back(message);
+    
+    if (!writing_message) {
+
+        std::cout << "Start writing message header\n";
+        WriteMessageHeader();
+
+    }
 
 
 }
@@ -120,11 +185,9 @@ void ClientConnection::ReadMessageBody() {
 
         std::cout << "Read " << temporary_message.body.size() << " \n";
 
-        temporary_message.sender = shared_from_this();
-
         if (!ec) {
 
-            incoming_messages.push_back(std::make_shared<Message>(temporary_message));
+            incoming_messages.push_back(std::make_shared<Message>(temporary_message), this->shared_from_this());
 
             temporary_message.body.clear();
             temporary_message.message_size = 0;
@@ -135,6 +198,5 @@ void ClientConnection::ReadMessageBody() {
 
 
     });
-
 
 }
