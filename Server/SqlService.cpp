@@ -138,23 +138,20 @@ int SqlService::GetPlayersGamesPlayed(const std::string& nickname) {
 
 
 
-std::map<std::string, int> SqlService::GetTopHundredPlayersRating() {
+boost::property_tree::ptree SqlService::GetTopHundredPlayersRating() {
 
     pqxx::work work{sql_connection};
 
     pqxx::result result = work.exec("SELECT nickname, rating FROM users ORDER BY rating DESC LIMIT 100");
 
-    std::map<std::string, int> ratings;
+    boost::property_tree::ptree ratings;
 
     for (int i = 0; i < result.size(); ++i) {
 
-        ratings.emplace(result[i][0].as<std::string>(), result[i][1].as<int>());
-
-    }
-
-    for (auto& pair : ratings) {
-
-        std::cout << "Ratings " << pair.first << " " << pair.second << "\n";
+        boost::property_tree::ptree line;
+        line.put(result[i][0].as<std::string>(), result[i][1].as<int>());
+        
+        ratings.push_back(std::make_pair("", line));        
 
     }
 

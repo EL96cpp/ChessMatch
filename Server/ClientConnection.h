@@ -30,6 +30,11 @@ public:
     void OnLoggedIn(const std::string& nickname, const size_t& rating);
     void SetClientState(const ClientState& state);
 
+    void SendMessage(std::shared_ptr<Message>& message);
+
+    void WriteMessageHeader();
+    void WriteMessageBody();
+
     void StartReadingMessage();
     void ReadMessageBody();
 

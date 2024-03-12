@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <boost/property_tree/ptree.hpp>
 
 
 enum class LoginResult {
@@ -41,7 +42,7 @@ public:
     int GetPlayerRating(const std::string& nickname);
     int GetPlayersGamesPlayed(const std::string& nickname);
     UpdateRatingResult UpdatePlayerRating(const std::string& nickname, const size_t& new_rating);
-    std::map<std::string, int> GetTopHundredPlayersRating();
+    boost::property_tree::ptree GetTopHundredPlayersRating();
 
 private:
     pqxx::connection sql_connection;

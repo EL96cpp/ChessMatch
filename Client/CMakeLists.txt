@@ -48,6 +48,7 @@ set(PROJECT_SOURCES
         king.h
         message.cpp
         message.h
+        threadsafequeue.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

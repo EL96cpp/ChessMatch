@@ -39,6 +39,7 @@ public:
 signals:
     void SetPawnTransformChoice(const FigureType& figure_type);
     void Login(const QString& nickname, const QString& password);
+    void Register(const QString& nickname, const QString& password);
 
 public slots:
     void SetPlayerTurn(const QString& turn);

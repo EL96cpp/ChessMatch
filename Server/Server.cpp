@@ -126,16 +126,18 @@ void Server::OnLogin(const std::string& nickname, const std::string& password) {
         
         int rating = sql_service.GetPlayerRating(nickname);
         int games_played = sql_service.GetPlayersGamesPlayed(nickname);
-        std::map<std::string, int> top_players_rating = sql_service.GetTopHundredPlayersRating();
-        
+        boost::property_tree::ptree top_players = sql_service.GetTopHundredPlayersRating();
+
+        /*
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
         property_tree.put("Resource", "Login");
         property_tree.put("Code", "200");
         property_tree.put("Rating", rating);
         property_tree.put("Games_played", games_played);
+        property_tree.put("Top_players", top_players);
+        */        
         
-
 
     } else if (result == LoginResult::INCORRECT_PASSWORD) {
 

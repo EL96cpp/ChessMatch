@@ -61,6 +61,24 @@ void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
 }
 
 
+void ClientConnection::WriteMessageHeader() {
+
+
+}
+
+
+void ClientConnection::WriteMessageBody() {
+
+
+}
+
+
+void ClientConnection::SendMessage(std::shared_ptr<Message>& message) {
+
+}
+
+
+
 void ClientConnection::StartReadingMessage() {
 
     

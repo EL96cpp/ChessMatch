@@ -22,7 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
     taken_figures_manager = new TakenFiguresManager(std::move(opponent_taken_figures_scene),
                                                     std::move(player_taken_figures_scene));
 
-    connect(this, &MainWindow::Login, client, &Client::Login);
+    connect(this, &MainWindow::Login, client, &Client::OnLogin);
+    connect(this, &MainWindow::Register, client, &Client::OnRegister);
     connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
