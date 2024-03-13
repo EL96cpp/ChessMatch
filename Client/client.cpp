@@ -10,6 +10,9 @@ Client::Client(QObject *parent) : QObject{parent}, socket(io_context) {
 
     context_thread = std::thread([this]() { io_context.run(); });
 
+    message_processing_thread = std::thread(&Client::ProcessMessages, this);
+    message_processing_thread.detach();
+
 }
 
 void Client::ConnectToServer(const std::string& address, const quint16 &port) {
@@ -59,9 +62,9 @@ void Client::OnLogin(const QString &nickname, const QString &password) {
 
     uint32_t size = byte_array.size();
 
-    Message message;
-    message.message_size = size;
-    message.body = byte_array;
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
 
     qDebug() << size << " will send to the Server";
 
@@ -81,9 +84,9 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 
     uint32_t size = byte_array.size();
 
-    Message message;
-    message.message_size = size;
-    message.body = byte_array;
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
 
     qDebug() << size << " will send to the Server";
 
@@ -91,15 +94,7 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 
 }
 
-void Client::SendMessage(const Message& message) {
-
-    /*
-    socket.write_some(boost::asio::buffer(&incoming_temporary_message.message_size, sizeof(incoming_temporary_message.message_size)));
-    socket.write_some(boost::asio::buffer(incoming_temporary_message.body.data(), incoming_temporary_message.message_size));
-
-    incoming_temporary_message.message_size = 0;
-    incoming_temporary_message.body.clear();
-    */
+void Client::SendMessage(const std::shared_ptr<Message>& message) {
 
     qDebug() << "Send message call";
 
@@ -122,14 +117,14 @@ void Client::SendMessage(const Message& message) {
 
 void Client::WriteHeader() {
 
-    boost::asio::async_write(socket, boost::asio::buffer(&outcoming_messages.front().message_size, sizeof(uint32_t)),
+    boost::asio::async_write(socket, boost::asio::buffer(&outcoming_messages.front()->message_size, sizeof(uint32_t)),
                              [this](std::error_code ec, size_t length) {
 
         if (!ec) {
 
             qDebug() << "Write message header";
 
-            if (outcoming_messages.front().body.size() > 0) {
+            if (outcoming_messages.front()->body.size() > 0) {
 
                 WriteBody();
 
@@ -157,8 +152,8 @@ void Client::WriteHeader() {
 
 void Client::WriteBody() {
 
-    boost::asio::async_write(socket, boost::asio::buffer(outcoming_messages.front().body.data(),
-                                                         outcoming_messages.front().body.size()),
+    boost::asio::async_write(socket, boost::asio::buffer(outcoming_messages.front()->body.data(),
+                                                         outcoming_messages.front()->body.size()),
                              [this](std::error_code ec, size_t length) {
 
         if (!ec) {
@@ -190,6 +185,8 @@ void Client::ReadHeader() {
 
         if (!ec) {
 
+            qDebug() << "Read header handler function";
+
             if (incoming_temporary_message.message_size > 0) {
 
                 incoming_temporary_message.body.resize(incoming_temporary_message.message_size);
@@ -218,6 +215,7 @@ void Client::ReadBody() {
 
         if (!ec) {
 
+            qDebug() << "Read message body";
             AddToIncomingMessages();
 
         } else {
@@ -226,16 +224,94 @@ void Client::ReadBody() {
 
         }
 
-    }
-);
+    });
 
 }
 
 void Client::AddToIncomingMessages() {
 
-    incoming_messages.push_back(incoming_temporary_message);
+    qDebug() << "message : " << incoming_temporary_message.body;
+
+    bool messages_are_processing = !incoming_messages.empty();
+    incoming_messages.push_back(std::make_shared<Message>(incoming_temporary_message));
+
+    if (messages_are_processing) {
+
+
+
+    }
+
 
     ReadHeader();
+
+}
+
+void Client::ProcessMessages() {
+
+    while (true) {
+
+        incoming_messages.wait();
+
+        while (!incoming_messages.empty()) {
+
+            std::shared_ptr<Message> message = incoming_messages.pop_front();
+
+            QJsonParseError parse_error;
+            QJsonDocument json_document_message = QJsonDocument::fromJson(message->body, &parse_error);
+
+            if (parse_error.error != QJsonParseError::NoError) {
+
+                qDebug() << "parse error!";
+                qDebug () << parse_error.errorString();
+
+            }
+
+            QJsonObject json_message_object = json_document_message.object();
+
+            QJsonValue method_value = json_message_object.value(QLatin1String("Method"));
+            QJsonValue resource_value = json_message_object.value(QLatin1String("Resource"));
+            QJsonValue code_value = json_message_object.value(QLatin1String("Code"));
+
+            if (method_value.toString() == "POST") {
+
+                if (resource_value.toString() == "Login") {
+
+                    if (code_value.toString() == "200") {
+
+                        QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
+                        QString rating = json_message_object.value(QLatin1String("Rating")).toString();
+                        QString games_played = json_message_object.value(QLatin1String("Games_played")).toString();
+                        QJsonArray rating_array = json_message_object.value(QLatin1String("Top_players")).toArray();
+
+                        QMap<QString, QString> rating_map;
+
+                        for (auto line : rating_array) {
+
+                            foreach(const QString& player_nickname, line.toObject().keys()) {
+
+                                QJsonValue value = line.toObject().value(player_nickname);
+                                rating_map[player_nickname] = value.toString();
+
+                            }
+
+                        }
+
+                        emit LoggedIn(nickname, rating, games_played, rating_map);
+
+                    } else if (code_value.toString() == "403") {
+
+
+
+                    }
+
+                }
+
+            }
+
+        }
+
+
+    }
 
 }
 

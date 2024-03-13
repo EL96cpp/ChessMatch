@@ -6,6 +6,7 @@
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonParseError>
+#include <QJsonArray>
 #include <QMap>
 #include <queue>
 #include <QDebug>
@@ -32,24 +33,26 @@ public slots:
     void OnRegister(const QString& nickname, const QString& password);
 
 signals:
-    void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, QMap<QString,int>& rating_values);
+    void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
 
 private:
-    void SendMessage(const Message& message);
+    void SendMessage(const std::shared_ptr<Message>& message);
     void WriteHeader();
     void WriteBody();
     void ReadHeader();
     void ReadBody();
     void AddToIncomingMessages();
+    void ProcessMessages();
 
 
 private:
-    ThreadSafeQueue<Message> incoming_messages;
-    ThreadSafeQueue<Message> outcoming_messages;
+    ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
+    ThreadSafeQueue<std::shared_ptr<Message>> outcoming_messages;
 
     Message incoming_temporary_message;
     boost::asio::io_context io_context;
     std::thread context_thread;
+    std::thread message_processing_thread;
     boost::asio::ip::tcp::socket socket;
 
 };

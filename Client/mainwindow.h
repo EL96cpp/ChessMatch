@@ -46,7 +46,7 @@ public slots:
     void ShowTransformPawnChoice(const QString& pawn_color);
     void PawnTransformFigureClicked(ChessFigure* figure);
     void GameOver(const QString& winner_color);
-    void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, QMap<QString,int>& rating_values);
+    void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
 
 private slots:
     void on_BoardStyleComboBox_currentTextChanged(const QString &arg1);

@@ -10,6 +10,7 @@ struct Message {
 
     Message();
     Message(const uint32_t& message_size, const QByteArray& body);
+    Message(const Message& message);
 
     uint32_t message_size;
     QByteArray body;

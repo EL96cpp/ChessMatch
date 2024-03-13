@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , client(new Client(this))
+    , rating_model(new QStandardItemModel(0, 2, this))
     , board_scene(new QGraphicsScene)
     , player_taken_figures_scene(new QGraphicsScene)
     , opponent_taken_figures_scene(new QGraphicsScene)
@@ -15,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("Chess Match");
     SetFont();
 
+    rating_model->setHorizontalHeaderItem(0, new QStandardItem("Player"));
+    rating_model->setHorizontalHeaderItem(1, new QStandardItem("Rating"));
+
+    ui->ratingTableView->verticalHeader()->setVisible(false);
+    ui->ratingTableView->setModel(rating_model);
     ui->boardGraphicsView->setScene(board_scene);
     ui->playerTakenView->setScene(opponent_taken_figures_scene);
     ui->opponentTakenView->setScene(player_taken_figures_scene);
@@ -101,23 +107,38 @@ void MainWindow::GameOver(const QString &winner_color)
     ui->game_info_label->setText(winner);
 }
 
-void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, QMap<QString,int>& rating_values) {
+void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values) {
 
     ui->nickname_value_label->setText(nickname);
     ui->rating_value_label->setText(rating);
     ui->games_played_value_label->setText(games_played);
 
+    qDebug() << "Before cycle";
+
+
     for (auto [key, value] : rating_values.asKeyValueRange()) {
 
         QList<QStandardItem*> items;
         items.append(new QStandardItem(key));
+        items.last()->setTextAlignment(Qt::AlignCenter);
         items.last()->setFlags(Qt::NoItemFlags);
+
         items.append(new QStandardItem(value));
+        items.last()->setTextAlignment(Qt::AlignCenter);
         items.last()->setFlags(Qt::NoItemFlags);
+
+        qDebug() << key << " " << value;
 
         rating_model->appendRow(items);
 
     }
+
+    ui->ratingTableView->sortByColumn(1, Qt::DescendingOrder);
+
+    ui->nicknameLogLineEdit->clear();
+    ui->passwordLogLineEdit->clear();
+
+    ui->stackedWidget->setCurrentWidget(ui->profile_page);
 
 }
 
