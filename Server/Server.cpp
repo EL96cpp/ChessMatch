@@ -135,14 +135,14 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
             std::cout << "Non empty client connection!\n";
 
         }
-        //client_connection->OnLoggedIn(nickname, rating);
-
-        std::cout << "Creating p_trees\n";
+        
+        client_connection->OnLoggedIn(nickname, rating);
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
         property_tree.put("Resource", "Login");
         property_tree.put("Code", "200");
+        property_tree.put("Nickname", nickname);
         property_tree.put("Rating", rating);
         property_tree.put("Games_played", games_played);
         property_tree.put_child("Top_players", top_players);
