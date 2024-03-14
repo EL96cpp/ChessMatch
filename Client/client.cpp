@@ -52,11 +52,33 @@ void Client::Disconnect() {
 
 void Client::OnLogin(const QString &nickname, const QString &password) {
 
+
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Resource")] = QStringLiteral("Login");
     json_message[QStringLiteral("Nickname")] = nickname;
     json_message[QStringLiteral("Password")] = password;
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << size << " will send to the Server";
+
+    SendMessage(message);
+
+}
+
+void Client::OnLogout(const QString &nickname) {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    json_message[QStringLiteral("Resource")] = QStringLiteral("Logout");
+    json_message[QStringLiteral("Nickname")] = nickname;
     QByteArray byte_array = QJsonDocument(json_message).toJson();
     byte_array.append("\n");
 
@@ -300,7 +322,8 @@ void Client::ProcessMessages() {
 
                     } else if (code_value.toString() == "403") {
 
-
+                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                        emit ShowErrorMessage("Login error", error_description);
 
                     }
 

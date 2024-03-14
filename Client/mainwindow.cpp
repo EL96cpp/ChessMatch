@@ -14,13 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     setWindowTitle("Chess Match");
-    SetFont();
 
-    rating_model->setHorizontalHeaderItem(0, new QStandardItem("Player"));
-    rating_model->setHorizontalHeaderItem(1, new QStandardItem("Rating"));
+    SetFont();
 
     ui->ratingTableView->verticalHeader()->setVisible(false);
     ui->ratingTableView->setModel(rating_model);
+    ui->ratingTableView->setColumnWidth(0, ui->ratingTableView->width()/2);
+    ui->ratingTableView->setColumnWidth(1, ui->ratingTableView->width()/2);
+
     ui->boardGraphicsView->setScene(board_scene);
     ui->playerTakenView->setScene(opponent_taken_figures_scene);
     ui->opponentTakenView->setScene(player_taken_figures_scene);
@@ -29,7 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
                                                     std::move(player_taken_figures_scene));
 
     connect(this, &MainWindow::Login, client, &Client::OnLogin);
+    connect(this, &MainWindow::Logout, client, &Client::OnLogout);
     connect(this, &MainWindow::Register, client, &Client::OnRegister);
+    connect(client, &Client::ShowErrorMessage, this, &MainWindow::OnShowErrorMessage);
     connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
@@ -59,19 +62,21 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
+
     client->Disconnect();
     delete ui;
+
 }
 
-void MainWindow::SetPlayerTurn(const QString &turn)
-{
+void MainWindow::SetPlayerTurn(const QString &turn) {
+
     ui->game_info_label->setText(turn);
+
 }
 
-void MainWindow::ShowTransformPawnChoice(const QString& pawn_color)
-{
+void MainWindow::ShowTransformPawnChoice(const QString& pawn_color) {
+
     ui->pawnTransformView->setScene(pawn_transform_scene);
     ui->pawnTransformView->show();
     ui->pawnTransformView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -88,8 +93,8 @@ void MainWindow::ShowTransformPawnChoice(const QString& pawn_color)
 
 }
 
-void MainWindow::PawnTransformFigureClicked(ChessFigure* figure)
-{
+void MainWindow::PawnTransformFigureClicked(ChessFigure* figure) {
+
     for (auto& figure : pawn_transform_figures) {
 
         pawn_transform_scene->removeItem(figure);
@@ -98,13 +103,15 @@ void MainWindow::PawnTransformFigureClicked(ChessFigure* figure)
     pawn_transform_figures.clear();
     ui->pawnTransformView->hide();
     emit SetPawnTransformChoice(figure->GetType());
+
 }
 
-void MainWindow::GameOver(const QString &winner_color)
-{
+void MainWindow::GameOver(const QString &winner_color) {
+
     QString winner = winner_color;
     winner += " wins!";
     ui->game_info_label->setText(winner);
+
 }
 
 void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values) {
@@ -142,9 +149,15 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
 
 }
 
+void MainWindow::OnShowErrorMessage(const QString &title, const QString &error_description) {
 
-void MainWindow::on_BoardStyleComboBox_currentTextChanged(const QString &arg1)
-{
+    QMessageBox::warning(this, title, error_description);
+
+}
+
+
+void MainWindow::on_BoardStyleComboBox_currentTextChanged(const QString &arg1) {
+
     if (QString::compare(arg1, QString::fromLatin1("Classic"), Qt::CaseInsensitive) == 0) {
 
         board->SetBrushes(QColor(255, 206, 158), QColor(209, 139, 71), QColor(54, 27, 0), QColor(0, 255, 224));
@@ -167,8 +180,7 @@ void MainWindow::on_BoardStyleComboBox_currentTextChanged(const QString &arg1)
 
 
 
-void MainWindow::on_PlayerColorComboBox_currentTextChanged(const QString &player_color)
-{
+void MainWindow::on_PlayerColorComboBox_currentTextChanged(const QString &player_color) {
 
     ui->game_info_label->setText("White turn");
 
@@ -188,15 +200,15 @@ void MainWindow::on_PlayerColorComboBox_currentTextChanged(const QString &player
 }
 
 
-void MainWindow::on_NewGameButton_clicked()
-{
+void MainWindow::on_NewGameButton_clicked() {
+
     ui->game_info_label->setText("White turn");
     board->StartNewGame();
     taken_figures_manager->StartNewGame();
+
 }
 
-void MainWindow::SetFont()
-{
+void MainWindow::SetFont() {
 
     qint32 logo_font_id = QFontDatabase::addApplicationFont(":/Fonts/LogoFont.ttf");
     qint32 typing_font_id = QFontDatabase::addApplicationFont(":/Fonts/Font.ttf");
@@ -228,6 +240,25 @@ void MainWindow::SetFont()
     ui->nickname_value_label->setFont(QFont(typing_font_family));
     ui->rating_value_label->setFont(QFont(typing_font_family));
     ui->games_played_value_label->setFont(QFont(typing_font_family));
+
+    QStandardItem* player_item = new QStandardItem("Player");
+    QStandardItem* rating_item = new QStandardItem("Rating");
+    player_item->setFont(QFont(logo_font_family, 25));
+    player_item->setBackground(QBrush(QColor(42, 75, 63, 50)));
+    player_item->setForeground(QBrush(QColor(255, 255, 255)));
+    rating_item->setFont(QFont(logo_font_family, 20));
+    rating_item->setBackground(QBrush(QColor(42, 75, 63, 50)));
+    rating_item->setForeground(QBrush(QColor(255, 255, 255)));
+
+    QHeaderView* header = ui->ratingTableView->verticalHeader();
+    header->setSectionResizeMode(QHeaderView::Fixed);
+    header->setDefaultSectionSize(50);
+
+    ui->top_players_label->setFont(QFont(logo_font_family));
+
+    rating_model->setHorizontalHeaderItem(0, player_item);
+    rating_model->setHorizontalHeaderItem(1, rating_item);
+    ui->ratingTableView->setFont(QFont(typing_font_family, 20));
 
     ui->waiting_label->setFont(QFont(logo_font_family));
     ui->waiting_label_2->setFont(QFont(logo_font_family));
@@ -346,12 +377,30 @@ void MainWindow::on_exitButton_clicked() {
 
 void MainWindow::on_registerRegButton_clicked() {
 
+    if (ui->nicknameRegLineEdit->text().isEmpty() ||
+        ui->passwordRegLineEdit->text().isEmpty() ||
+        ui->passwordConfirmRegLineEdit->text().isEmpty()) {
 
+        QMessageBox::warning(this, "Register error", "Please, fill out all required fields");
+
+    } else if (ui->passwordRegLineEdit->text() != ui->passwordConfirmRegLineEdit->text()) {
+
+        QMessageBox::warning(this, "Register error", "Password confirmation does not match");
+
+    } else {
+
+        emit Register(ui->nicknameRegLineEdit->text(), ui->passwordRegLineEdit->text());
+
+    }
 
 }
 
 
 void MainWindow::on_regReturnButton_clicked() {
+
+    ui->nicknameRegLineEdit->clear();
+    ui->passwordRegLineEdit->clear();
+    ui->passwordConfirmRegLineEdit->clear();
 
     ui->stackedWidget->setCurrentWidget(ui->start_page);
 
@@ -360,6 +409,9 @@ void MainWindow::on_regReturnButton_clicked() {
 
 void MainWindow::on_logReturnButton_clicked() {
 
+    ui->nicknameLogLineEdit->clear();
+    ui->passwordLogLineEdit->clear();
+
     ui->stackedWidget->setCurrentWidget(ui->start_page);
 
 }
@@ -367,9 +419,15 @@ void MainWindow::on_logReturnButton_clicked() {
 
 void MainWindow::on_logLoginButton_clicked() {
 
-    //Only for debug purposes
-    //ui->stackedWidget->setCurrentWidget(ui->profile_page);
-    emit Login(ui->nicknameLogLineEdit->text(), ui->passwordLogLineEdit->text());
+    if (ui->nicknameLogLineEdit->text().isEmpty() || ui->passwordLogLineEdit->text().isEmpty()) {
+
+        QMessageBox::warning(this, "Login error", "Please, fill out all required fields");
+
+    } else {
+
+        emit Login(ui->nicknameLogLineEdit->text(), ui->passwordLogLineEdit->text());
+
+    }
 
 }
 
@@ -418,6 +476,13 @@ void MainWindow::on_waitingExitButton_clicked() {
 void MainWindow::on_exitProfileButton_clicked() {
 
     qApp->exit();
+
+}
+
+
+void MainWindow::on_logoutButton_clicked() {
+
+    emit Logout(ui->nickname_label->text());
 
 }
 

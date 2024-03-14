@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QVector>
 #include <QString>
+#include <QMessageBox>
 #include <QGraphicsTextItem>
 #include <QGraphicsRectItem>
 #include <QGraphicsScene>
@@ -39,6 +40,7 @@ public:
 signals:
     void SetPawnTransformChoice(const FigureType& figure_type);
     void Login(const QString& nickname, const QString& password);
+    void Logout(const QString& nickname);
     void Register(const QString& nickname, const QString& password);
 
 public slots:
@@ -47,6 +49,7 @@ public slots:
     void PawnTransformFigureClicked(ChessFigure* figure);
     void GameOver(const QString& winner_color);
     void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
+    void OnShowErrorMessage(const QString& title, const QString& error_description);
 
 private slots:
     void on_BoardStyleComboBox_currentTextChanged(const QString &arg1);
@@ -76,6 +79,8 @@ private slots:
     void on_waitingExitButton_clicked();
 
     void on_exitProfileButton_clicked();
+
+    void on_logoutButton_clicked();
 
 private:
     void SetFont();

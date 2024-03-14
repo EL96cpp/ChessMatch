@@ -30,10 +30,12 @@ public:
 
 public slots:
     void OnLogin(const QString& nickname, const QString& password);
+    void OnLogout(const QString& nickname);
     void OnRegister(const QString& nickname, const QString& password);
 
 signals:
     void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
+    void ShowErrorMessage(const QString& title, const QString& error_description);
 
 private:
     void SendMessage(const std::shared_ptr<Message>& message);
