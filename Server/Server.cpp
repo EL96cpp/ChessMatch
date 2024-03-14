@@ -170,10 +170,48 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
     } else if (result == LoginResult::INCORRECT_PASSWORD) {
 
+        
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Login");
+        property_tree.put("Code", "403");
+        property_tree.put("Error_description", "Incorrect password");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+        
 
 
     } else if (result == LoginResult::NO_NICKNAME_IN_DATABASE) {
 
+
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Login");
+        property_tree.put("Code", "403");
+        property_tree.put("Error_description", "Nickname is not registered");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+ 
 
     }
 
