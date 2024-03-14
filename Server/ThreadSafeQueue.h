@@ -100,6 +100,19 @@ public:
     }
 
 
+    bool contains_nickname(const std::string& nickname) {
+
+        std::scoped_lock lock(blocking_mutex);
+        return (std::find_if(deque.begin(), deque.end(), [this, nickname](const T& element) {
+
+                return element->GetNickname() == nickname;
+
+            }) != deque.end());
+
+
+    }
+
+
     size_t count() {
     
         std::scoped_lock lock(blocking_mutex);

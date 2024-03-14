@@ -117,6 +117,34 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 
 void Server::OnLogin(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection) {
 
+
+    if (client_connections.contains_nickname(nickname)) {
+
+
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Login");
+        property_tree.put("Code", "403");
+        property_tree.put("Error_description", "User already logged");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message);         
+
+        return;        
+
+    }
+    
+
+
     LoginResult result = sql_service.Login(nickname, password);
 
     if (result == LoginResult::SUCCESS) {
