@@ -1,6 +1,6 @@
 project(ChessMatchServer)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19)
-SET (CXX_STANDARD 17)
+SET (CXX_STANDARD 20)
 add_executable(ChessMatchServer main.cpp ThreadSafeQueue.h SqlService.cpp SqlService.h ClientConnection.cpp ClientConnection.h 
                Message.h Server.cpp Server.h GameIDs.cpp GameIDs.h)
 

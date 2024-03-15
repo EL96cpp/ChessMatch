@@ -28,6 +28,7 @@ public:
     bool IsConnected();
 
     void OnLoggedIn(const std::string& nickname, const size_t& rating);
+    void Logout();
     void SetClientState(const ClientState& state);
 
     void SendMessage(std::shared_ptr<Message>& message);

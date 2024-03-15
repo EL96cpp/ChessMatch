@@ -95,10 +95,26 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                 OnLogin(nickname, password, message->sender);             
 
 
+            } else if (resource == "Logout") {
+
+
+                std::string nickname = root.get<std::string>("Nickname");
+                OnLogout(nickname, message->sender);
+
+
             } else if (resource == "Register") {
+
+                
+                std::string nickname = root.get<std::string>("Nickname");
+                std::string password = root.get<std::string>("Password");
+
+                OnRegister(nickname, password, message->sender);
 
 
             } else if (resource == "Start_waiting") {
+
+
+
 
 
             } 
@@ -246,28 +262,146 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
 }
 
-void Server::OnLogout(const std::string& nickname) {
+void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnection>& client_connection) {
 
+
+    if (client_connection->LoggedIn() && client_connection->GetNickname() == nickname) {
+
+
+        client_connection->Logout();        
+
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Logout");
+        property_tree.put("Code", "200");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+
+
+    } else if (!client_connection->LoggedIn()) {
+
+
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Logout");
+        property_tree.put("Code", "403");
+        property_tree.put("Error_description", "User is not logged in");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+ 
+
+    } else if (client_connection->GetNickname() != nickname) {
+
+        
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Logout");
+        property_tree.put("Code", "403");
+        property_tree.put("Error_description", "Incorrect user nickname");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+        
+    
+    }
 
 }
 
-void Server::OnDisconnect(const std::string& nickname) {
+void Server::OnDisconnect(const std::shared_ptr<ClientConnection>& client_connection) {
 
+    client_connections.erase(client_connection);
 
 }
 
-void Server::OnRegister(const std::string& nickname, const std::string& password) {
+void Server::OnRegister(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection) {
+
+    RegisterResult register_result = sql_service.Register(nickname, password); 
+
+    if (register_result == RegisterResult::SUCCESS) {
+
+
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Register");
+        property_tree.put("Code", "200");
+        property_tree.put("Nickname", nickname);
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+    
+        
+    } else if (register_result == RegisterResult::USER_ALREADY_EXISTS) {
+
+
+        boost::property_tree::ptree property_tree;
+        property_tree.put("Method", "POST");
+        property_tree.put("Resource", "Register");
+        property_tree.put("Code", "403");
+        property_tree.put("Error_description", "Nickname is already registered");
+
+        std::ostringstream json_stream;
+        boost::property_tree::write_json(json_stream, property_tree);        
+        std::string json_string = json_stream.str();
+        
+        std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+        std::shared_ptr<Message> message = std::make_shared<Message>();
+        message->body = message_body;
+        message->message_size = message_body.size();
+
+        client_connection->SendMessage(message); 
+
+
+    }
 
 
 }
     
 
-void Server::OnStartWaiting(const std::string& nickname) {
+void Server::OnStartWaiting(std::shared_ptr<ClientConnection>& client_connection) {
 
 
 }
     
-void Server::OnStopWaiting(const std::string& nickname) {
+void Server::OnStopWaiting(std::shared_ptr<ClientConnection>& client_connection) {
 
 
 }

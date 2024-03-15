@@ -31,11 +31,11 @@ private:
     void OnMessage(std::shared_ptr<Message>& message);
 
     void OnLogin(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection);
-    void OnLogout(const std::string& nickname);
-    void OnDisconnect(const std::string& nickname);
-    void OnRegister(const std::string& nickname, const std::string& password);
-    void OnStartWaiting(const std::string& nickname);
-    void OnStopWaiting(const std::string& nickname);
+    void OnLogout(const std::string& nickname, std::shared_ptr<ClientConnection>& client_connection);
+    void OnDisconnect(const std::shared_ptr<ClientConnection>& client_connection);
+    void OnRegister(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection);
+    void OnStartWaiting(std::shared_ptr<ClientConnection>& client_connection);
+    void OnStopWaiting(std::shared_ptr<ClientConnection>& client_connection);
     void OnResign(const std::string& sender_nickname);
     void OnOfferDraw(const std::string& sender_nickname);
     void OnCancelDraw(const std::string& sender_nickname);   

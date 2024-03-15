@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <deque>
+#include <algorithm>
 #include <iostream>
 #include <condition_variable>
 #include <memory>
@@ -109,6 +110,17 @@ public:
 
             }) != deque.end());
 
+
+    }
+
+    
+    void erase(const T& item) {
+
+        std::scoped_lock lock(blocking_mutex);        
+        std::cout << "size before erase: " << deque.size() << "\n";
+        auto it = std::remove(deque.begin(), deque.end(), item);
+        deque.erase(it, deque.end());
+        std::cout << "size after erase: " << deque.size() << "\n";
 
     }
 

@@ -23,7 +23,15 @@ void ClientConnection::OnLoggedIn(const std::string& nickname, const size_t& rat
     logged_in = true;
 
 }
-    
+
+void ClientConnection::Logout() {
+
+    nickname.clear();
+    rating = 0;
+    logged_in = false;
+
+}
+
 void ClientConnection::SetClientState(const ClientState& state) {
 
     this->state = state;
