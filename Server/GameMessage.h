@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -6,6 +8,7 @@
 #include "ClientConnection.h"
 #include "Game.h"
 
+class Game;
 
 struct GameMessage {
 

@@ -30,7 +30,7 @@ void Server::WaitForClients() {
             if (!ec) {
                 
                 std::cout << "New connection " << socket.remote_endpoint() << "\n";
-                std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context, incoming_messages);
+                std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context, incoming_messages, games_manager.GetGameMessagesReference());
                 client_connections.push_back(new_connection);
                 client_connections.back()->StartReadingMessage();
 

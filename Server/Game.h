@@ -21,20 +21,20 @@ enum class TurnColor {
 class Game {
 
 public:
-    Game(std::shared_ptr<ClientConnection>& first_player, std::shared_ptr<ClientConnection>& second_player);
+    Game(std::shared_ptr<ClientConnection>& white_player, std::shared_ptr<ClientConnection>& black_player);
 
-    bool CheckIfMoveIsCorrect(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to);
+    bool CheckIfMoveIsCorrect(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to, std::shared_ptr<ClientConnection>& sender);
     void MakeMove(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to);
 
 private:
-    std::shared_ptr<ClientConnection> first_player;
-    std::shared_ptr<ClientConnection> second_player;
+    std::shared_ptr<ClientConnection> white_player;
+    std::shared_ptr<ClientConnection> black_player;
     
     TurnColor current_turn_color;
 
     std::vector<std::vector<std::shared_ptr<ChessFigure>>> board_cells;
-    std::vector<std::shared_ptr<ChessFigure>> taken_by_first_player;
-    std::vector<std::shared_ptr<ChessFigure>> taken_by_second_player;
+    std::vector<std::shared_ptr<ChessFigure>> taken_by_white_player;
+    std::vector<std::shared_ptr<ChessFigure>> taken_by_black_player;
 
 };
 

@@ -7,9 +7,9 @@
 #include <condition_variable>
 #include <memory>
 
-//#include "Message.h"
 
 class ClientConnection;
+struct GameMessage;
 
         
 template<typename T>

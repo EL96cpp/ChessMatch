@@ -11,6 +11,7 @@
 #include "ClientConnection.h"
 #include "SqlService.h"
 #include "Message.h"
+#include "GamesManager.h"
 #include "GameIDs.h"
 
 
@@ -45,7 +46,7 @@ private:
     ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
     ThreadSafeQueue<std::shared_ptr<ClientConnection>> client_connections;
 
-    GameIDs game_ids;
+    GamesManager games_manager;
 
     boost::asio::io_context io_context;
     std::thread context_thread;

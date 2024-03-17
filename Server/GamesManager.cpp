@@ -11,3 +11,8 @@ void GamesManager::AddWaitingPlayer(std::shared_ptr<ClientConnection>& player) {
 }
 
 
+ThreadSafeQueue<std::shared_ptr<GameMessage>>& GamesManager::GetGameMessagesReference() {
+
+    return game_messages;
+
+}

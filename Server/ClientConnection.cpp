@@ -2,8 +2,10 @@
 
 ClientConnection::ClientConnection(boost::asio::ip::tcp::socket&& socket, 
                                    boost::asio::io_context& io_context,
-                                   ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages) : socket(std::move(socket)), io_context(io_context), logged_in(false), 
-                                                                                                   incoming_messages(incoming_messages), state(ClientState::DEFAULT) { 
+                                   ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages,
+                                   ThreadSafeQueue<std::shared_ptr<GameMessage>>& game_messages) : socket(std::move(socket)), io_context(io_context), logged_in(false), 
+                                                                                                   incoming_messages(incoming_messages), game_messages(game_messages), 
+                                                                                                   state(ClientState::DEFAULT) { 
 
                                                                                 //StartReadingMessage();
                                                                                 std::cout << temporary_message.message_size << " size\n"; 
@@ -37,6 +39,7 @@ void ClientConnection::SetClientState(const ClientState& state) {
     this->state = state;
 
 }
+
 
 std::string ClientConnection::GetNickname() {
 

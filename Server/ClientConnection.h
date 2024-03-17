@@ -7,6 +7,7 @@
 #include <boost/asio.hpp>
 
 #include "Message.h"
+#include "GameMessage.h"
 #include "Game.h"
 #include "ThreadSafeQueue.h"
 
@@ -25,7 +26,8 @@ enum class ClientState {
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 
 public:
-    ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context, ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages);
+    ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context, ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages, 
+                     ThreadSafeQueue<std::shared_ptr<GameMessage>>& game_messages);
 
     bool IsConnected();
 
@@ -55,6 +57,7 @@ private:
     Message temporary_message;
     ThreadSafeQueue<std::shared_ptr<Message>> outcoming_messages;
     ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages;
+    ThreadSafeQueue<std::shared_ptr<GameMessage>>& game_messages;
     std::string nickname;
     size_t rating;
     bool logged_in;
