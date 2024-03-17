@@ -49,6 +49,8 @@ public slots:
     void PawnTransformFigureClicked(ChessFigure* figure);
     void GameOver(const QString& winner_color);
     void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
+    void OnLoggedout();
+    void OnRegistered(const QString& nickname);
     void OnShowErrorMessage(const QString& title, const QString& error_description);
 
 private slots:
@@ -98,6 +100,9 @@ private:
 
     QTimer waiting_dots_timer;
     QTimer waiting_rectangles_timer;
+
+    QString typing_font_family;
+    QString logo_font_family;
 
     QGraphicsScene* board_scene;
     QGraphicsScene* player_taken_figures_scene;

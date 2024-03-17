@@ -11,10 +11,12 @@
 #include "ThreadSafeQueue.h"
 
 
+class Game;
+
 enum class ClientState {
 
     PLAYING,
-    WAITING_FOR_AN_OPPONENT,
+    WAITING_FOR_OPPONENT,
     DEFAULT
 
 };

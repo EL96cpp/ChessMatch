@@ -327,6 +327,34 @@ void Client::ProcessMessages() {
 
                     }
 
+                } if (resource_value.toString() == "Logout") {
+
+                    if (code_value.toString() == "200") {
+
+                        emit Loggedout();
+
+                    } else if (code_value.toString() == "403") {
+
+                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                        emit ShowErrorMessage("Logout error", error_description);
+
+                    }
+
+
+                } if (resource_value.toString() == "Register") {
+
+                    if (code_value.toString() == "200") {
+
+                        QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
+                        emit Registered(nickname);
+
+                    } else {
+
+                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                        emit ShowErrorMessage("Register error", error_description);
+
+                    }
+
                 }
 
             }

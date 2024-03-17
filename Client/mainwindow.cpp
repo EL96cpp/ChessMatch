@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->ratingTableView->setColumnWidth(0, ui->ratingTableView->width()/2);
     ui->ratingTableView->setColumnWidth(1, ui->ratingTableView->width()/2);
 
+    ui->ratingTableView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->ratingTableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     ui->boardGraphicsView->setScene(board_scene);
     ui->playerTakenView->setScene(opponent_taken_figures_scene);
     ui->opponentTakenView->setScene(player_taken_figures_scene);
@@ -34,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::Register, client, &Client::OnRegister);
     connect(client, &Client::ShowErrorMessage, this, &MainWindow::OnShowErrorMessage);
     connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
+    connect(client, &Client::Loggedout, this, &MainWindow::OnLoggedout);
+    connect(client, &Client::Registered, this, &MainWindow::OnRegistered);
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
     connect(board, &Board::PlayerFigureTaken, taken_figures_manager, &TakenFiguresManager::AddPlayerTakenFigure);
@@ -100,6 +105,7 @@ void MainWindow::PawnTransformFigureClicked(ChessFigure* figure) {
         pawn_transform_scene->removeItem(figure);
 
     }
+
     pawn_transform_figures.clear();
     ui->pawnTransformView->hide();
     emit SetPawnTransformChoice(figure->GetType());
@@ -120,7 +126,27 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
     ui->rating_value_label->setText(rating);
     ui->games_played_value_label->setText(games_played);
 
-    qDebug() << "Before cycle";
+    QStandardItem* player_item = new QStandardItem("Player");
+    QStandardItem* rating_item = new QStandardItem("Rating");
+    player_item->setFont(QFont(logo_font_family, 25));
+    player_item->setBackground(QBrush(QColor(42, 75, 63, 50)));
+    player_item->setForeground(QBrush(QColor(255, 255, 255)));
+    rating_item->setFont(QFont(logo_font_family, 20));
+    rating_item->setBackground(QBrush(QColor(42, 75, 63, 50)));
+    rating_item->setForeground(QBrush(QColor(255, 255, 255)));
+
+    QHeaderView* header = ui->ratingTableView->verticalHeader();
+    header->setSectionResizeMode(QHeaderView::Fixed);
+    header->setDefaultSectionSize(50);
+
+    ui->top_players_label->setFont(QFont(logo_font_family));
+
+    rating_model->setHorizontalHeaderItem(0, player_item);
+    rating_model->setHorizontalHeaderItem(1, rating_item);
+    ui->ratingTableView->setFont(QFont(typing_font_family, 20));
+
+    ui->ratingTableView->setColumnWidth(0, ui->ratingTableView->width()/2);
+    ui->ratingTableView->setColumnWidth(1, ui->ratingTableView->width()/2);
 
 
     for (auto [key, value] : rating_values.asKeyValueRange()) {
@@ -134,8 +160,6 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
         items.last()->setTextAlignment(Qt::AlignCenter);
         items.last()->setFlags(Qt::NoItemFlags);
 
-        qDebug() << key << " " << value;
-
         rating_model->appendRow(items);
 
     }
@@ -146,6 +170,25 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
     ui->passwordLogLineEdit->clear();
 
     ui->stackedWidget->setCurrentWidget(ui->profile_page);
+
+}
+
+void MainWindow::OnLoggedout() {
+
+    ui->stackedWidget->setCurrentWidget(ui->start_page);
+    rating_model->clear();
+
+}
+
+void MainWindow::OnRegistered(const QString &nickname) {
+
+    ui->nicknameRegLineEdit->clear();
+    ui->passwordRegLineEdit->clear();
+    ui->passwordConfirmRegLineEdit->clear();
+
+    ui->stackedWidget->setCurrentWidget(ui->start_page);
+
+    QMessageBox::information(this, "Register success", "You've registered with nickname " + nickname);
 
 }
 
@@ -214,8 +257,8 @@ void MainWindow::SetFont() {
     qint32 typing_font_id = QFontDatabase::addApplicationFont(":/Fonts/Font.ttf");
     QStringList logo_font_list = QFontDatabase::applicationFontFamilies(logo_font_id);
     QStringList typing_font_list = QFontDatabase::applicationFontFamilies(typing_font_id);
-    QString logo_font_family = logo_font_list.first();
-    QString typing_font_family = typing_font_list.first();
+    logo_font_family = logo_font_list.first();
+    typing_font_family = typing_font_list.first();
 
     ui->logo_label->setFont(QFont(logo_font_family));
 
@@ -482,7 +525,7 @@ void MainWindow::on_exitProfileButton_clicked() {
 
 void MainWindow::on_logoutButton_clicked() {
 
-    emit Logout(ui->nickname_label->text());
+    emit Logout(ui->nickname_value_label->text());
 
 }
 
