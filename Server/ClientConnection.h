@@ -27,13 +27,14 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 
 public:
     ClientConnection(boost::asio::ip::tcp::socket&& socket, boost::asio::io_context& io_context, ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages, 
-                     ThreadSafeQueue<std::shared_ptr<GameMessage>>& game_messages);
+                     ThreadSafeQueue<std::shared_ptr<GameMessage>>& incoming_game_messages);
 
     bool IsConnected();
 
     void OnLoggedIn(const std::string& nickname, const size_t& rating);
     void Logout();
     void SetClientState(const ClientState& state);
+    void SetAcceptableOpponentRatingDifference(const size_t& difference);
 
     void SendMessage(std::shared_ptr<Message>& message);
 
@@ -45,6 +46,7 @@ public:
 
     std::string GetNickname();
     size_t GetRating();
+    size_t GetAcceptableOpponentRatingDifference();
     bool LoggedIn();
     ClientState GetClientState();
     void SetGame(std::shared_ptr<Game>& game);
@@ -55,11 +57,13 @@ private:
     boost::asio::io_context& io_context;
 
     Message temporary_message;
+    GameMessage temporary_game_message;
     ThreadSafeQueue<std::shared_ptr<Message>> outcoming_messages;
     ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages;
-    ThreadSafeQueue<std::shared_ptr<GameMessage>>& game_messages;
+    ThreadSafeQueue<std::shared_ptr<GameMessage>>& incoming_game_messages;
     std::string nickname;
     size_t rating;
+    size_t acceptable_opponent_rating_difference;
     bool logged_in;
     ClientState state;
     std::vector<uint8_t> message_size;
