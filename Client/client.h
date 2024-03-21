@@ -32,11 +32,13 @@ public slots:
     void OnLogin(const QString& nickname, const QString& password);
     void OnLogout(const QString& nickname);
     void OnRegister(const QString& nickname, const QString& password);
+    void OnStartWaitingForOpponent();
 
 signals:
     void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
     void Loggedout();
     void Registered(const QString& nickname);
+    void StartWaitingForOpponentAccepted();
     void ShowErrorMessage(const QString& title, const QString& error_description);
 
 private:

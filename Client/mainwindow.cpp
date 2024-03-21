@@ -35,10 +35,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::Login, client, &Client::OnLogin);
     connect(this, &MainWindow::Logout, client, &Client::OnLogout);
     connect(this, &MainWindow::Register, client, &Client::OnRegister);
+    connect(this, &MainWindow::StartWaitingForOpponent, client, &Client::OnStartWaitingForOpponent);
     connect(client, &Client::ShowErrorMessage, this, &MainWindow::OnShowErrorMessage);
     connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
     connect(client, &Client::Loggedout, this, &MainWindow::OnLoggedout);
     connect(client, &Client::Registered, this, &MainWindow::OnRegistered);
+    connect(client, &Client::StartWaitingForOpponentAccepted, this, &MainWindow::OnStartWaitingForOpponentAccepted);
+
+
+
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
     connect(board, &Board::PlayerFigureTaken, taken_figures_manager, &TakenFiguresManager::AddPlayerTakenFigure);
@@ -189,6 +194,18 @@ void MainWindow::OnRegistered(const QString &nickname) {
     ui->stackedWidget->setCurrentWidget(ui->start_page);
 
     QMessageBox::information(this, "Register success", "You've registered with nickname " + nickname);
+
+}
+
+void MainWindow::OnStartWaitingForOpponentAccepted() {
+
+    ui->stackedWidget->setCurrentWidget(ui->waiting_page);
+
+    waiting_dots_timer.setInterval(std::chrono::milliseconds(250));
+    waiting_rectangles_timer.setInterval(std::chrono::milliseconds(500));
+
+    waiting_dots_timer.start();
+    waiting_rectangles_timer.start();
 
 }
 
@@ -477,14 +494,7 @@ void MainWindow::on_logLoginButton_clicked() {
 
 void MainWindow::on_startGameButton_clicked() {
 
-    //Only for debug purposes
-    ui->stackedWidget->setCurrentWidget(ui->waiting_page);
-
-    waiting_dots_timer.setInterval(std::chrono::milliseconds(250));
-    waiting_rectangles_timer.setInterval(std::chrono::milliseconds(500));
-
-    waiting_dots_timer.start();
-    waiting_rectangles_timer.start();
+    emit StartWaitingForOpponent();
 
 }
 

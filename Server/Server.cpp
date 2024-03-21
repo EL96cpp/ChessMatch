@@ -1,4 +1,8 @@
 #include "Server.h"
+#include "ClientConnection.h"
+#include "ThreadSafeQueue.h"
+#include "ThreadSafeQueue.cpp"
+
 
 Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)) {}
 
@@ -10,12 +14,16 @@ bool Server::Start() {
 
         context_thread = std::thread([this](){ io_context.run(); });
 
+
     } catch (std::exception& e) {
 
         std::cerr << "Server start exception " << e.what() << "\n";
         return false;
 
     }
+
+    std::thread games_manager_thread = std::thread(&GamesManager::Start, &games_manager);
+    games_manager_thread.detach();
 
     std::cout << "Server started!\n";
     return true;
@@ -30,7 +38,8 @@ void Server::WaitForClients() {
             if (!ec) {
                 
                 std::cout << "New connection " << socket.remote_endpoint() << "\n";
-                std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context, incoming_messages, games_manager.GetGameMessagesReference());
+                std::shared_ptr<ClientConnection> new_connection = std::make_shared<ClientConnection>(std::move(socket), io_context, incoming_messages, 
+                                                                                                      games_manager.GetGameMessagesReference());
                 client_connections.push_back(new_connection);
                 client_connections.back()->StartReadingMessage();
 
@@ -113,7 +122,53 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 
             } else if (resource == "Start_waiting") {
 
+                
+                if (message->sender->LoggedIn()) {
 
+
+                    games_manager.AddWaitingPlayer(message->sender);    
+                    
+                    boost::property_tree::ptree property_tree;
+                    property_tree.put("Method", "POST");
+                    property_tree.put("Resource", "Start_waiting");
+                    property_tree.put("Code", "200");
+
+                    std::ostringstream json_stream;
+                    boost::property_tree::write_json(json_stream, property_tree);        
+                    std::string json_string = json_stream.str();
+                    
+                    std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+                    std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                    new_message->body = message_body;
+                    new_message->message_size = message_body.size();
+
+                    message->sender->SendMessage(new_message);         
+
+
+                } else {
+
+                    
+                    boost::property_tree::ptree property_tree;
+                    property_tree.put("Method", "POST");
+                    property_tree.put("Resource", "Start_waiting");
+                    property_tree.put("Code", "403");
+                    property_tree.put("Error_description", "User in not logged");
+
+                    std::ostringstream json_stream;
+                    boost::property_tree::write_json(json_stream, property_tree);        
+                    std::string json_string = json_stream.str();
+                    
+                    std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+                    std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                    new_message->body = message_body;
+                    new_message->message_size = message_body.size();
+
+                    message->sender->SendMessage(new_message);         
+
+
+                }
 
 
 
@@ -396,11 +451,6 @@ void Server::OnRegister(const std::string& nickname, const std::string& password
 }
     
 
-void Server::OnStartWaiting(std::shared_ptr<ClientConnection>& client_connection) {
-
-
-}
-    
 void Server::OnStopWaiting(std::shared_ptr<ClientConnection>& client_connection) {
 
 

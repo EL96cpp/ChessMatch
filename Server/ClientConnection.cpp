@@ -1,11 +1,22 @@
 #include "ClientConnection.h"
+#include "ThreadSafeMessagesQueue.h"
+#include "ThreadSafeGameMessagesQueue.h"
+
+class Message;
+class Game;
+
 
 ClientConnection::ClientConnection(boost::asio::ip::tcp::socket&& socket, 
                                    boost::asio::io_context& io_context,
-                                   ThreadSafeQueue<std::shared_ptr<Message>>& incoming_messages,
-                                   ThreadSafeQueue<std::shared_ptr<GameMessage>>& incoming_game_messages) : socket(std::move(socket)), io_context(io_context), logged_in(false), 
-                                                                                                            acceptable_opponent_rating_difference(500), incoming_messages(incoming_messages), 
-                                                                                                            incoming_game_messages(incoming_game_messages), state(ClientState::DEFAULT) {}
+                                   ThreadSafeMessagesQueue& incoming_messages,
+                                   ThreadSafeGameMessagesQueue& incoming_game_messages) : socket(std::move(socket)), 
+                                                                                          io_context(io_context), 
+                                                                                          logged_in(false), 
+                                                                                          is_waiting(false),
+                                                                                          game(nullptr),
+                                                                                          incoming_messages(incoming_messages), 
+                                                                                          incoming_game_messages(incoming_game_messages) {}
+
 
 bool ClientConnection::IsConnected() {
 
@@ -29,18 +40,11 @@ void ClientConnection::Logout() {
 
 }
 
-void ClientConnection::SetClientState(const ClientState& state) {
+void ClientConnection::SetIsWaiting(const bool& is_waiting) {
 
-    this->state = state;
-
-}
-
-void ClientConnection::SetAcceptableOpponentRatingDifference(const size_t& difference) {
-
-    acceptable_opponent_rating_difference = difference;
+    this->is_waiting = is_waiting;
 
 }
-
 
 std::string ClientConnection::GetNickname() {
 
@@ -54,21 +58,15 @@ size_t ClientConnection::GetRating() {
 
 }
 
-size_t ClientConnection::GetAcceptableOpponentRatingDifference() {
-
-    return acceptable_opponent_rating_difference;
-
-}
-
 bool ClientConnection::LoggedIn() {
 
     return logged_in;
 
 }
 
-ClientState ClientConnection::GetClientState() {
+bool ClientConnection::IsWaiting() {
 
-    return state;
+    return is_waiting;
 
 }
 
@@ -77,7 +75,6 @@ void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
     this->game = game;
 
 }
-
 
 void ClientConnection::WriteMessageHeader() {
 
@@ -170,7 +167,7 @@ void ClientConnection::StartReadingMessage() {
     
     std::cout << temporary_message.message_size << " size of message\n";
 
-    if (state == ClientState::DEFAULT) {
+    if (!is_waiting && game == nullptr) {
 
 
         boost::asio::async_read(socket, boost::asio::buffer(&temporary_message.message_size, sizeof(uint32_t)), [this](std::error_code ec, size_t length) {		    
@@ -230,7 +227,7 @@ void ClientConnection::StartReadingMessage() {
 
 void ClientConnection::ReadMessageBody() {
 
-    if (state == ClientState::DEFAULT) {
+    if (!is_waiting && game == nullptr) {
 
 
         boost::asio::async_read(socket, boost::asio::buffer(temporary_message.body.data(), temporary_message.message_size), [this](std::error_code ec, size_t length) {
@@ -239,7 +236,7 @@ void ClientConnection::ReadMessageBody() {
 
             if (!ec) {
 
-                incoming_messages.push_back(std::make_shared<Message>(temporary_message), this->shared_from_this());
+                incoming_messages.push_back_with_sender(std::make_shared<Message>(temporary_message), this->shared_from_this());
 
                 temporary_message.body.clear();
                 temporary_message.message_size = 0;

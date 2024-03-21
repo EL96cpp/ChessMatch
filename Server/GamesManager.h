@@ -2,12 +2,17 @@
 
 #include <iostream>
 #include <string>
+#include <thread>
 #include <memory>
+#include <chrono>
 
-#include "Game.h"
-#include "GameMessage.h"
-#include "ClientConnection.h"
 #include "ThreadSafeQueue.h"
+#include "ThreadSafeGameMessagesQueue.h"
+#include "ThreadSafeClientsQueue.h"
+
+
+class GameMessage;
+class ClientConnection;
 
 
 class GamesManager {
@@ -15,16 +20,21 @@ class GamesManager {
 public:
     GamesManager();
 
-    void AddWaitingPlayer(std::shared_ptr<ClientConnection>& player); 
-    ThreadSafeQueue<std::shared_ptr<GameMessage>>& GetGameMessagesReference();
+    void Start();
 
+    void AddWaitingPlayer(std::shared_ptr<ClientConnection>& player); 
+    ThreadSafeGameMessagesQueue& GetGameMessagesReference();
     
+    void MatchOpponents();
+    void UpdateGameMessages();
+
+
 private:
     std::thread games_creation_thread;
     std::thread messages_update_thread;
 
-    ThreadSafeQueue<std::shared_ptr<Game>> games;
-    ThreadSafeQueue<std::shared_ptr<GameMessage>> game_messages;
-    ThreadSafeQueue<std::shared_ptr<ClientConnection>> waiting_players;
+    ThreadSafeQueue<Game> games;
+    ThreadSafeGameMessagesQueue game_messages;
+    ThreadSafeClientsQueue waiting_players;
 
 };

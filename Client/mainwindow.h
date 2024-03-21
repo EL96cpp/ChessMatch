@@ -42,6 +42,7 @@ signals:
     void Login(const QString& nickname, const QString& password);
     void Logout(const QString& nickname);
     void Register(const QString& nickname, const QString& password);
+    void StartWaitingForOpponent();
 
 public slots:
     void SetPlayerTurn(const QString& turn);
@@ -51,6 +52,7 @@ public slots:
     void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
     void OnLoggedout();
     void OnRegistered(const QString& nickname);
+    void OnStartWaitingForOpponentAccepted();
     void OnShowErrorMessage(const QString& title, const QString& error_description);
 
 private slots:

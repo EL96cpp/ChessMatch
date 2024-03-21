@@ -7,17 +7,10 @@
 #include <sstream>
 #include <vector>
 
-#include "ThreadSafeQueue.h"
-#include "ClientConnection.h"
-#include "SqlService.h"
-#include "Message.h"
+#include "ThreadSafeMessagesQueue.h"
+#include "ThreadSafeClientsQueue.h"
 #include "GamesManager.h"
-#include "GameIDs.h"
-
-
-template<typename T>
-class ThreadSafeQueue;
-
+#include "SqlService.h"
 
 class Server {
 
@@ -35,7 +28,6 @@ private:
     void OnLogout(const std::string& nickname, std::shared_ptr<ClientConnection>& client_connection);
     void OnDisconnect(const std::shared_ptr<ClientConnection>& client_connection);
     void OnRegister(const std::string& nickname, const std::string& password, std::shared_ptr<ClientConnection>& client_connection);
-    void OnStartWaiting(std::shared_ptr<ClientConnection>& client_connection);
     void OnStopWaiting(std::shared_ptr<ClientConnection>& client_connection);
     void OnResign(const std::string& sender_nickname);
     void OnOfferDraw(const std::string& sender_nickname);
@@ -43,8 +35,8 @@ private:
 
 
 private:
-    ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
-    ThreadSafeQueue<std::shared_ptr<ClientConnection>> client_connections;
+    ThreadSafeMessagesQueue incoming_messages;
+    ThreadSafeClientsQueue client_connections;
 
     GamesManager games_manager;
 
@@ -55,5 +47,4 @@ private:
     SqlService sql_service;
 
 };
-
 

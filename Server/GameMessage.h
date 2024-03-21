@@ -5,17 +5,15 @@
 #include <vector>
 #include <memory>
 
-#include "ClientConnection.h"
-#include "Game.h"
-
 class Game;
+class ClientConnection;
+
 
 struct GameMessage {
 
-    GameMessage() {}
+    GameMessage();
 
-    GameMessage(const GameMessage& other) : game(other.game), sender(other.sender), 
-                                            message_size(other.message_size), body(other.body) {}
+    GameMessage(const GameMessage& other); 
 
 
     std::shared_ptr<Game> game;

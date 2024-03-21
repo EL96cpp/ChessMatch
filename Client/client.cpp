@@ -116,6 +116,24 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 
 }
 
+void Client::OnStartWaitingForOpponent() {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    json_message[QStringLiteral("Resource")] = QStringLiteral("Start_waiting");
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    SendMessage(message);
+
+}
+
 void Client::SendMessage(const std::shared_ptr<Message>& message) {
 
     qDebug() << "Send message call";
@@ -327,7 +345,7 @@ void Client::ProcessMessages() {
 
                     }
 
-                } if (resource_value.toString() == "Logout") {
+                } else if (resource_value.toString() == "Logout") {
 
                     if (code_value.toString() == "200") {
 
@@ -341,7 +359,7 @@ void Client::ProcessMessages() {
                     }
 
 
-                } if (resource_value.toString() == "Register") {
+                } else if (resource_value.toString() == "Register") {
 
                     if (code_value.toString() == "200") {
 
@@ -354,6 +372,24 @@ void Client::ProcessMessages() {
                         emit ShowErrorMessage("Register error", error_description);
 
                     }
+
+                } else if (resource_value.toString() == "Start_waiting") {
+
+                    if (code_value.toString() == "200") {
+
+                        emit StartWaitingForOpponentAccepted();
+
+                    } else {
+
+                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                        emit ShowErrorMessage("Start game error", error_description);
+
+                    }
+
+                } else if (resource_value.toString() == "Start_game") {
+
+                    QString player_color = json_message_object.value(QLatin1String("Player_color")).toString();
+                    qDebug() << "Started game with player color " + player_color;
 
                 }
 

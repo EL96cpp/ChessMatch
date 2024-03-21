@@ -7,14 +7,14 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-
 class ClientConnection;
+
 
 struct Message {
 
-    Message() {}
+    Message();
 
-    Message(const Message& other) : message_size(other.message_size), body(other.body) {}
+    Message(const Message& other);
 
     std::shared_ptr<ClientConnection> sender;
     uint32_t message_size = 0;
