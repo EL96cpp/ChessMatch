@@ -49,7 +49,9 @@ std::vector<std::shared_ptr<Game>> ThreadSafeClientsQueue::create_games() {
             //Some problems, game constructor is undefined error!!
 
             std::shared_ptr<Game> game = std::make_shared<Game>(deque[i], deque[j]);
-            //games.push_back(std::make_shared<Game>(deque[i], deque[j]));
+            deque[i]->SetGame(game);
+            deque[j]->SetGame(game);
+            games.push_back(game);
 
             deque[i]->SetIsWaiting(false);
             deque[j]->SetIsWaiting(false);

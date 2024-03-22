@@ -11,6 +11,8 @@
 #include "ThreadSafeClientsQueue.h"
 #include "GamesManager.h"
 #include "SqlService.h"
+#include "GameResult.h"
+
 
 class Server {
 
@@ -32,16 +34,21 @@ private:
     void OnResign(const std::string& sender_nickname);
     void OnOfferDraw(const std::string& sender_nickname);
     void OnCancelDraw(const std::string& sender_nickname);   
+    void ProcessGameResults();
 
 
 private:
     ThreadSafeMessagesQueue incoming_messages;
     ThreadSafeClientsQueue client_connections;
+    ThreadSafeQueue<GameResult> game_results;
 
     GamesManager games_manager;
 
     boost::asio::io_context io_context;
     std::thread context_thread;
+
+    std::thread games_manager_thread;
+    std::thread game_results_thread;
 
     boost::asio::ip::tcp::acceptor acceptor;
     SqlService sql_service;

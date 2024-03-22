@@ -4,7 +4,7 @@
 #include "ThreadSafeQueue.cpp"
 
 
-Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)) {}
+Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)), games_manager(game_results) {}
 
 bool Server::Start() {
 
@@ -22,8 +22,12 @@ bool Server::Start() {
 
     }
 
-    std::thread games_manager_thread = std::thread(&GamesManager::Start, &games_manager);
+    games_manager_thread = std::thread(&GamesManager::Start, &games_manager);
     games_manager_thread.detach();
+
+    game_results_thread = std::thread(&Server::ProcessGameResults, this);
+    game_results_thread.detach();
+
 
     std::cout << "Server started!\n";
     return true;
@@ -449,7 +453,30 @@ void Server::OnRegister(const std::string& nickname, const std::string& password
 
 
 }
+
+
+void Server::ProcessGameResults() {
+
     
+    while (true) {
+
+        game_results.wait();
+
+        while (!game_results.empty()) {
+
+            std::shared_ptr<GameResult> result = game_results.pop_front();
+            
+            sql_service.AddGameResult(result->white_nickname, result->black_nickname, result->winner, result->number_of_moves, result->total_time);
+
+
+        }
+
+
+    }
+
+
+}
+
 
 void Server::OnStopWaiting(std::shared_ptr<ClientConnection>& client_connection) {
 

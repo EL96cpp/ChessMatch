@@ -3,20 +3,21 @@
 #include "ChessFigure.h"
 
 
-Game::Game() : white_player(nullptr), black_player(nullptr) {}
+Game::Game() : white_player(nullptr), black_player(nullptr), draw_offered_by(PlayerColor::NONE) {}
 
 
 Game::Game(std::shared_ptr<ClientConnection>& white_player, 
-           std::shared_ptr<ClientConnection>& black_player) : white_player(white_player), 
-                                                              black_player(black_player) {
+           std::shared_ptr<ClientConnection>& black_player) : white_player(white_player), black_player(black_player),
+                                                              current_turn_color(PlayerColor::WHITE), draw_offered_by(PlayerColor::NONE) {
 
     white_player->SetIsWaiting(false);
     black_player->SetIsWaiting(false);
 
     CreateStartField();
     SendStartGameMessages();
-
     
+    start_timepoint = std::chrono::system_clock::now();
+
 }
 
 void Game::CreateStartField() {
@@ -135,6 +136,41 @@ void Game::SendStartGameMessages() {
     new_message_black->message_size = message_body_black.size();
 
     black_player->SendMessage(new_message_black);
+
+}
+
+
+PlayerColor Game::DrawOfferedBy() {
+
+    return draw_offered_by;
+
+}
+
+
+PlayerColor Game::GetCurrentTurnPlayerColor() {
+
+    return current_turn_color;
+
+}
+
+bool Game::CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player) {
+
+    return (white_player == player || black_player == player);
+
+}
+
+bool Game::CheckIfMoveIsCorrect(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to, const PlayerColor& sender_color) {
+
+    if (sender_color == current_turn_color) {
+
+        
+
+
+    } else {
+
+        return false;
+
+    }
 
 }
 

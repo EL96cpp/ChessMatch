@@ -5,10 +5,12 @@
 #include <thread>
 #include <memory>
 #include <chrono>
+#include <map>
 
 #include "ThreadSafeQueue.h"
 #include "ThreadSafeGameMessagesQueue.h"
 #include "ThreadSafeClientsQueue.h"
+#include "GameResult.h"
 
 
 class GameMessage;
@@ -18,7 +20,7 @@ class ClientConnection;
 class GamesManager {
 
 public:
-    GamesManager();
+    GamesManager(ThreadSafeQueue<GameResult>& game_results);
 
     void Start();
 
@@ -26,14 +28,17 @@ public:
     ThreadSafeGameMessagesQueue& GetGameMessagesReference();
     
     void MatchOpponents();
-    void UpdateGameMessages();
+    void ProcessGameMessages();
 
 
 private:
     std::thread games_creation_thread;
-    std::thread messages_update_thread;
+    std::thread messages_processing_thread;
+    
+    std::map<std::string, int> board_navigation_map;
 
     ThreadSafeQueue<Game> games;
+    ThreadSafeQueue<GameResult>& game_results;
     ThreadSafeGameMessagesQueue game_messages;
     ThreadSafeClientsQueue waiting_players;
 

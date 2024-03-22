@@ -117,16 +117,4 @@ void ThreadSafeQueue<T>::wait() {
 
 }
 
-/*
-class ThreadSafeQueue<Message>;
-class ThreadSafeQueue<GameMessage>;
-class ThreadSafeQueue<Game>;
-*/
-
-
-/*
-template class ThreadSafeQueue<Message>;
-template class ThreadSafeQueue<GameMessage>;
-template class ThreadSafeQueue<Game>;
-*/
 

@@ -84,6 +84,17 @@ RegisterResult SqlService::Register(const std::string& nickname, const std::stri
 }
 
 
+void SqlService::AddGameResult(const std::string& white_nickname, const std::string& black_nickname, const std::string& winner, const int& number_of_moves, const int& total_time) {
+
+    sql_connection.prepare("insert", "INSERT INTO games VALUES($1, $2, $3, $4, $5)");
+    pqxx::work work{sql_connection};
+
+    work.exec_prepared("insert", white_nickname, black_nickname, winner, number_of_moves, total_time);
+    work.commit();
+ 
+
+}
+
 
 UpdateRatingResult SqlService::UpdatePlayerRating(const std::string& nickname, const size_t& new_rating) {
 

@@ -41,6 +41,7 @@ public:
     bool CheckIfUserExists(const std::string& nickname);
     int GetPlayerRating(const std::string& nickname);
     int GetPlayersGamesPlayed(const std::string& nickname);
+    void AddGameResult(const std::string& white_nickname, const std::string& black_nickname, const std::string& winner, const int& number_of_moves, const int& total_time);
     UpdateRatingResult UpdatePlayerRating(const std::string& nickname, const size_t& new_rating);
     boost::property_tree::ptree GetTopHundredPlayersRating();
 

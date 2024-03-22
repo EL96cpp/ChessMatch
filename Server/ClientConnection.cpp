@@ -46,6 +46,12 @@ void ClientConnection::SetIsWaiting(const bool& is_waiting) {
 
 }
 
+PlayerColor ClientConnection::GetPlayerColor() {
+
+    return player_color;
+
+}
+
 std::string ClientConnection::GetNickname() {
 
     return nickname;

@@ -12,6 +12,14 @@
 #include "Message.h"
 #include "Game.h"
 
+enum class PlayerColor {
+    
+    WHITE,
+    BLACK,
+    NONE
+
+};
+
 
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 
@@ -33,11 +41,13 @@ public:
     void StartReadingMessage();
     void ReadMessageBody();
 
+    PlayerColor GetPlayerColor();
     std::string GetNickname();
     size_t GetRating();
     bool LoggedIn();
     bool IsWaiting();
     void SetGame(std::shared_ptr<Game>& game);
+    
 
 
 private:
@@ -49,6 +59,7 @@ private:
     ThreadSafeMessagesQueue outcoming_messages;
     ThreadSafeMessagesQueue& incoming_messages;
     ThreadSafeGameMessagesQueue& incoming_game_messages;
+    PlayerColor player_color;
     std::string nickname;
     size_t rating;
     bool logged_in;
