@@ -2,6 +2,7 @@
 #include "ClientConnection.h"
 #include "ChessFigure.h"
 #include "Pawn.h"
+#include "Rook.h"
 
 
 Game::Game() : white_player(nullptr), black_player(nullptr), draw_offered_by(Color::EMPTY) {}
@@ -27,14 +28,14 @@ void Game::CreateStartField() {
 
     std::vector<std::shared_ptr<ChessFigure>> black_figures;
 
-    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::ROOK, 0, 0));    
+    black_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::BLACK, 0, 0)));    
     black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::KNIGHT, 0, 1)); 
     black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::BISHOP, 0, 2));
     black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::QUEEN, 0, 3)); 
     black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::KING, 0, 4)); 
     black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::BISHOP, 0, 5)); 
     black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::KNIGHT, 0, 6)); 
-    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::ROOK, 0, 7)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::BLACK, 0, 7))); 
 
     board_cells.push_back(black_figures);
     
@@ -45,7 +46,7 @@ void Game::CreateStartField() {
 
     for (int i = 0; i < 8; ++i) {
 
-        black_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::BLACK, FigureType::PAWN, 1, i)));
+        black_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::BLACK, 1, i)));
 
     }
     
@@ -75,7 +76,7 @@ void Game::CreateStartField() {
 
     for (int i = 0; i < 8; ++i) {
 
-        white_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::WHITE, FigureType::PAWN, 6, i)));
+        white_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::WHITE, 6, i)));
 
     }
 
@@ -86,14 +87,14 @@ void Game::CreateStartField() {
 
     std::vector<std::shared_ptr<ChessFigure>> white_figures;
     
-    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::ROOK, 7, 0));
+    white_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::WHITE, 7, 0)));
     white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::KNIGHT, 7, 1));
     white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::BISHOP, 7, 2));
     white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::QUEEN, 7, 3));
     white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::KING, 7, 4));
     white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::BISHOP, 7, 5));
     white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::KNIGHT, 7, 6));
-    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::ROOK, 7, 7));
+    white_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::WHITE, 7, 7)));
  
     board_cells.push_back(white_figures);
 

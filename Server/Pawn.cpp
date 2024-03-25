@@ -1,10 +1,9 @@
 #include "ChessFigure.h"
 #include "Pawn.h"
 
-Pawn::Pawn(const Color& figure_color, 
-           const FigureType& figure_type, 
+Pawn::Pawn(const Color& figure_color,  
            const size_t& y_index, 
-           const size_t& x_index) : ChessFigure(figure_color, figure_type,
+           const size_t& x_index) : ChessFigure(figure_color, FigureType::PAWN,
                                                 y_index, x_index) {} 
 
 
