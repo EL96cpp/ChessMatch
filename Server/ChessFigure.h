@@ -1,7 +1,13 @@
 #pragma once
 
+#include <vector>
+#include <cstddef>
+#include <memory>
+#include <vector>
+#include <map>
 
-enum class FigureColor {
+
+enum class Color {
 
     WHITE,
     BLACK,
@@ -25,13 +31,22 @@ enum class FigureType {
 class ChessFigure {
 
 public:
-    ChessFigure(const FigureColor& color, const FigureType& type);
+    ChessFigure(const Color& figure_color, const FigureType& figure_type, const size_t& y_index, const size_t& x_index);
 
-    FigureColor GetColor();
+    Color GetColor();
     FigureType GetType();
+    
+    void MoveTo(const size_t& y_index_to, const size_t& x_index_to);
+    
 
-private:
-    FigureColor color;
-    FigureType type;
+    virtual std::vector<std::pair<size_t, size_t>> CalculatePossibleMoves(std::vector<std::vector<std::shared_ptr<ChessFigure>>>& board_cells);
+
+
+protected:
+    Color figure_color;
+    FigureType figure_type;
+    bool made_first_step;
+    size_t y_index;
+    size_t x_index;
 
 };

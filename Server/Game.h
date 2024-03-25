@@ -10,7 +10,7 @@
 
 class ChessFigure;
 class ClientConnection;
-enum class PlayerColor;
+enum class Color;
 
 
 class Game {
@@ -19,11 +19,11 @@ public:
     Game();
     Game(std::shared_ptr<ClientConnection>& white_player, std::shared_ptr<ClientConnection>& black_player);
 
-    bool CheckIfMoveIsCorrect(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to, const PlayerColor& sender_color);
+    bool CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
 
-    PlayerColor DrawOfferedBy();
+    Color DrawOfferedBy();
     bool CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player);
-    PlayerColor GetCurrentTurnPlayerColor();
+    Color GetCurrentTurnPlayerColor();
 
 
 private:
@@ -36,9 +36,9 @@ private:
     std::shared_ptr<ClientConnection> white_player;
     std::shared_ptr<ClientConnection> black_player;
        
-    PlayerColor draw_offered_by;
+    Color draw_offered_by;
 
-    PlayerColor current_turn_color;
+    Color current_turn_color;
 
     std::chrono::time_point<std::chrono::system_clock> start_timepoint;
     std::chrono::time_point<std::chrono::system_clock> end_timepoint;

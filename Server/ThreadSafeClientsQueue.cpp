@@ -2,6 +2,7 @@
 #include "ClientConnection.h"
 #include "Game.h"
 #include "Game.cpp"
+#include "ChessFigure.h"
 #include "ChessFigure.cpp"
 
 

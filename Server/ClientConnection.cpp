@@ -46,9 +46,15 @@ void ClientConnection::SetIsWaiting(const bool& is_waiting) {
 
 }
 
-PlayerColor ClientConnection::GetPlayerColor() {
+Color ClientConnection::GetPlayerColor() {
 
     return player_color;
+
+}
+
+void ClientConnection::SetPlayerColor(const Color& player_color) {
+
+    this->player_color = player_color;
 
 }
 

@@ -11,14 +11,7 @@
 #include "GameMessage.h"
 #include "Message.h"
 #include "Game.h"
-
-enum class PlayerColor {
-    
-    WHITE,
-    BLACK,
-    NONE
-
-};
+#include "ChessFigure.h"
 
 
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
@@ -41,7 +34,8 @@ public:
     void StartReadingMessage();
     void ReadMessageBody();
 
-    PlayerColor GetPlayerColor();
+    Color GetPlayerColor();
+    void SetPlayerColor(const Color& player_color);
     std::string GetNickname();
     size_t GetRating();
     bool LoggedIn();
@@ -59,7 +53,7 @@ private:
     ThreadSafeMessagesQueue outcoming_messages;
     ThreadSafeMessagesQueue& incoming_messages;
     ThreadSafeGameMessagesQueue& incoming_game_messages;
-    PlayerColor player_color;
+    Color player_color;
     std::string nickname;
     size_t rating;
     bool logged_in;

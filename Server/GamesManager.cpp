@@ -102,36 +102,60 @@ void GamesManager::ProcessGameMessages() {
 
             } else {
 
-                std::string action = root.get<std::string>("Action");
+                if (game_message->game->CheckIfPlayerIsAGameMember(game_message->sender)) {
 
-                if (action == "Make_move") {
 
-                    if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
+                    std::string action = root.get<std::string>("Action");
 
-                        //bool move_is_correct = game_message->game->CheckIfMoveIsCorrect()
+                    if (action == "Make_move") {
+
+                        if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
+                            
+                            std::string letter_from_str = root.get<std::string>("Letter_from");
+                            std::string index_from_str = root.get<std::string>("Index_from");
+                            std::string letter_to_str = root.get<std::string>("Letter_to");
+                            std::string index_to_str = root.get<std::string>("Index_to");
+                            
+                            size_t y_from = board_navigation_map[letter_from_str];
+                            size_t x_from = board_navigation_map[index_from_str];
+                            size_t y_to = board_navigation_map[letter_to_str];
+                            size_t x_to = board_navigation_map[index_to_str];
+
+                            //bool move_is_correct = game_message->game->CheckIfMoveIsCorrect()
+
+                        } else {
+
+
+
+                        }
+
+
+                    } else if (action == "Make_castling") {
+
+                        
+
+                    } else if (action == "Offer_draw") {
+
+                        
+
+                    } else if (action == "Accept_draw") {
+
+                    
+
+                    } else if (action == "Cancel_draw") {
+
+                        
+
+                    } else if (action == "Resign") {
+
+                        
 
                     }
 
+                } else {
 
-                } else if (action == "Make_castling") {
 
-                    
 
-                } else if (action == "Offer_draw") {
-
-                    
-
-                } else if (action == "Accept_draw") {
-
-                
-
-                } else if (action == "Cancel_draw") {
-
-                    
-
-                } else if (action == "Resign") {
-
-                    
 
                 }
 

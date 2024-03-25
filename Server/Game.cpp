@@ -1,14 +1,15 @@
 #include "Game.h"
 #include "ClientConnection.h"
 #include "ChessFigure.h"
+#include "Pawn.h"
 
 
-Game::Game() : white_player(nullptr), black_player(nullptr), draw_offered_by(PlayerColor::NONE) {}
+Game::Game() : white_player(nullptr), black_player(nullptr), draw_offered_by(Color::EMPTY) {}
 
 
 Game::Game(std::shared_ptr<ClientConnection>& white_player, 
            std::shared_ptr<ClientConnection>& black_player) : white_player(white_player), black_player(black_player),
-                                                              current_turn_color(PlayerColor::WHITE), draw_offered_by(PlayerColor::NONE) {
+                                                              current_turn_color(Color::WHITE), draw_offered_by(Color::EMPTY) {
 
     white_player->SetIsWaiting(false);
     black_player->SetIsWaiting(false);
@@ -26,14 +27,14 @@ void Game::CreateStartField() {
 
     std::vector<std::shared_ptr<ChessFigure>> black_figures;
 
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::ROOK));    
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::KNIGHT)); 
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::BISHOP));
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::QUEEN)); 
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::KING)); 
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::BISHOP)); 
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::KNIGHT)); 
-    black_figures.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::ROOK)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::ROOK, 0, 0));    
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::KNIGHT, 0, 1)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::BISHOP, 0, 2));
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::QUEEN, 0, 3)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::KING, 0, 4)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::BISHOP, 0, 5)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::KNIGHT, 0, 6)); 
+    black_figures.push_back(std::make_shared<ChessFigure>(Color::BLACK, FigureType::ROOK, 0, 7)); 
 
     board_cells.push_back(black_figures);
     
@@ -44,7 +45,7 @@ void Game::CreateStartField() {
 
     for (int i = 0; i < 8; ++i) {
 
-        black_pawns.push_back(std::make_shared<ChessFigure>(FigureColor::BLACK, FigureType::PAWN));
+        black_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::BLACK, FigureType::PAWN, 1, i)));
 
     }
     
@@ -53,13 +54,13 @@ void Game::CreateStartField() {
 
     //Empty fields
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 2; i < 6; ++i) {
         
         std::vector<std::shared_ptr<ChessFigure>> empty_line;
 
         for (int j = 0; j < 8; ++j) {
 
-            empty_line.push_back(std::make_shared<ChessFigure>(FigureColor::EMPTY, FigureType::EMPTY));
+            empty_line.push_back(std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, i, j));
 
         }
 
@@ -74,7 +75,7 @@ void Game::CreateStartField() {
 
     for (int i = 0; i < 8; ++i) {
 
-        white_pawns.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::PAWN));
+        white_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::WHITE, FigureType::PAWN, 6, i)));
 
     }
 
@@ -85,14 +86,14 @@ void Game::CreateStartField() {
 
     std::vector<std::shared_ptr<ChessFigure>> white_figures;
     
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::ROOK));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::KNIGHT));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::BISHOP));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::QUEEN));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::KING));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::BISHOP));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::KNIGHT));
-    white_figures.push_back(std::make_shared<ChessFigure>(FigureColor::WHITE, FigureType::ROOK));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::ROOK, 7, 0));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::KNIGHT, 7, 1));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::BISHOP, 7, 2));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::QUEEN, 7, 3));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::KING, 7, 4));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::BISHOP, 7, 5));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::KNIGHT, 7, 6));
+    white_figures.push_back(std::make_shared<ChessFigure>(Color::WHITE, FigureType::ROOK, 7, 7));
  
     board_cells.push_back(white_figures);
 
@@ -140,14 +141,14 @@ void Game::SendStartGameMessages() {
 }
 
 
-PlayerColor Game::DrawOfferedBy() {
+Color Game::DrawOfferedBy() {
 
     return draw_offered_by;
 
 }
 
 
-PlayerColor Game::GetCurrentTurnPlayerColor() {
+Color Game::GetCurrentTurnPlayerColor() {
 
     return current_turn_color;
 
@@ -159,18 +160,19 @@ bool Game::CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player)
 
 }
 
-bool Game::CheckIfMoveIsCorrect(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to, const PlayerColor& sender_color) {
+bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
 
-    if (sender_color == current_turn_color) {
+    if (board_cells[y_from][x_from]->GetColor() == player_color) {
 
-        
+        std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
+
 
 
     } else {
 
         return false;
 
-    }
+    } 
 
 }
 
