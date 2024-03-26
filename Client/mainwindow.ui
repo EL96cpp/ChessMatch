@@ -90,7 +90,7 @@
 }</string>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>5</number>
     </property>
     <widget class="QWidget" name="start_page">
      <property name="styleSheet">
@@ -1176,6 +1176,9 @@ QPushButton:hover {
         <height>421</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
      </widget>
      <widget class="QGraphicsView" name="boardGraphicsView">
       <property name="geometry">
@@ -1185,6 +1188,9 @@ QPushButton:hover {
         <width>651</width>
         <height>531</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
       </property>
      </widget>
      <widget class="QGraphicsView" name="opponentTakenView">
@@ -1196,6 +1202,9 @@ QPushButton:hover {
         <height>131</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
      </widget>
      <widget class="QGraphicsView" name="playerTakenView">
       <property name="geometry">
@@ -1206,18 +1215,27 @@ QPushButton:hover {
         <height>131</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
      </widget>
      <widget class="QLabel" name="game_info_label">
       <property name="geometry">
        <rect>
         <x>940</x>
         <y>40</y>
-        <width>81</width>
-        <height>21</height>
+        <width>161</width>
+        <height>31</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
        <string>game_info</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
      <widget class="QPushButton" name="NewGameButton">
@@ -1228,6 +1246,9 @@ QPushButton:hover {
         <width>89</width>
         <height>25</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
        <string>PushButton</string>
@@ -1241,6 +1262,9 @@ QPushButton:hover {
         <width>67</width>
         <height>17</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
        <string>TextLabel</string>
@@ -1267,6 +1291,9 @@ QPushButton:hover {
         <width>86</width>
         <height>25</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
      </widget>
      <widget class="QComboBox" name="PlayerColorComboBox">

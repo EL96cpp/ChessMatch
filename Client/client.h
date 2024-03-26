@@ -39,6 +39,8 @@ signals:
     void Loggedout();
     void Registered(const QString& nickname);
     void StartWaitingForOpponentAccepted();
+    void GameStarted(const QString& player_color);
+    void MakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void ShowErrorMessage(const QString& title, const QString& error_description);
 
 private:
@@ -54,6 +56,8 @@ private:
 private:
     ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
     ThreadSafeQueue<std::shared_ptr<Message>> outcoming_messages;
+
+    bool is_playing;
 
     Message incoming_temporary_message;
     boost::asio::io_context io_context;

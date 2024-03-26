@@ -55,7 +55,7 @@ void Client::OnLogin(const QString &nickname, const QString &password) {
 
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
-    json_message[QStringLiteral("Resource")] = QStringLiteral("Login");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Login");
     json_message[QStringLiteral("Nickname")] = nickname;
     json_message[QStringLiteral("Password")] = password;
     QByteArray byte_array = QJsonDocument(json_message).toJson();
@@ -77,7 +77,7 @@ void Client::OnLogout(const QString &nickname) {
 
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
-    json_message[QStringLiteral("Resource")] = QStringLiteral("Logout");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Logout");
     json_message[QStringLiteral("Nickname")] = nickname;
     QByteArray byte_array = QJsonDocument(json_message).toJson();
     byte_array.append("\n");
@@ -98,7 +98,7 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
-    json_message[QStringLiteral("Resource")] = QStringLiteral("Register");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Register");
     json_message[QStringLiteral("Nickname")] = nickname;
     json_message[QStringLiteral("Password")] = password;
     QByteArray byte_array = QJsonDocument(json_message).toJson();
@@ -120,7 +120,7 @@ void Client::OnStartWaitingForOpponent() {
 
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
-    json_message[QStringLiteral("Resource")] = QStringLiteral("Start_waiting");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Start_waiting");
     QByteArray byte_array = QJsonDocument(json_message).toJson();
     byte_array.append("\n");
 
@@ -309,12 +309,12 @@ void Client::ProcessMessages() {
             QJsonObject json_message_object = json_document_message.object();
 
             QJsonValue method_value = json_message_object.value(QLatin1String("Method"));
-            QJsonValue resource_value = json_message_object.value(QLatin1String("Resource"));
+            QJsonValue action_value = json_message_object.value(QLatin1String("Action"));
             QJsonValue code_value = json_message_object.value(QLatin1String("Code"));
 
             if (method_value.toString() == "POST") {
 
-                if (resource_value.toString() == "Login") {
+                if (action_value.toString() == "Login") {
 
                     if (code_value.toString() == "200") {
 
@@ -345,7 +345,7 @@ void Client::ProcessMessages() {
 
                     }
 
-                } else if (resource_value.toString() == "Logout") {
+                } else if (action_value.toString() == "Logout") {
 
                     if (code_value.toString() == "200") {
 
@@ -359,7 +359,7 @@ void Client::ProcessMessages() {
                     }
 
 
-                } else if (resource_value.toString() == "Register") {
+                } else if (action_value.toString() == "Register") {
 
                     if (code_value.toString() == "200") {
 
@@ -373,7 +373,7 @@ void Client::ProcessMessages() {
 
                     }
 
-                } else if (resource_value.toString() == "Start_waiting") {
+                } else if (action_value.toString() == "Start_waiting") {
 
                     if (code_value.toString() == "200") {
 
@@ -386,10 +386,25 @@ void Client::ProcessMessages() {
 
                     }
 
-                } else if (resource_value.toString() == "Start_game") {
+                } else if (action_value.toString() == "Start_game") {
 
                     QString player_color = json_message_object.value(QLatin1String("Player_color")).toString();
-                    qDebug() << "Started game with player color " + player_color;
+                    qDebug() << player_color << " game started";
+                    emit GameStarted(player_color);
+
+                } else if (action_value.toString() == "Move_accepted") {
+
+
+
+                } else if (action_value.toString() == "Move_error") {
+
+                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                    emit ShowErrorMessage("Incorrect move", "Move " + letter_from + index_from + "-" +
+                                          letter_to + index_to + " is not allowed!");
 
                 }
 

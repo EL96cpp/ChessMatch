@@ -111,7 +111,7 @@ void Game::SendStartGameMessages() {
 
     boost::property_tree::ptree property_tree_white;
     property_tree_white.put("Method", "POST");
-    property_tree_white.put("Resource", "Start_game");
+    property_tree_white.put("Action", "Start_game");
     property_tree_white.put("Player_color", "White");
 
     std::ostringstream json_stream_white;
@@ -129,7 +129,7 @@ void Game::SendStartGameMessages() {
 
     boost::property_tree::ptree property_tree_black;
     property_tree_black.put("Method", "POST");
-    property_tree_black.put("Resource", "Start_game");
+    property_tree_black.put("Action", "Start_game");
     property_tree_black.put("Player_color", "Black");
 
     std::ostringstream json_stream_black;
