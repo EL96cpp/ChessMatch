@@ -1170,50 +1170,36 @@ QPushButton:hover {
      <widget class="QGraphicsView" name="pawnTransformView">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>110</y>
+        <x>10</x>
+        <y>220</y>
         <width>61</width>
         <height>421</height>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255);</string>
+       <string notr="true">background-color: &quot;#FBFADA&quot;;</string>
       </property>
      </widget>
      <widget class="QGraphicsView" name="boardGraphicsView">
       <property name="geometry">
        <rect>
-        <x>140</x>
-        <y>60</y>
-        <width>651</width>
-        <height>531</height>
+        <x>90</x>
+        <y>40</y>
+        <width>910</width>
+        <height>910</height>
        </rect>
       </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      <property name="minimumSize">
+       <size>
+        <width>910</width>
+        <height>910</height>
+       </size>
       </property>
-     </widget>
-     <widget class="QGraphicsView" name="opponentTakenView">
-      <property name="geometry">
-       <rect>
-        <x>860</x>
-        <y>100</y>
-        <width>261</width>
-        <height>131</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255);</string>
-      </property>
-     </widget>
-     <widget class="QGraphicsView" name="playerTakenView">
-      <property name="geometry">
-       <rect>
-        <x>860</x>
-        <y>250</y>
-        <width>231</width>
-        <height>131</height>
-       </rect>
+      <property name="maximumSize">
+       <size>
+        <width>910</width>
+        <height>910</height>
+       </size>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(255, 255, 255);</string>
@@ -1222,14 +1208,15 @@ QPushButton:hover {
      <widget class="QLabel" name="game_info_label">
       <property name="geometry">
        <rect>
-        <x>940</x>
+        <x>1130</x>
         <y>40</y>
         <width>161</width>
         <height>31</height>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">color: rgb(255, 255, 255);</string>
+       <string notr="true">color: rgb(255, 255, 255);
+font: 18pt ;</string>
       </property>
       <property name="text">
        <string>game_info</string>
@@ -1241,8 +1228,8 @@ QPushButton:hover {
      <widget class="QPushButton" name="NewGameButton">
       <property name="geometry">
        <rect>
-        <x>900</x>
-        <y>430</y>
+        <x>1230</x>
+        <y>810</y>
         <width>89</width>
         <height>25</height>
        </rect>
@@ -1254,57 +1241,156 @@ QPushButton:hover {
        <string>PushButton</string>
       </property>
      </widget>
-     <widget class="QLabel" name="board_style_label">
-      <property name="geometry">
-       <rect>
-        <x>840</x>
-        <y>490</y>
-        <width>67</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color: rgb(255, 255, 255);</string>
-      </property>
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="player_color_label">
       <property name="geometry">
        <rect>
-        <x>840</x>
-        <y>520</y>
+        <x>1210</x>
+        <y>760</y>
         <width>67</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
        <string>TextLabel</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="BoardStyleComboBox">
-      <property name="geometry">
-       <rect>
-        <x>940</x>
-        <y>480</y>
-        <width>86</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
      </widget>
      <widget class="QComboBox" name="PlayerColorComboBox">
       <property name="geometry">
        <rect>
-        <x>950</x>
-        <y>520</y>
+        <x>1280</x>
+        <y>750</y>
         <width>86</width>
         <height>25</height>
        </rect>
       </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>1020</x>
+        <y>80</y>
+        <width>371</width>
+        <height>401</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <item>
+        <widget class="QGraphicsView" name="opponentTakenView">
+         <property name="styleSheet">
+          <string notr="true">background-color: &quot;#FBFADA&quot;;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGraphicsView" name="playerTakenView">
+         <property name="styleSheet">
+          <string notr="true">background-color: &quot;#FBFADA&quot;;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>1100</x>
+        <y>500</y>
+        <width>231</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_15">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="board_style_label">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);
+font: 15pt ;</string>
+           </property>
+           <property name="text">
+            <string>Style:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="BoardStyleComboBox">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);
+font: 15pt ;</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Classic</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Green</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Blue</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Red</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="OfferDrawButton">
+         <property name="styleSheet">
+          <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Offer draw</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="ResignButton">
+         <property name="styleSheet">
+          <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Resign</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </widget>

@@ -213,6 +213,16 @@ void MainWindow::OnGameStarted(const QString &player_color) {
 
     qDebug() << "Game started slot " << player_color;
 
+    if (player_color == "White") {
+
+        board->SetPlayerColor(FigureColor::WHITE);
+
+    } else if (player_color == "Black") {
+
+        board->SetPlayerColor(FigureColor::BLACK);
+
+    }
+
     ui->game_info_label->setText("White turn");
     board->StartNewGame();
     taken_figures_manager->StartNewGame();

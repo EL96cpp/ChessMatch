@@ -124,7 +124,7 @@ void Board::FigureClicked(ChessFigure* figure)
 
     if (selected_figure == nullptr) {
 
-        if (figure->GetColor() == current_player) {
+        if (figure->GetColor() == current_player && figure->GetColor() == player_color) {
 
             selected_figure = figure;
             selected_figure_moves = selected_figure->CalculateMoves(figures);
