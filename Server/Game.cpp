@@ -146,7 +146,6 @@ void Game::SendStartGameMessages() {
 
 }
 
-
 Color Game::DrawOfferedBy() {
 
     return draw_offered_by;
@@ -154,9 +153,23 @@ Color Game::DrawOfferedBy() {
 }
 
 
+void Game::SetDrawOfferedBy(const Color& color) {
+
+    draw_offered_by = color;
+
+}
+
+
 Color Game::GetCurrentTurnPlayerColor() {
 
     return current_turn_color;
+
+}
+
+void Game::SendMessageToAll(std::shared_ptr<Message>& message) {
+
+    white_player->SendMessage(message);
+    black_player->SendMessage(message);
 
 }
 

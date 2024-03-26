@@ -121,7 +121,56 @@ void GamesManager::ProcessGameMessages() {
                             size_t y_to = board_navigation_map[letter_to_str];
                             size_t x_to = board_navigation_map[index_to_str];
 
-                            //bool move_is_correct = game_message->game->CheckIfMoveIsCorrect()
+                            if (game_message->game->CheckIfMoveIsCorrect(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
+                                                        
+                                boost::property_tree::ptree move_confirm;
+                                move_confirm.put("Method", "POST");
+                                move_confirm.put("Action", "Move_accepted");
+                                move_confirm.put("Letter_from", letter_from_str);
+                                move_confirm.put("Index_from", index_from_str);
+                                move_confirm.put("Letter_to", letter_to_str);
+                                move_confirm.put("Index_to", index_to_str);
+
+
+                                std::ostringstream move_confirm_json_stream;
+                                boost::property_tree::write_json(move_confirm_json_stream, move_confirm);        
+                                std::string move_confirm_json_string = move_confirm_json_stream.str();
+                                
+                                std::vector<uint8_t> move_confirm_message_body(move_confirm_json_string.begin(), 
+                                                                               move_confirm_json_string.end());
+
+                                std::shared_ptr<Message> move_confirm_message = std::make_shared<Message>();
+                                move_confirm_message->body = move_confirm_message_body;
+                                move_confirm_message->message_size = move_confirm_message_body.size();
+
+                                game_message->game->SendMessageToAll(move_confirm_message);         
+                                
+                            } else {
+
+                                boost::property_tree::ptree move_error;
+                                move_error.put("Method", "POST");
+                                move_error.put("Action", "Move_error");
+                                move_error.put("Letter_from", letter_from_str);
+                                move_error.put("Index_from", index_from_str);
+                                move_error.put("Letter_to", letter_to_str);
+                                move_error.put("Index_to", index_to_str);
+
+
+                                std::ostringstream move_error_json_stream;
+                                boost::property_tree::write_json(move_error_json_stream, move_error);        
+                                std::string move_error_json_string = move_error_json_stream.str();
+                                
+                                std::vector<uint8_t> move_error_message_body(move_error_json_string.begin(), 
+                                                                               move_error_json_string.end());
+
+                                std::shared_ptr<Message> move_error_message = std::make_shared<Message>();
+                                move_error_message->body = move_error_message_body;
+                                move_error_message->message_size = move_error_message_body.size();
+                                
+                                game_message->sender->SendMessage(move_error_message);
+
+                            }
+
 
                         } else {
 
@@ -132,11 +181,45 @@ void GamesManager::ProcessGameMessages() {
 
                     } else if (action == "Make_castling") {
 
+                        if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) { 
+
+                            std::string letter_from_str = root.get<std::string>("Letter_from");
+                            std::string index_from_str = root.get<std::string>("Index_from");
+                            std::string letter_to_str = root.get<std::string>("Letter_to");
+                            std::string index_to_str = root.get<std::string>("Index_to");
+
+                        } else {
+
+                            
+
+                        }
                         
 
                     } else if (action == "Offer_draw") {
 
-                        
+                        if (game_message->game->DrawOfferedBy() == Color::EMPTY) {
+
+                            game_message->game->SetDrawOfferedBy(game_message->sender->GetPlayerColor());    
+                            
+                            boost::property_tree::ptree property_tree;
+                            property_tree.put("Action", "Draw_offered");
+                            property_tree.put("Nickname", game_message->sender->GetNickname());
+                            
+                            std::ostringstream json_stream;
+                            boost::property_tree::write_json(json_stream, property_tree);        
+                            std::string json_string = json_stream.str();
+                            
+                            std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+                            std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                            new_message->body = message_body;
+                            new_message->message_size = message_body.size();
+
+                            game_message->game->SendMessageToAll(new_message);           
+                                    
+
+                        }
+
 
                     } else if (action == "Accept_draw") {
 

@@ -10,6 +10,7 @@
 
 class ChessFigure;
 class ClientConnection;
+class Message;
 enum class Color;
 
 
@@ -22,8 +23,10 @@ public:
     bool CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
 
     Color DrawOfferedBy();
+    void SetDrawOfferedBy(const Color& color);
     bool CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player);
     Color GetCurrentTurnPlayerColor();
+    void SendMessageToAll(std::shared_ptr<Message>& message);
 
 
 private:

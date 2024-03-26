@@ -93,13 +93,13 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
     } else {
 
         std::string method = root.get<std::string>("Method");
-        std::string resource = root.get<std::string>("Resource");
+        std::string action = root.get<std::string>("Action");
 
-        std::cout << method << " " << resource << "\n";
+        std::cout << method << " " << action << "\n";
 
         if (method == "POST") {
 
-            if (resource == "Login") {
+            if (action == "Login") {
 
                 
                 std::string nickname = root.get<std::string>("Nickname");
@@ -108,14 +108,14 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                 OnLogin(nickname, password, message->sender);             
 
 
-            } else if (resource == "Logout") {
+            } else if (action == "Logout") {
 
 
                 std::string nickname = root.get<std::string>("Nickname");
                 OnLogout(nickname, message->sender);
 
 
-            } else if (resource == "Register") {
+            } else if (action == "Register") {
 
                 
                 std::string nickname = root.get<std::string>("Nickname");
@@ -124,7 +124,7 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                 OnRegister(nickname, password, message->sender);
 
 
-            } else if (resource == "Start_waiting") {
+            } else if (action == "Start_waiting") {
 
                 
                 if (message->sender->LoggedIn()) {
@@ -134,7 +134,7 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                     
                     boost::property_tree::ptree property_tree;
                     property_tree.put("Method", "POST");
-                    property_tree.put("Resource", "Start_waiting");
+                    property_tree.put("Action", "Start_waiting");
                     property_tree.put("Code", "200");
 
                     std::ostringstream json_stream;
@@ -155,7 +155,7 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                     
                     boost::property_tree::ptree property_tree;
                     property_tree.put("Method", "POST");
-                    property_tree.put("Resource", "Start_waiting");
+                    property_tree.put("Action", "Start_waiting");
                     property_tree.put("Code", "403");
                     property_tree.put("Error_description", "User in not logged");
 
@@ -198,7 +198,7 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Login");
+        property_tree.put("Action", "Login");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "User already logged");
 
@@ -243,7 +243,7 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Login");
+        property_tree.put("Action", "Login");
         property_tree.put("Code", "200");
         property_tree.put("Nickname", nickname);
         property_tree.put("Rating", rating);
@@ -276,7 +276,7 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
         
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Login");
+        property_tree.put("Action", "Login");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Incorrect password");
 
@@ -299,7 +299,7 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Login");
+        property_tree.put("Action", "Login");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Nickname is not registered");
 
@@ -331,7 +331,7 @@ void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnect
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Logout");
+        property_tree.put("Action", "Logout");
         property_tree.put("Code", "200");
 
         std::ostringstream json_stream;
@@ -352,7 +352,7 @@ void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnect
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Logout");
+        property_tree.put("Action", "Logout");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "User is not logged in");
 
@@ -374,7 +374,7 @@ void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnect
         
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Logout");
+        property_tree.put("Action", "Logout");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Incorrect user nickname");
 
@@ -410,7 +410,7 @@ void Server::OnRegister(const std::string& nickname, const std::string& password
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Register");
+        property_tree.put("Action", "Register");
         property_tree.put("Code", "200");
         property_tree.put("Nickname", nickname);
 
@@ -432,7 +432,7 @@ void Server::OnRegister(const std::string& nickname, const std::string& password
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");
-        property_tree.put("Resource", "Register");
+        property_tree.put("Action", "Register");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Nickname is already registered");
 
