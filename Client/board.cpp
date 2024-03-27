@@ -18,12 +18,31 @@ Board::Board(QGraphicsScene* board_scene, QObject *parent)
     SetBoardCells();
     PaintBoardCells();
     SetFigures();
+    SetBoardNavigationMaps();
+
 }
 
-void Board::BoardCellClicked(BoardCell* cell)
-{
+void Board::OnMakeMoveAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
-    if (game_over || waiting_for_pawn_transformation) {
+
+
+}
+
+void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+
+
+
+}
+
+void Board::OnMakeCastlingAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+
+
+
+}
+
+void Board::BoardCellClicked(BoardCell* cell) {
+
+    if (waiting_for_pawn_transformation) {
 
         return;
 
@@ -31,7 +50,9 @@ void Board::BoardCellClicked(BoardCell* cell)
 
     if (selected_figure == nullptr) {
 
-        if (figures[cell->GetY()][cell->GetX()]->GetColor() == current_player) {
+        // Set selected figure
+
+        if (figures[cell->GetY()][cell->GetX()]->GetColor() == player_color) {
 
             selected_figure = figures[cell->GetY()][cell->GetX()];
             selected_figure_moves = figures[cell->GetY()][cell->GetX()]->CalculateMoves(figures);
@@ -43,6 +64,8 @@ void Board::BoardCellClicked(BoardCell* cell)
 
         if (selected_figure->GetX() == cell->GetX() && selected_figure->GetY() == cell->GetY()) {
 
+            // Make selected figure nullptr
+
             UnpaintSelectedFigureMoves();
             selected_figure = nullptr;
             selected_figure_moves.clear();
@@ -50,6 +73,9 @@ void Board::BoardCellClicked(BoardCell* cell)
         } else if (selected_figure->GetType() == FigureType::KING && !selected_figure->MadeFirstStep() &&
                    (cell->GetX() == selected_figure->GetX() + 2 || cell->GetX() == selected_figure->GetX() - 2)) {
 
+            //Emit MakeCastling signal
+
+            /*
             if (cell->GetX() == selected_figure->GetX() - 2) {
 
                 MakeLeftCastling(cell->GetY(), cell->GetX());
@@ -63,11 +89,41 @@ void Board::BoardCellClicked(BoardCell* cell)
             ChangeCurrentPlayer();
             selected_figure = nullptr;
             selected_figure_moves.clear();
-
+            */
 
         } else if (selected_figure_moves.contains(std::make_pair(cell->GetY(), cell->GetX()))) {
 
+
+            if (figures[cell->GetY()][cell->GetX()]->GetColor() != selected_figure->GetColor()) {
+
+                if (player_color == FigureColor::WHITE) {
+
+                    QString letter_from = white_board_navigation_map.value(selected_figure->GetY());
+                    QString index_from = QString::number(selected_figure->GetX());
+                    QString letter_to = white_board_navigation_map.value(selected_figure->GetY());
+                    QString index_to = QString::number(selected_figure->GetX());
+
+                    emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+                } else if (player_color == FigureColor::BLACK) {
+
+                    QString letter_from = black_board_navigation_map.value(selected_figure->GetY());
+                    QString index_from = QString::number(selected_figure->GetX());
+                    QString letter_to = black_board_navigation_map.value(selected_figure->GetY());
+                    QString index_to = QString::number(selected_figure->GetX());
+
+                    emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+                }
+
+            }
+
+            /*
             if (figures[cell->GetY()][cell->GetX()]->GetColor() == FigureColor::EMPTY) {
+
+
+
+
 
                 // Move to empty cell
 
@@ -78,7 +134,11 @@ void Board::BoardCellClicked(BoardCell* cell)
                 // Also emits signal to change MainWidow data
                 ChangeCurrentPlayer();
 
+
+
             } else {
+
+
 
                // Eat figure
                 SelectedFigureTakesFigure(cell->GetY(), cell->GetX());
@@ -92,11 +152,15 @@ void Board::BoardCellClicked(BoardCell* cell)
                 }
 
 
+
             }
+            */
 
         } else {
 
             if (figures[cell->GetY()][cell->GetX()]->GetColor() == selected_figure->GetColor()) {
+
+                // Set another selected_figure
 
                 UnpaintSelectedFigureMoves();
                 selected_figure_moves.clear();
@@ -116,7 +180,7 @@ void Board::BoardCellClicked(BoardCell* cell)
 void Board::FigureClicked(ChessFigure* figure)
 {
 
-    if (game_over || waiting_for_pawn_transformation) {
+    if (waiting_for_pawn_transformation) {
 
         return;
 
@@ -124,7 +188,7 @@ void Board::FigureClicked(ChessFigure* figure)
 
     if (selected_figure == nullptr) {
 
-        if (figure->GetColor() == current_player && figure->GetColor() == player_color) {
+        if (figure->GetColor() == player_color) {
 
             selected_figure = figure;
             selected_figure_moves = selected_figure->CalculateMoves(figures);
@@ -148,6 +212,30 @@ void Board::FigureClicked(ChessFigure* figure)
 
     } else if (selected_figure_moves.contains(std::make_pair(figure->GetY(), figure->GetX()))) {
 
+        //Need to send message
+
+        if (player_color == FigureColor::WHITE) {
+
+            QString letter_from = white_board_navigation_map.value(selected_figure->GetY());
+            QString index_from = QString::number(selected_figure->GetX());
+            QString letter_to = white_board_navigation_map.value(figure->GetY());
+            QString index_to = QString::number(figure->GetX());
+
+            emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+        } else if (player_color == FigureColor::BLACK) {
+
+            QString letter_from = black_board_navigation_map.value(selected_figure->GetY());
+            QString index_from = QString::number(selected_figure->GetX());
+            QString letter_to = black_board_navigation_map.value(figure->GetY());
+            QString index_to = QString::number(figure->GetX());
+
+            emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+        }
+
+
+        /*
         // Eat figure
         SelectedFigureTakesFigure(figure->GetY(), figure->GetX());
         selected_figure = nullptr;
@@ -158,6 +246,7 @@ void Board::FigureClicked(ChessFigure* figure)
             ChangeCurrentPlayer();
 
         }
+        */
 
     }
 
@@ -250,6 +339,28 @@ void Board::SetPawnTransformChoice(const FigureType &figure_type)
     waiting_for_pawn_transformation = false;
 }
 
+void Board::SetBoardNavigationMaps() {
+
+    white_board_navigation_map[0] = "a";
+    white_board_navigation_map[1] = "b";
+    white_board_navigation_map[2] = "c";
+    white_board_navigation_map[3] = "d";
+    white_board_navigation_map[4] = "e";
+    white_board_navigation_map[5] = "f";
+    white_board_navigation_map[6] = "g";
+    white_board_navigation_map[7] = "h";
+
+    black_board_navigation_map[0] = "h";
+    black_board_navigation_map[1] = "g";
+    black_board_navigation_map[2] = "f";
+    black_board_navigation_map[3] = "e";
+    black_board_navigation_map[4] = "d";
+    black_board_navigation_map[5] = "c";
+    black_board_navigation_map[6] = "b";
+    black_board_navigation_map[7] = "a";
+
+}
+
 void Board::MoveSelectedFigureToEmptyCell(const int& cell_y, const int& cell_x)
 {
     UnpaintSelectedFigureMoves();
@@ -297,6 +408,7 @@ void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x)
             emit GameOver(winner);
 
         }
+
         emit OpponentFigureTaken(std::move(figures[taken_y][taken_x]));
 
     } else {
@@ -308,6 +420,7 @@ void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x)
             emit GameOver(winner);
 
         }
+
         emit PlayerFigureTaken(std::move(figures[taken_y][taken_x]));
 
     }
@@ -378,9 +491,11 @@ void Board::SetBoardOutlineText()
     QVector<QString> letters = {"A", "B", "C", "D", "E", "F", "G", "H"};
     QVector<QString> numbers = {"1", "2", "3", "4", "5", "6", "7", "8"};
     int x_start = 80, y_start = 80;
+
     if (player_color == FigureColor::WHITE) {
 
         for (int i = 0; i < 8; ++i) {
+
             bottom_text.push_back(new QGraphicsTextItem(letters[i]));
             bottom_text[i]->setPos(x_start, 865);
             bottom_text[i]->setDefaultTextColor(QColor(255, 255, 255));
@@ -392,11 +507,13 @@ void Board::SetBoardOutlineText()
             left_text[i]->setDefaultTextColor(QColor(255, 255, 255));
             board_scene->addItem(left_text[i]);
             y_start += 100;
+
         }
 
     } else {
 
         for (int i = 0; i < 8; ++i) {
+
             bottom_text.push_back(new QGraphicsTextItem(letters[7-i]));
             bottom_text[i]->setPos(x_start, 865);
             bottom_text[i]->setDefaultTextColor(QColor(255, 255, 255));
@@ -408,6 +525,7 @@ void Board::SetBoardOutlineText()
             left_text[i]->setDefaultTextColor(QColor(255, 255, 255));
             board_scene->addItem(left_text[i]);
             y_start += 100;
+
         }
 
     }
@@ -418,12 +536,17 @@ void Board::SetBoardOutlineText()
 void Board::SetBoardCells()
 {
     for (int i = 0; i < 8; ++i) {
+
         QVector<BoardCell*> board_line;
+
         for (int j = 0; j < 8; ++j) {
+
             board_line.push_back(new BoardCell(i, j, 100, 100));
             connect(board_line[j], &BoardCell::BoardCellClicked, this, &Board::BoardCellClicked);
             board_scene->addItem(board_line[j]);
+
         }
+
         board_cells.push_back(board_line);
     }
 }
@@ -431,20 +554,33 @@ void Board::SetBoardCells()
 void Board::PaintBoardCells()
 {
     for (auto& line : board_outline_cells) {
+
         for (auto& cell : line) {
+
             cell->setBrush(outline_brush);
+
         }
+
     }
 
     for (int i = 0; i < 8; ++i) {
+
         for (int j = 0; j < 8; ++j) {
+
             if ((i + j) % 2 == 0) {
+
                 board_cells[i][j]->setBrush(light_brush);
+
             } else {
+
                 board_cells[i][j]->setBrush(dark_brush);
+
             }
+
         }
+
     }
+
 }
 
 void Board::SetFigures()
@@ -505,10 +641,12 @@ void Board::SetOpponentFigures()
         figures.push_back(line);
 
         for (int i = 0; i < 8; ++i) {
+
             ChessFigure* pawn = new Pawn(1, i, FigureColor::BLACK, FigureOwner::OPPONENT, this);
             connect(pawn, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
             pawn_line.push_back(std::move(pawn));
             board_scene->addItem(*pawn_line.rbegin());
+
         }
 
         figures.push_back(pawn_line);
@@ -558,10 +696,12 @@ void Board::SetOpponentFigures()
         figures.push_back(line);
 
         for (int i = 0; i < 8; ++i) {
+
             ChessFigure* pawn = new Pawn(1, i, FigureColor::WHITE, FigureOwner::OPPONENT, this);
             connect(pawn, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
             pawn_line.push_back(std::move(pawn));
             board_scene->addItem(*pawn_line.rbegin());
+
         }
 
         figures.push_back(pawn_line);
@@ -571,13 +711,20 @@ void Board::SetOpponentFigures()
 void Board::SetEmptyFigures()
 {
     for (int i = 2; i <= 5; ++i) {
+
         QVector<ChessFigure*> empty_line;
+
         for (int j = 0; j < 8; ++j) {
+
             ChessFigure* figure = new EmptyFigure(i, j, this);
             empty_line.push_back(std::move(figure));
+
         }
+
         figures.push_back(empty_line);
+
     }
+
 }
 
 void Board::SetPlayerFigures()
@@ -588,10 +735,12 @@ void Board::SetPlayerFigures()
     if (player_color == FigureColor::WHITE) {
 
         for (int i = 0; i < 8; ++i) {
+
             ChessFigure* pawn = new Pawn(6, i, FigureColor::WHITE, FigureOwner::PLAYER, this);
             connect(pawn, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
             pawn_line.push_back(std::move(pawn));
             board_scene->addItem(*pawn_line.rbegin());
+
         }
 
         ChessFigure* rook_left = new Rook(7, 0, FigureColor::WHITE, FigureOwner::PLAYER, this);
@@ -637,10 +786,12 @@ void Board::SetPlayerFigures()
     } else {
 
         for (int i = 0; i < 8; ++i) {
+
             ChessFigure* pawn = new Pawn(6, i, FigureColor::BLACK, FigureOwner::PLAYER, this);
             connect(pawn, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
             pawn_line.push_back(std::move(pawn));
             board_scene->addItem(*pawn_line.rbegin());
+
         }
 
         ChessFigure* rook_left = new Rook(7, 0, FigureColor::BLACK, FigureOwner::PLAYER, this);
@@ -684,6 +835,7 @@ void Board::SetPlayerFigures()
         board_scene->addItem(*line.rbegin());
 
     }
+
     figures.push_back(pawn_line);
     figures.push_back(line);
 
@@ -727,41 +879,54 @@ void Board::UnpaintSelectedFigureMoves()
 
 }
 
-void Board::SetBoardOutlineCells()
-{
+void Board::SetBoardOutlineCells() {
+
     QVector<QGraphicsRectItem*> corner_cells;
     corner_cells.push_back(new QGraphicsRectItem(0, 0, 50, 50));
     corner_cells.push_back(new QGraphicsRectItem(850, 0, 50, 50));
     corner_cells.push_back(new QGraphicsRectItem(850, 850, 50, 50));
     corner_cells.push_back(new QGraphicsRectItem(0, 850, 50, 50));
+
     for (int i = 0; i < corner_cells.size(); ++i) {
+
         board_scene->addItem(corner_cells[i]);
+
     }
+
     board_outline_cells.push_back(corner_cells);
 
     QVector<QGraphicsRectItem*> top_cells;
     QVector<QGraphicsRectItem*> bottom_cells;
     int x_start = 50;
+
     for (int i = 0; i < 8; ++i) {
+
         top_cells.push_back(new QGraphicsRectItem(x_start, 0, 100, 50));
         bottom_cells.push_back(new QGraphicsRectItem(x_start, 850, 100, 50));
         board_scene->addItem(top_cells[i]);
         board_scene->addItem(bottom_cells[i]);
         x_start += 100;
+
     }
+
     board_outline_cells.push_back(top_cells);
     board_outline_cells.push_back(bottom_cells);
 
     QVector<QGraphicsRectItem*> right_cells;
     QVector<QGraphicsRectItem*> left_cells;
     int y_start = 50;
+
     for (int i = 0; i < 8; ++i) {
+
         right_cells.push_back(new QGraphicsRectItem(850, y_start, 50, 100));
         left_cells.push_back(new QGraphicsRectItem(0, y_start, 50, 100));
         board_scene->addItem(right_cells[i]);
         board_scene->addItem(left_cells[i]);
         y_start += 100;
+
     }
+
     board_outline_cells.push_back(right_cells);
     board_outline_cells.push_back(left_cells);
+
 }

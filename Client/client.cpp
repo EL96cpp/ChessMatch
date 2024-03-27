@@ -134,6 +134,58 @@ void Client::OnStartWaitingForOpponent() {
 
 }
 
+void Client::OnMakeMove(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Make_move");
+    json_message[QStringLiteral("Letter_from")] = letter_from;
+    json_message[QStringLiteral("Index_from")] = index_from;
+    json_message[QStringLiteral("Letter_to")] = letter_to;
+    json_message[QStringLiteral("Index_to")] = index_to;
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    SendMessage(message);
+
+}
+
+void Client::OnEatFigure(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Eat_figure");
+    json_message[QStringLiteral("Letter_from")] = letter_from;
+    json_message[QStringLiteral("Index_from")] = index_from;
+    json_message[QStringLiteral("Letter_to")] = letter_to;
+    json_message[QStringLiteral("Index_to")] = index_to;
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    SendMessage(message);
+
+}
+
+void Client::OnMakeCastling(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+
+
+
+}
+
 void Client::SendMessage(const std::shared_ptr<Message>& message) {
 
     qDebug() << "Send message call";
@@ -404,6 +456,21 @@ void Client::ProcessMessages() {
                     QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
 
                     emit ShowErrorMessage("Incorrect move", "Move " + letter_from + index_from + "-" +
+                                          letter_to + index_to + " is not allowed!");
+
+                } else if (action_value.toString() == "Eat_figure_accepted") {
+
+
+
+
+                } else if (action_value.toString() == "Eat_figure_error") {
+
+                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                    emit ShowErrorMessage("Eat figure error", "Eat figure at " +
                                           letter_to + index_to + " is not allowed!");
 
                 }

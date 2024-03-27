@@ -6,6 +6,7 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsRectItem>
 #include <QBrush>
+#include <QMap>
 
 #include "chessfigure.h"
 #include "boardcell.h"
@@ -24,6 +25,10 @@ public:
     Board(QGraphicsScene* board_scene, QObject *parent = nullptr);
 
 signals:
+    void MakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void EatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void MakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+
     void PlayerFigureTaken(ChessFigure* fiugre);
     void OpponentFigureTaken(ChessFigure* figure);
     void SetMainWindowPlayerTurn(const QString& turn);
@@ -31,6 +36,10 @@ signals:
     void ShowTransformPawnChoice(const QString& pawn_color);
 
 public slots:
+    void OnMakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnEatFigureAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnMakeCastlingAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+
     void BoardCellClicked(BoardCell* cell);
     void FigureClicked(ChessFigure* figure);
     void StartNewGame();
@@ -39,6 +48,7 @@ public slots:
     void SetPawnTransformChoice(const FigureType& figure_type);
 
 private:
+    void SetBoardNavigationMaps();
     void MoveSelectedFigureToEmptyCell(const int& cell_y, const int& cell_x);
     void SelectedFigureTakesFigure(const int& taken_y, const int& taken_x);
     void ChangeCurrentPlayer();
@@ -62,6 +72,8 @@ private:
     ChessFigure* selected_figure;
     ChessFigure* transformation_pawn;
     QVector<std::pair<int, int>> selected_figure_moves;
+    QMap<int, QString> white_board_navigation_map;
+    QMap<int, QString> black_board_navigation_map;
     QBrush light_brush;
     QBrush dark_brush;
     QBrush outline_brush;

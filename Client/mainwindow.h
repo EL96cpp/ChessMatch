@@ -54,7 +54,6 @@ public slots:
     void OnRegistered(const QString& nickname);
     void OnStartWaitingForOpponentAccepted();
     void OnGameStarted(const QString& player_color);
-    void OnMakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnShowErrorMessage(const QString& title, const QString& error_description);
 
 private slots:

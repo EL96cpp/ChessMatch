@@ -33,6 +33,9 @@ public slots:
     void OnLogout(const QString& nickname);
     void OnRegister(const QString& nickname, const QString& password);
     void OnStartWaitingForOpponent();
+    void OnMakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnEatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnMakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
 
 signals:
     void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
@@ -40,7 +43,9 @@ signals:
     void Registered(const QString& nickname);
     void StartWaitingForOpponentAccepted();
     void GameStarted(const QString& player_color);
-    void MakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void MakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void EatFigureAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void MakeCastlingAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void ShowErrorMessage(const QString& title, const QString& error_description);
 
 private:

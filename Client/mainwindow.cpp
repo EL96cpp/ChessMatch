@@ -42,8 +42,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::Registered, this, &MainWindow::OnRegistered);
     connect(client, &Client::StartWaitingForOpponentAccepted, this, &MainWindow::OnStartWaitingForOpponentAccepted);
     connect(client, &Client::GameStarted, this, &MainWindow::OnGameStarted);
-    connect(client, &Client::MakeMove, this, &MainWindow::OnMakeMove);
 
+    connect(client, &Client::MakeMoveAccepted, board, &Board::OnMakeMoveAccepted);
+    connect(client, &Client::EatFigureAccepted, board, &Board::OnEatFigureAccepted);
+    connect(client, &Client::MakeCastlingAccepted, board, &Board::OnMakeCastlingAccepted);
+
+    connect(board, &Board::MakeMove, client, &Client::OnMakeMove);
+    connect(board, &Board::EatFigure, client, &Client::OnEatFigure);
+    connect(board, &Board::MakeCastling, client, &Client::OnMakeCastling);
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
     connect(board, &Board::PlayerFigureTaken, taken_figures_manager, &TakenFiguresManager::AddPlayerTakenFigure);
@@ -228,12 +234,6 @@ void MainWindow::OnGameStarted(const QString &player_color) {
     taken_figures_manager->StartNewGame();
 
     ui->stackedWidget->setCurrentWidget(ui->game_page);
-
-}
-
-void MainWindow::OnMakeMove(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
-
-    qDebug() << "Move accepted " << letter_from << index_from << "-" << letter_to << index_to;
 
 }
 
