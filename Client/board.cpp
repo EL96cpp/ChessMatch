@@ -40,6 +40,12 @@ void Board::OnMakeCastlingAccepted(const QString &letter_from, const QString &in
 
 }
 
+void Board::OnTransformPawnAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to, const FigureType &figure_type) {
+
+
+
+}
+
 void Board::BoardCellClicked(BoardCell* cell) {
 
     if (waiting_for_pawn_transformation) {

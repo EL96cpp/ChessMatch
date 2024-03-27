@@ -186,6 +186,12 @@ void Client::OnMakeCastling(const QString &letter_from, const QString &index_fro
 
 }
 
+void Client::OnTransformPawn(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to, const FigureType &figure_type) {
+
+
+
+}
+
 void Client::SendMessage(const std::shared_ptr<Message>& message) {
 
     qDebug() << "Send message call";
@@ -445,6 +451,10 @@ void Client::ProcessMessages() {
                     emit GameStarted(player_color);
 
                 } else if (action_value.toString() == "Move_accepted") {
+
+
+
+                } else if (action_value.toString() == "Pawn_transformation") {
 
 
 

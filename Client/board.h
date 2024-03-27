@@ -28,6 +28,8 @@ signals:
     void MakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void EatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void MakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void TransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
+                       const QString& index_to, const FigureType& figure_type);
 
     void PlayerFigureTaken(ChessFigure* fiugre);
     void OpponentFigureTaken(ChessFigure* figure);
@@ -39,6 +41,8 @@ public slots:
     void OnMakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnEatFigureAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnMakeCastlingAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnTransformPawnAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to,
+                                 const QString& index_to, const FigureType& figure_type);
 
     void BoardCellClicked(BoardCell* cell);
     void FigureClicked(ChessFigure* figure);

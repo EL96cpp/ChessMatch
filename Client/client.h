@@ -17,6 +17,7 @@
 
 #include "threadsafequeue.h"
 #include "message.h"
+#include "chessfigure.h"
 
 
 class Client : public QObject
@@ -36,6 +37,8 @@ public slots:
     void OnMakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnEatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnMakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnTransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
+                         const QString& index_to, const FigureType& figure_type);
 
 signals:
     void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
@@ -46,6 +49,8 @@ signals:
     void MakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void EatFigureAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void MakeCastlingAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void TransformPawnAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to,
+                               const QString& index_to, const FigureType& figure_type);
     void ShowErrorMessage(const QString& title, const QString& error_description);
 
 private:

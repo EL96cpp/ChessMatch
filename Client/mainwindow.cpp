@@ -46,10 +46,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::MakeMoveAccepted, board, &Board::OnMakeMoveAccepted);
     connect(client, &Client::EatFigureAccepted, board, &Board::OnEatFigureAccepted);
     connect(client, &Client::MakeCastlingAccepted, board, &Board::OnMakeCastlingAccepted);
+    connect(client, &Client::TransformPawnAccepted, board, &Board::OnTransformPawnAccepted);
 
     connect(board, &Board::MakeMove, client, &Client::OnMakeMove);
     connect(board, &Board::EatFigure, client, &Client::OnEatFigure);
     connect(board, &Board::MakeCastling, client, &Client::OnMakeCastling);
+    connect(board, &Board::TransformPawn, client, &Client::OnTransformPawn);
 
     connect(board, &Board::SetMainWindowPlayerTurn, this, &MainWindow::SetPlayerTurn);
     connect(board, &Board::PlayerFigureTaken, taken_figures_manager, &TakenFiguresManager::AddPlayerTakenFigure);
