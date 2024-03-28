@@ -121,7 +121,7 @@ void GamesManager::ProcessGameMessages() {
                             size_t y_to = board_navigation_map[letter_to_str];
                             size_t x_to = board_navigation_map[index_to_str];
 
-                            if (game_message->game->CheckIfMoveIsCorrect(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
+                            if (game_message->game->MakeMove(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
                                                         
                                 boost::property_tree::ptree move_confirm;
                                 move_confirm.put("Method", "POST");
@@ -161,7 +161,7 @@ void GamesManager::ProcessGameMessages() {
                                 std::string move_error_json_string = move_error_json_stream.str();
                                 
                                 std::vector<uint8_t> move_error_message_body(move_error_json_string.begin(), 
-                                                                               move_error_json_string.end());
+                                                                             move_error_json_string.end());
 
                                 std::shared_ptr<Message> move_error_message = std::make_shared<Message>();
                                 move_error_message->body = move_error_message_body;
@@ -179,14 +179,79 @@ void GamesManager::ProcessGameMessages() {
                         }
 
 
+                    } else if (action == "Eat_figure") {
+                    
+                        
+                        std::string letter_from_str = root.get<std::string>("Letter_from");
+                        std::string index_from_str = root.get<std::string>("Index_from");
+                        std::string letter_to_str = root.get<std::string>("Letter_to");
+                        std::string index_to_str = root.get<std::string>("Index_to");
+
+
+                        if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
+
+                           
+                            size_t y_from = board_navigation_map[letter_from_str];
+                            size_t x_from = board_navigation_map[index_from_str];
+                            size_t y_to = board_navigation_map[letter_to_str];
+                            size_t x_to = board_navigation_map[index_to_str];
+
+                               
+
+
+
+
+                        } else {
+
+                            boost::property_tree::ptree eat_figure_error;
+                            eat_figure_error.put("Method", "POST");
+                            eat_figure_error.put("Action", "Eat_figure_error");
+                            eat_figure_error.put("Letter_from", letter_from_str);
+                            eat_figure_error.put("Index_from", index_from_str);
+                            eat_figure_error.put("Letter_to", letter_to_str);
+                            eat_figure_error.put("Index_to", index_to_str);
+
+
+                            std::ostringstream eat_figure_error_json_stream;
+                            boost::property_tree::write_json(eat_figure_error_json_stream, eat_figure_error);        
+                            std::string eat_figure_error_json_string = eat_figure_error_json_stream.str();
+                            
+                            std::vector<uint8_t> eat_figure_error_message_body(eat_figure_error_json_string.begin(), 
+                                                                           eat_figure_error_json_string.end());
+
+                            std::shared_ptr<Message> eat_figure_error_message = std::make_shared<Message>();
+                            eat_figure_error_message->body = eat_figure_error_message_body;
+                            eat_figure_error_message->message_size = eat_figure_error_message_body.size();
+                            
+                            game_message->sender->SendMessage(eat_figure_error_message);
+
+                        }
+
+
+
                     } else if (action == "Make_castling") {
+
+
+                        std::string letter_from_str = root.get<std::string>("Letter_from");
+                        std::string index_from_str = root.get<std::string>("Index_from");
+                        std::string letter_to_str = root.get<std::string>("Letter_to");
+                        std::string index_to_str = root.get<std::string>("Index_to");
+
 
                         if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) { 
 
-                            std::string letter_from_str = root.get<std::string>("Letter_from");
-                            std::string index_from_str = root.get<std::string>("Index_from");
-                            std::string letter_to_str = root.get<std::string>("Letter_to");
-                            std::string index_to_str = root.get<std::string>("Index_to");
+                            
+                            size_t y_from = board_navigation_map[letter_from_str];
+                            size_t x_from = board_navigation_map[index_from_str];
+                            size_t y_to = board_navigation_map[letter_to_str];
+                            size_t x_to = board_navigation_map[index_to_str];
+
+                            
+                            if (game_message->game->MakeCastling(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
+
+
+                            }
+
 
                         } else {
 
@@ -194,6 +259,29 @@ void GamesManager::ProcessGameMessages() {
 
                         }
                         
+
+                    } else if (action == "Transform_pawn") {
+
+
+                        std::string letter_from_str = root.get<std::string>("Letter_from");
+                        std::string index_from_str = root.get<std::string>("Index_from");
+                        std::string letter_to_str = root.get<std::string>("Letter_to");
+                        std::string index_to_str = root.get<std::string>("Index_to");
+
+
+                        if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
+
+                            size_t y_from = board_navigation_map[letter_from_str];
+                            size_t x_from = board_navigation_map[index_from_str];
+                            size_t y_to = board_navigation_map[letter_to_str];
+                            size_t x_to = board_navigation_map[index_to_str];
+
+                        } else {
+
+
+
+
+                        }
 
                     } else if (action == "Offer_draw") {
 

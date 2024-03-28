@@ -173,6 +173,60 @@ void Game::SendMessageToAll(std::shared_ptr<Message>& message) {
 
 }
 
+bool Game::MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+    if (CheckIfMoveIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
+
+
+    } else {
+        
+        return false;
+
+    }
+
+}
+    
+bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+    if (CheckIfEatFigureIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
+
+
+    } else {
+        
+        return false;
+
+    }
+
+
+}
+    
+bool Game::MakeCastling(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+    if (CheckIfCastlingIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
+
+
+    } else {
+        
+        return false;
+
+    }
+
+}
+    
+bool Game::TransformPawn(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
+                         const Color& player_color, const std::string& figure_type) {
+
+    if (CheckIfPawnTransformationIsCorrect(y_from, x_from, y_to, x_to, player_color, figure_type)) {
+
+
+    } else {
+        
+        return false;
+
+    }
+
+}
+
 bool Game::CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player) {
 
     return (white_player == player || black_player == player);
@@ -185,6 +239,16 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
 
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
 
+        if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
+            board_cells[y_to][x_to]->GetColor() == Color::EMPTY) {
+        
+            return true;    
+
+        } else {
+
+            return false;
+
+        }
 
 
     } else {
@@ -194,4 +258,103 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
     } 
 
 }
+
+bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+     if (board_cells[y_from][x_from]->GetColor() == player_color) {
+
+        std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
+
+        if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
+            board_cells[y_to][x_to]->GetColor() != Color::EMPTY && board_cells[y_to][x_to]->GetColor() != player_color) {
+        
+            return true;    
+
+        } else {
+
+            return false;
+
+        }
+
+
+    } else {
+
+        return false;
+
+    } 
+   
+}
+
+bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+    if (board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_to][x_to]->GetColor() == player_color) {
+
+        if (!board_cells[y_from][x_from]->MadeFirstStep() && !board_cells[y_to][x_to]->MadeFirstStep()) {
+
+            size_t min_x = std::min(x_from, x_to);
+            size_t max_x = std::max(x_from, x_to);
+
+            for (int i = min_x + 1; i < max_x; ++i) {
+
+                if (board_cells[y_from][i]->GetColor() != Color::EMPTY) {
+
+                    return false;
+
+                }
+
+            }
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+
+    } else {
+
+        return false;
+
+    } 
+
+}
+
+bool Game::CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
+                                              const Color& player_color, const std::string& figure_type) {
+        
+    if (board_cells[y_from][x_from]->GetColor() == player_color) {
+
+        if (board_cells[y_from][x_from]->GetColor() == Color::WHITE && y_to == 0 ||
+            board_cells[y_from][x_from]->GetColor() == Color::BLACK && y_to == 7) {
+
+            std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
+
+            if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end()) {
+
+                return true;
+
+            } else {
+
+                return false;
+
+            }
+
+        } else {
+
+            return false;
+
+        }
+
+    } else {
+
+        return false;
+
+    } 
+   
+
+}
+
+
 

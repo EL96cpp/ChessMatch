@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <algorithm>
 #include <chrono>
 #include <memory>
 #include <vector>
@@ -20,7 +21,12 @@ public:
     Game();
     Game(std::shared_ptr<ClientConnection>& white_player, std::shared_ptr<ClientConnection>& black_player);
 
-    bool CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool MakeCastling(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool TransformPawn(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
+                       const Color& player_color, const std::string& figure_type);
+
 
     Color DrawOfferedBy();
     void SetDrawOfferedBy(const Color& color);
@@ -34,6 +40,11 @@ private:
     void SendStartGameMessages();
     void MakeMove(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to);
 
+    bool CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
+                                            const Color& player_color, const std::string& figure_type);
 
 private:
     std::shared_ptr<ClientConnection> white_player;
