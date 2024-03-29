@@ -36,6 +36,7 @@ public:
     Color GetColor();
     FigureType GetType();
     bool MadeFirstStep();
+    void SetMadeFirstStep(const bool& made_first_step);
 
     void MoveTo(const size_t& y_index_to, const size_t& x_index_to);
     

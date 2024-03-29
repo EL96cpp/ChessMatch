@@ -7,12 +7,14 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <cmath>
 
 
 class ChessFigure;
 class ClientConnection;
 class Message;
 enum class Color;
+enum class FigureType;
 
 
 class Game {
@@ -22,20 +24,23 @@ public:
     Game(std::shared_ptr<ClientConnection>& white_player, std::shared_ptr<ClientConnection>& black_player);
 
     bool MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
-    bool EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
+    bool EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
+                   const Color& player_color, const std::string& transformation_type = "");
     bool MakeCastling(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
     bool TransformPawn(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
                        const Color& player_color, const std::string& figure_type);
-
 
     Color DrawOfferedBy();
     void SetDrawOfferedBy(const Color& color);
     bool CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player);
     Color GetCurrentTurnPlayerColor();
     void SendMessageToAll(std::shared_ptr<Message>& message);
+    FigureType GetFigureTypeFromString(const std::string& figure_type);
+    std::shared_ptr<ChessFigure> CreateFigure(const Color& color, const FigureType& type, const size_t& y, const size_t& x);
 
 
 private:
+    void SwapFigures(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to);
     void CreateStartField();
     void SendStartGameMessages();
     void MakeMove(const char& letter_from, const size_t& index_from, const char& letter_to, const size_t& index_to);

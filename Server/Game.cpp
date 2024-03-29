@@ -173,11 +173,74 @@ void Game::SendMessageToAll(std::shared_ptr<Message>& message) {
 
 }
 
+std::shared_ptr<ChessFigure> Game::CreateFigure(const Color& color, const FigureType& type, const size_t& y, const size_t& x) {
+
+    if (type == FigureType::ROOK) {
+    
+        return std::make_shared<Rook>(color, y, x);
+    
+    } else if (type == FigureType::KNIGHT) {
+    
+        return std::make_shared<Knight>(color, y, x);
+    
+    } else if (type == FigureType::BISHOP) {
+    
+        return std::make_shared<Bishop>(color, y, x);
+    
+    } else if (type == FigureType::QUEEN) {
+        
+        return std::make_shared<Queen>(color, y, x);
+    
+    } else {
+    
+        return std::make_shared<ChessFigure>(color, type, y, x);
+        
+    }
+
+}
+
+FigureType Game::GetFigureTypeFromString(const std::string& figure_type) {
+    
+    if (figure_type == "Rook") {
+    
+        return FigureType::ROOK;
+    
+    } else if (figure_type == "Knight") {
+    
+        return FigureType::KNIGHT;
+    
+    } else if (figure_type == "Bishop") {
+    
+        return FigureType::BISHOP;
+    
+    } else if (figure_type == "Queen") {
+    
+        return FigureType::QUEEN;
+    
+    } else {
+    
+        return FigureType::EMPTY;
+
+    }
+
+}
+
+void Game::SwapFigures(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to) {
+    
+    std::swap(board_cells[y_from][x_from], board_cells[y_to][x_to]);
+    board_cells[y_from][x_from]->SetMadeFirstStep(true);
+    board_cells[y_to][x_to]->SetMadeFirstStep(true);
+    
+}
+
 bool Game::MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
 
     if (CheckIfMoveIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
+        
+        SwapFigures(y_from, x_from, y_to, x_to);
 
-
+        return true;
+        
     } else {
         
         return false;
@@ -186,10 +249,39 @@ bool Game::MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_
 
 }
     
-bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
+                     const Color& player_color, const std::string& transformation_type) {
 
     if (CheckIfEatFigureIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
 
+        if (board_cells[y_from][x_from]->GetType() == FigureType::PAWN && std::fabs(x_from - x_to) == 1) {
+        
+            FigureType figure_type = GetFigureTypeFromString(transformation_type);
+
+            if (figure_type != FigureType::EMPTY) {
+
+                board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
+                board_cells[y_to][x_to] = CreateFigure(player_color, figure_type, y_to, x_to);
+                board_cells[y_to][x_to]->SetMadeFirstStep(true);
+
+                //TODO: add eaten figure to corresponding vector
+
+            } else {
+
+                return false;
+
+            }
+        
+        } else {
+        
+            SwapFigures(y_from, x_from, y_to, x_to);
+            board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
+        
+            //TODO: add eaten figure to corresponding vector
+
+            return true;
+        
+        }
 
     } else {
         
@@ -204,6 +296,7 @@ bool Game::MakeCastling(const size_t& y_from, const size_t& x_from, const size_t
 
     if (CheckIfCastlingIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
 
+        SwapFigures(y_from, x_from, y_to, x_to);
 
     } else {
         
@@ -217,6 +310,8 @@ bool Game::TransformPawn(const size_t& y_from, const size_t& x_from, const size_
                          const Color& player_color, const std::string& figure_type) {
 
     if (CheckIfPawnTransformationIsCorrect(y_from, x_from, y_to, x_to, player_color, figure_type)) {
+
+       
 
 
     } else {
@@ -234,6 +329,13 @@ bool Game::CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player)
 }
 
 bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+    if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
+        x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
+
+        return false;
+
+    }
 
     if (board_cells[y_from][x_from]->GetColor() == player_color) {
 
@@ -261,7 +363,14 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
 
 bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
 
-     if (board_cells[y_from][x_from]->GetColor() == player_color) {
+    if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
+        x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
+
+        return false;
+
+    }
+
+    if (board_cells[y_from][x_from]->GetColor() == player_color) {
 
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
 
@@ -276,7 +385,6 @@ bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from,
 
         }
 
-
     } else {
 
         return false;
@@ -286,6 +394,13 @@ bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from,
 }
 
 bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
+
+    if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
+        x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
+
+        return false;
+
+    }
 
     if (board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_to][x_to]->GetColor() == player_color) {
 
@@ -324,6 +439,14 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
 bool Game::CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
                                               const Color& player_color, const std::string& figure_type) {
         
+    if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
+        x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
+
+        return false;
+
+    }
+
+
     if (board_cells[y_from][x_from]->GetColor() == player_color) {
 
         if (board_cells[y_from][x_from]->GetColor() == Color::WHITE && y_to == 0 ||
