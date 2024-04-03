@@ -265,6 +265,8 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
                 board_cells[y_to][x_to]->SetMadeFirstStep(true);
 
                 //TODO: add eaten figure to corresponding vector
+                
+                return true;
 
             } else {
 
@@ -297,6 +299,10 @@ bool Game::MakeCastling(const size_t& y_from, const size_t& x_from, const size_t
     if (CheckIfCastlingIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
 
         SwapFigures(y_from, x_from, y_to, x_to);
+        board_cells[y_from][x_from]->SetMadeFirstStep(true);
+        board_cells[y_to][x_to]->SetMadeFirstStep(true);
+
+        return true;
 
     } else {
         
@@ -310,10 +316,14 @@ bool Game::TransformPawn(const size_t& y_from, const size_t& x_from, const size_
                          const Color& player_color, const std::string& figure_type) {
 
     if (CheckIfPawnTransformationIsCorrect(y_from, x_from, y_to, x_to, player_color, figure_type)) {
+    
+        SwapFigures(y_from, x_from, y_to, x_to);
+        FigureType transformation_type = GetFigureTypeFromString(figure_type);
+        board_cells[y_to][x_to] = CreateFigure(player_color, transformation_type, y_to, x_to);
+        board_cells[y_to][x_to]->SetMadeFirstStep(true);
 
-       
-
-
+        return true;
+    
     } else {
         
         return false;
@@ -446,6 +456,12 @@ bool Game::CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t
 
     }
 
+    if (GetFigureTypeFromString(figure_type) == FigureType::EMPTY) {
+
+        return true;
+
+    }
+    
 
     if (board_cells[y_from][x_from]->GetColor() == player_color) {
 

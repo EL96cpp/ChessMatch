@@ -26,7 +26,8 @@ public:
 
 signals:
     void MakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
-    void EatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void EatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to,
+                   const QString& index_to, const QString& transformation_type = "");
     void MakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void TransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
                        const QString& index_to, const FigureType& figure_type);

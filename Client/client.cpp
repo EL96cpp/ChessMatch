@@ -157,7 +157,8 @@ void Client::OnMakeMove(const QString &letter_from, const QString &index_from, c
 
 }
 
-void Client::OnEatFigure(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+void Client::OnEatFigure(const QString &letter_from, const QString &index_from, const QString &letter_to,
+                         const QString &index_to, const QString& transformation_type) {
 
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
@@ -166,6 +167,12 @@ void Client::OnEatFigure(const QString &letter_from, const QString &index_from, 
     json_message[QStringLiteral("Index_from")] = index_from;
     json_message[QStringLiteral("Letter_to")] = letter_to;
     json_message[QStringLiteral("Index_to")] = index_to;
+
+    if (transformation_type.length() != 0) {
+
+        json_message[QStringLiteral("Transformation_type")] = transformation_type;
+
+    }
 
     QByteArray byte_array = QJsonDocument(json_message).toJson();
     byte_array.append("\n");
@@ -452,7 +459,7 @@ void Client::ProcessMessages() {
 
                 } else if (action_value.toString() == "Move_accepted") {
 
-
+                    qDebug() << "Move accepted";
 
                 } else if (action_value.toString() == "Pawn_transformation") {
 

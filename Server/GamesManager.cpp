@@ -129,6 +129,8 @@ void GamesManager::ProcessGameMessages() {
 
                             if (game_message->game->MakeMove(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
 
+                                
+                                std::cout << "Make move accepted\n";
 
                                 boost::property_tree::ptree move_confirm;
                                 move_confirm.put("Method", "POST");
@@ -155,6 +157,8 @@ void GamesManager::ProcessGameMessages() {
 
                             } else {
 
+                                
+                                std::cout << "Make move error\n";
 
                                 boost::property_tree::ptree move_error;
                                 move_error.put("Method", "POST");

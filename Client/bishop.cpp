@@ -19,8 +19,8 @@ Bishop::Bishop(const int &y, const int &x, const FigureColor& figure_color, cons
 
 }
 
-QVector<std::pair<int, int> > Bishop::CalculateMoves(QVector<QVector<ChessFigure*>>& figures)
-{
+QVector<std::pair<int, int> > Bishop::CalculateMoves(QVector<QVector<ChessFigure*>>& figures) {
+
     QVector<std::pair<int, int>> possible_moves;
 
     int x = GetX() - 1, y = GetY() - 1;
@@ -108,4 +108,5 @@ QVector<std::pair<int, int> > Bishop::CalculateMoves(QVector<QVector<ChessFigure
     }
 
     return possible_moves;
+
 }

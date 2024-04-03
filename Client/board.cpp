@@ -2,8 +2,8 @@
 
 Board::Board(QGraphicsScene* board_scene, QObject *parent)
     : QObject{parent}, board_scene(board_scene), player_color(FigureColor::WHITE),
-    selected_figure(nullptr), transformation_pawn(nullptr), current_player(FigureColor::WHITE)
-{
+    selected_figure(nullptr), transformation_pawn(nullptr), current_player(FigureColor::WHITE) {
+
     light_brush.setColor(QColor(255, 206, 158));
     light_brush.setStyle(Qt::SolidPattern);
     dark_brush.setColor(QColor(209, 139, 71));
@@ -100,7 +100,7 @@ void Board::BoardCellClicked(BoardCell* cell) {
         } else if (selected_figure_moves.contains(std::make_pair(cell->GetY(), cell->GetX()))) {
 
 
-            if (figures[cell->GetY()][cell->GetX()]->GetColor() != selected_figure->GetColor()) {
+            if (figures[cell->GetY()][cell->GetX()]->GetColor() == FigureColor::EMPTY) {
 
                 if (player_color == FigureColor::WHITE) {
 
@@ -119,6 +119,48 @@ void Board::BoardCellClicked(BoardCell* cell) {
                     QString index_to = QString::number(selected_figure->GetX());
 
                     emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+                }
+
+            } else if (figures[cell->GetY()][cell->GetX()]->GetColor() != FigureColor::EMPTY) {
+
+                // Eat figure
+
+                if (player_color == FigureColor::WHITE) {
+
+                    QString letter_from = white_board_navigation_map.value(selected_figure->GetY());
+                    QString index_from = QString::number(selected_figure->GetX());
+                    QString letter_to = white_board_navigation_map.value(selected_figure->GetY());
+                    QString index_to = QString::number(selected_figure->GetX());
+
+                    if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 0) {
+
+                        //emit EatFigure(letter_from, index_from, letter_to, index_to, );
+
+                    } else {
+
+                        emit EatFigure(letter_from, index_from, letter_to, index_to);
+
+                    }
+
+
+
+                } else if (player_color == FigureColor::BLACK) {
+
+                    QString letter_from = black_board_navigation_map.value(selected_figure->GetY());
+                    QString index_from = QString::number(selected_figure->GetX());
+                    QString letter_to = black_board_navigation_map.value(selected_figure->GetY());
+                    QString index_to = QString::number(selected_figure->GetX());
+
+                    if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 7) {
+
+
+
+                    } else {
+
+                        emit EatFigure(letter_from, index_from, letter_to, index_to);
+
+                    }
 
                 }
 
@@ -178,13 +220,11 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
         }
 
-
-
     }
+
 }
 
-void Board::FigureClicked(ChessFigure* figure)
-{
+void Board::FigureClicked(ChessFigure* figure) {
 
     if (waiting_for_pawn_transformation) {
 
@@ -258,8 +298,8 @@ void Board::FigureClicked(ChessFigure* figure)
 
 }
 
-void Board::StartNewGame()
-{
+void Board::StartNewGame() {
+
     board_scene->clear();
     board_cells.clear();
     board_outline_cells.clear();
@@ -277,15 +317,17 @@ void Board::StartNewGame()
     SetBoardCells();
     PaintBoardCells();
     SetFigures();
+
 }
 
-void Board::SetPlayerColor(const FigureColor &player_color)
-{
+void Board::SetPlayerColor(const FigureColor &player_color) {
+
     this->player_color = player_color;
+
 }
 
-void Board::SetBrushes(const QColor& light_color, const QColor& dark_color, const QColor& outline_color, const QColor& select_color)
-{
+void Board::SetBrushes(const QColor& light_color, const QColor& dark_color, const QColor& outline_color, const QColor& select_color) {
+
     light_brush.setColor(light_color);
     light_brush.setStyle(Qt::SolidPattern);
     dark_brush.setColor(dark_color);
@@ -298,8 +340,8 @@ void Board::SetBrushes(const QColor& light_color, const QColor& dark_color, cons
 
 }
 
-void Board::SetPawnTransformChoice(const FigureType &figure_type)
-{
+void Board::SetPawnTransformChoice(const FigureType &figure_type) {
+
     qDebug() << "Pawn transformation ";
     int y = transformation_pawn->GetY(), x = transformation_pawn->GetX();
     qDebug() << y << " " << x;
@@ -343,6 +385,7 @@ void Board::SetPawnTransformChoice(const FigureType &figure_type)
 
     transformation_pawn = nullptr;
     waiting_for_pawn_transformation = false;
+
 }
 
 void Board::SetBoardNavigationMaps() {
@@ -367,8 +410,8 @@ void Board::SetBoardNavigationMaps() {
 
 }
 
-void Board::MoveSelectedFigureToEmptyCell(const int& cell_y, const int& cell_x)
-{
+void Board::MoveSelectedFigureToEmptyCell(const int& cell_y, const int& cell_x) {
+
     UnpaintSelectedFigureMoves();
     selected_figure->SwapCoordinatesAndMovePixmaps(figures[cell_y][cell_x]);
 
@@ -393,13 +436,12 @@ void Board::MoveSelectedFigureToEmptyCell(const int& cell_y, const int& cell_x)
 
         }
 
-
     }
 
 }
 
-void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x)
-{
+void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x) {
+
     UnpaintSelectedFigureMoves();
     QPointF taken_pos = figures[taken_y][taken_x]->pos();
     int selected_y = selected_figure->GetY(), selected_x = selected_figure->GetX();
@@ -460,8 +502,8 @@ void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x)
 
 }
 
-void Board::ChangeCurrentPlayer()
-{
+void Board::ChangeCurrentPlayer() {
+
     if (current_player == FigureColor::WHITE) {
 
         current_player = FigureColor::BLACK;
@@ -473,25 +515,27 @@ void Board::ChangeCurrentPlayer()
         emit SetMainWindowPlayerTurn(QString::fromLatin1("White turn"));
 
     }
+
 }
 
-void Board::MakeLeftCastling(const int &cell_y, const int &cell_x)
-{
+void Board::MakeLeftCastling(const int &cell_y, const int &cell_x) {
+
     MoveSelectedFigureToEmptyCell(cell_y, cell_x);
     selected_figure = figures[cell_y][0];
     MoveSelectedFigureToEmptyCell(cell_y, cell_x + 1);
 
 }
 
-void Board::MakeRightCastling(const int &cell_y, const int &cell_x)
-{
+void Board::MakeRightCastling(const int &cell_y, const int &cell_x) {
+
     MoveSelectedFigureToEmptyCell(cell_y, cell_x);
     selected_figure = figures[cell_y][7];
     MoveSelectedFigureToEmptyCell(cell_y, cell_x - 1);
+
 }
 
-void Board::SetBoardOutlineText()
-{
+void Board::SetBoardOutlineText() {
+
     QVector<QGraphicsTextItem*> bottom_text;
     QVector<QGraphicsTextItem*> left_text;
     QVector<QString> letters = {"A", "B", "C", "D", "E", "F", "G", "H"};
@@ -539,8 +583,8 @@ void Board::SetBoardOutlineText()
     board_outline_text.push_back(left_text);
 }
 
-void Board::SetBoardCells()
-{
+void Board::SetBoardCells() {
+
     for (int i = 0; i < 8; ++i) {
 
         QVector<BoardCell*> board_line;
@@ -554,11 +598,13 @@ void Board::SetBoardCells()
         }
 
         board_cells.push_back(board_line);
+
     }
+
 }
 
-void Board::PaintBoardCells()
-{
+void Board::PaintBoardCells() {
+
     for (auto& line : board_outline_cells) {
 
         for (auto& cell : line) {
@@ -589,16 +635,17 @@ void Board::PaintBoardCells()
 
 }
 
-void Board::SetFigures()
-{
+void Board::SetFigures() {
+
     // Order of function calls is critical!
     SetOpponentFigures();
     SetEmptyFigures();
     SetPlayerFigures();
+
 }
 
-void Board::SetOpponentFigures()
-{
+void Board::SetOpponentFigures() {
+
     QVector<ChessFigure*> line;
     QVector<ChessFigure*> pawn_line;
 
@@ -711,11 +758,13 @@ void Board::SetOpponentFigures()
         }
 
         figures.push_back(pawn_line);
+
     }
+
 }
 
-void Board::SetEmptyFigures()
-{
+void Board::SetEmptyFigures() {
+
     for (int i = 2; i <= 5; ++i) {
 
         QVector<ChessFigure*> empty_line;
@@ -733,8 +782,8 @@ void Board::SetEmptyFigures()
 
 }
 
-void Board::SetPlayerFigures()
-{
+void Board::SetPlayerFigures() {
+
     QVector<ChessFigure*> line;
     QVector<ChessFigure*> pawn_line;
 
@@ -847,8 +896,8 @@ void Board::SetPlayerFigures()
 
 }
 
-void Board::PaintSelectedFigureMoves()
-{
+void Board::PaintSelectedFigureMoves() {
+
     board_cells[selected_figure->GetY()][selected_figure->GetX()]->setBrush(select_brush);
 
     for (auto& pair : selected_figure_moves) {
@@ -856,10 +905,11 @@ void Board::PaintSelectedFigureMoves()
         board_cells[pair.first][pair.second]->setBrush(select_brush);
 
     }
+
 }
 
-void Board::UnpaintSelectedFigureMoves()
-{
+void Board::UnpaintSelectedFigureMoves() {
+
     if ((selected_figure->GetY() + selected_figure->GetX()) % 2 == 0) {
 
         board_cells[selected_figure->GetY()][selected_figure->GetX()]->setBrush(light_brush);
@@ -881,6 +931,7 @@ void Board::UnpaintSelectedFigureMoves()
             board_cells[pair.first][pair.second]->setBrush(dark_brush);
 
         }
+
     }
 
 }

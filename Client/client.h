@@ -35,7 +35,8 @@ public slots:
     void OnRegister(const QString& nickname, const QString& password);
     void OnStartWaitingForOpponent();
     void OnMakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
-    void OnEatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void OnEatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to,
+                     const QString& index_to, const QString& transformation_type = "");
     void OnMakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnTransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
                          const QString& index_to, const FigureType& figure_type);
