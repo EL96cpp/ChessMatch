@@ -137,7 +137,7 @@ void Client::OnStartWaitingForOpponent() {
 void Client::OnMakeMove(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    //json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Action")] = QStringLiteral("Make_move");
     json_message[QStringLiteral("Letter_from")] = letter_from;
     json_message[QStringLiteral("Index_from")] = index_from;
@@ -153,6 +153,8 @@ void Client::OnMakeMove(const QString &letter_from, const QString &index_from, c
     message->message_size = size;
     message->body = byte_array;
 
+    qDebug() << byte_array;
+
     SendMessage(message);
 
 }
@@ -161,7 +163,7 @@ void Client::OnEatFigure(const QString &letter_from, const QString &index_from, 
                          const QString &index_to, const QString& transformation_type) {
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    //json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Action")] = QStringLiteral("Eat_figure");
     json_message[QStringLiteral("Letter_from")] = letter_from;
     json_message[QStringLiteral("Index_from")] = index_from;

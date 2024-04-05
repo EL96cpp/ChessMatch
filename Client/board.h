@@ -77,8 +77,10 @@ private:
     ChessFigure* selected_figure;
     ChessFigure* transformation_pawn;
     QVector<std::pair<int, int>> selected_figure_moves;
-    QMap<int, QString> white_board_navigation_map;
-    QMap<int, QString> black_board_navigation_map;
+    QMap<int, QString> white_board_navigation_map_x;
+    QMap<int, QString> white_board_navigation_map_y;
+    QMap<int, QString> black_board_navigation_map_x;
+    QMap<int, QString> black_board_navigation_map_y;
     QBrush light_brush;
     QBrush dark_brush;
     QBrush outline_brush;

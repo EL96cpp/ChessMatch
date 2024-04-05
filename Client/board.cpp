@@ -104,19 +104,19 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
                 if (player_color == FigureColor::WHITE) {
 
-                    QString letter_from = white_board_navigation_map.value(selected_figure->GetY());
-                    QString index_from = QString::number(selected_figure->GetX());
-                    QString letter_to = white_board_navigation_map.value(selected_figure->GetY());
-                    QString index_to = QString::number(selected_figure->GetX());
+                    QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+                    QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+                    QString letter_to = white_board_navigation_map_x.value(cell->GetX());
+                    QString index_to = white_board_navigation_map_y.value(cell->GetY());
 
                     emit MakeMove(letter_from, index_from, letter_to, index_to);
 
                 } else if (player_color == FigureColor::BLACK) {
 
-                    QString letter_from = black_board_navigation_map.value(selected_figure->GetY());
-                    QString index_from = QString::number(selected_figure->GetX());
-                    QString letter_to = black_board_navigation_map.value(selected_figure->GetY());
-                    QString index_to = QString::number(selected_figure->GetX());
+                    QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
+                    QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
+                    QString letter_to = black_board_navigation_map_x.value(cell->GetX());
+                    QString index_to = black_board_navigation_map_y.value(cell->GetY());
 
                     emit MakeMove(letter_from, index_from, letter_to, index_to);
 
@@ -128,10 +128,10 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
                 if (player_color == FigureColor::WHITE) {
 
-                    QString letter_from = white_board_navigation_map.value(selected_figure->GetY());
-                    QString index_from = QString::number(selected_figure->GetX());
-                    QString letter_to = white_board_navigation_map.value(selected_figure->GetY());
-                    QString index_to = QString::number(selected_figure->GetX());
+                    QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+                    QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+                    QString letter_to = white_board_navigation_map_x.value(cell->GetX());
+                    QString index_to = white_board_navigation_map_y.value(cell->GetY());
 
                     if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 0) {
 
@@ -147,10 +147,10 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
                 } else if (player_color == FigureColor::BLACK) {
 
-                    QString letter_from = black_board_navigation_map.value(selected_figure->GetY());
-                    QString index_from = QString::number(selected_figure->GetX());
-                    QString letter_to = black_board_navigation_map.value(selected_figure->GetY());
-                    QString index_to = QString::number(selected_figure->GetX());
+                    QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
+                    QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
+                    QString letter_to = black_board_navigation_map_x.value(cell->GetX());
+                    QString index_to = black_board_navigation_map_y.value(cell->GetY());
 
                     if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 7) {
 
@@ -262,19 +262,19 @@ void Board::FigureClicked(ChessFigure* figure) {
 
         if (player_color == FigureColor::WHITE) {
 
-            QString letter_from = white_board_navigation_map.value(selected_figure->GetY());
-            QString index_from = QString::number(selected_figure->GetX());
-            QString letter_to = white_board_navigation_map.value(figure->GetY());
-            QString index_to = QString::number(figure->GetX());
+            QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+            QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+            QString letter_to = white_board_navigation_map_x.value(figure->GetX());
+            QString index_to = white_board_navigation_map_y.value(figure->GetY());
 
             emit MakeMove(letter_from, index_from, letter_to, index_to);
 
         } else if (player_color == FigureColor::BLACK) {
 
-            QString letter_from = black_board_navigation_map.value(selected_figure->GetY());
-            QString index_from = QString::number(selected_figure->GetX());
-            QString letter_to = black_board_navigation_map.value(figure->GetY());
-            QString index_to = QString::number(figure->GetX());
+            QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
+            QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
+            QString letter_to = black_board_navigation_map_x.value(figure->GetX());
+            QString index_to = black_board_navigation_map_y.value(figure->GetY());
 
             emit MakeMove(letter_from, index_from, letter_to, index_to);
 
@@ -390,23 +390,42 @@ void Board::SetPawnTransformChoice(const FigureType &figure_type) {
 
 void Board::SetBoardNavigationMaps() {
 
-    white_board_navigation_map[0] = "a";
-    white_board_navigation_map[1] = "b";
-    white_board_navigation_map[2] = "c";
-    white_board_navigation_map[3] = "d";
-    white_board_navigation_map[4] = "e";
-    white_board_navigation_map[5] = "f";
-    white_board_navigation_map[6] = "g";
-    white_board_navigation_map[7] = "h";
+    white_board_navigation_map_x[0] = "a";
+    white_board_navigation_map_x[1] = "b";
+    white_board_navigation_map_x[2] = "c";
+    white_board_navigation_map_x[3] = "d";
+    white_board_navigation_map_x[4] = "e";
+    white_board_navigation_map_x[5] = "f";
+    white_board_navigation_map_x[6] = "g";
+    white_board_navigation_map_x[7] = "h";
 
-    black_board_navigation_map[0] = "h";
-    black_board_navigation_map[1] = "g";
-    black_board_navigation_map[2] = "f";
-    black_board_navigation_map[3] = "e";
-    black_board_navigation_map[4] = "d";
-    black_board_navigation_map[5] = "c";
-    black_board_navigation_map[6] = "b";
-    black_board_navigation_map[7] = "a";
+    white_board_navigation_map_y[0] = "8";
+    white_board_navigation_map_y[1] = "7";
+    white_board_navigation_map_y[2] = "6";
+    white_board_navigation_map_y[3] = "5";
+    white_board_navigation_map_y[4] = "4";
+    white_board_navigation_map_y[5] = "3";
+    white_board_navigation_map_y[6] = "2";
+    white_board_navigation_map_y[7] = "1";
+
+
+    black_board_navigation_map_x[0] = "h";
+    black_board_navigation_map_x[1] = "g";
+    black_board_navigation_map_x[2] = "f";
+    black_board_navigation_map_x[3] = "e";
+    black_board_navigation_map_x[4] = "d";
+    black_board_navigation_map_x[5] = "c";
+    black_board_navigation_map_x[6] = "b";
+    black_board_navigation_map_x[7] = "a";
+
+    black_board_navigation_map_y[0] = "1";
+    black_board_navigation_map_y[1] = "2";
+    black_board_navigation_map_y[2] = "3";
+    black_board_navigation_map_y[3] = "4";
+    black_board_navigation_map_y[4] = "5";
+    black_board_navigation_map_y[5] = "6";
+    black_board_navigation_map_y[6] = "7";
+    black_board_navigation_map_y[7] = "8";
 
 }
 
