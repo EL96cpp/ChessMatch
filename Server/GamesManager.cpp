@@ -106,16 +106,25 @@ void GamesManager::ProcessGameMessages() {
                 if (game_message->game->CheckIfPlayerIsAGameMember(game_message->sender)) {
 
 
+                    std::cout << message_str << "\n";
+
+                    std::cout << "Parse game message action\n";
+
                     std::string action = root.get<std::string>("Action");
 
 
                     if (action == "Make_move") {
+
+                        
+                        std::cout << "Make move message\n";
 
 
                         std::string letter_from_str = root.get<std::string>("Letter_from");
                         std::string index_from_str = root.get<std::string>("Index_from");
                         std::string letter_to_str = root.get<std::string>("Letter_to");
                         std::string index_to_str = root.get<std::string>("Index_to");
+
+                        std::cout << letter_from_str + index_from_str << " " << letter_to_str + index_to_str << "\n";
 
 
                         if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {

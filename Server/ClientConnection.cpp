@@ -84,6 +84,8 @@ bool ClientConnection::IsWaiting() {
 
 void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
 
+    std::cout << "Set game for player " << nickname << "\n";
+
     this->game = game;
 
 }
@@ -177,7 +179,7 @@ void ClientConnection::SendMessage(std::shared_ptr<Message>& message) {
 void ClientConnection::StartReadingMessage() {
 
     
-    std::cout << temporary_message.message_size << " size of message\n";
+    std::cout << "Is waiting " << is_waiting << " Game: " << (game == nullptr) << "\n";
 
     if (!is_waiting && game == nullptr) {
 
@@ -211,7 +213,7 @@ void ClientConnection::StartReadingMessage() {
 
         boost::asio::async_read(socket, boost::asio::buffer(&temporary_game_message.message_size, sizeof(uint32_t)), [this](std::error_code ec, size_t length) {		
 
-        std::cout << temporary_game_message.message_size << " size of message inside lambda\n";
+        std::cout << temporary_game_message.message_size << " size of game message inside lambda\n";
 
 		    if (!ec) {
 
@@ -266,7 +268,7 @@ void ClientConnection::ReadMessageBody() {
 
          boost::asio::async_read(socket, boost::asio::buffer(temporary_game_message.body.data(), temporary_game_message.message_size), [this](std::error_code ec, size_t length) {
 
-            std::cout << "Read " << temporary_game_message.body.size() << " \n";
+            std::cout << "Read game message" << temporary_game_message.body.size() << " \n";
 
             if (!ec) {
 
