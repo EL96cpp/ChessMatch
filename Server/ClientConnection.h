@@ -49,7 +49,6 @@ private:
     boost::asio::io_context& io_context;
 
     Message temporary_message;
-    GameMessage temporary_game_message;
     ThreadSafeMessagesQueue outcoming_messages;
     ThreadSafeMessagesQueue& incoming_messages;
     ThreadSafeGameMessagesQueue& incoming_game_messages;

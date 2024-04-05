@@ -178,77 +178,44 @@ void ClientConnection::SendMessage(std::shared_ptr<Message>& message) {
 
 void ClientConnection::StartReadingMessage() {
 
+
+    boost::asio::async_read(socket, boost::asio::buffer(&temporary_message.message_size, sizeof(uint32_t)), [this](std::error_code ec, size_t length) {		    
     
-    std::cout << "Is waiting " << is_waiting << " Game: " << (game == nullptr) << "\n";
-
-    if (!is_waiting && game == nullptr) {
-
-
-        boost::asio::async_read(socket, boost::asio::buffer(&temporary_message.message_size, sizeof(uint32_t)), [this](std::error_code ec, size_t length) {		    
-        
-            std::cout << temporary_message.message_size << " size of message inside lambda\n";
-        
-		    if (!ec) {
+        std::cout << temporary_message.message_size << " size of message inside lambda\n";
     
-                temporary_message.body.resize(temporary_message.message_size);
-                std::cout << "no error code!\n";
-                
-                if (temporary_message.message_size > 0) {
-    
-                    ReadMessageBody();
-    
-                }
-                                
-            } else {
+        if (!ec) {
 
-                std::cout << ec.message() << " error!\n";
-
-            }
-        
-        });
-
-
-    } else {
-
-
-        boost::asio::async_read(socket, boost::asio::buffer(&temporary_game_message.message_size, sizeof(uint32_t)), [this](std::error_code ec, size_t length) {		
-
-        std::cout << temporary_game_message.message_size << " size of game message inside lambda\n";
-
-		    if (!ec) {
-
-                temporary_game_message.body.resize(temporary_game_message.message_size);
-                std::cout << "no error code!\n";
+            temporary_message.body.resize(temporary_message.message_size);
+            std::cout << "no error code!\n";
             
-                if (temporary_game_message.message_size > 0) {
+            if (temporary_message.message_size > 0) {
 
-                    ReadMessageBody();
-
-                }
-                            
-            } else {
-
-                std::cout << ec.message() << " error!\n";
+                ReadMessageBody();
 
             }
-    
-        });
+                            
+        } else {
 
-    }
+            std::cout << ec.message() << " error!\n";
+
+        }
+    
+    });
+
 
 }
 
 
 void ClientConnection::ReadMessageBody() {
 
-    if (!is_waiting && game == nullptr) {
 
+    boost::asio::async_read(socket, boost::asio::buffer(temporary_message.body.data(), temporary_message.message_size), [this](std::error_code ec, size_t length) {
 
-        boost::asio::async_read(socket, boost::asio::buffer(temporary_message.body.data(), temporary_message.message_size), [this](std::error_code ec, size_t length) {
+        std::cout << "Read " << temporary_message.body.size() << " \n";
 
-            std::cout << "Read " << temporary_message.body.size() << " \n";
+        if (!ec) {
 
-            if (!ec) {
+            if (!is_waiting && game == nullptr) {
 
                 incoming_messages.push_back_with_sender(std::make_shared<Message>(temporary_message), this->shared_from_this());
 
@@ -257,35 +224,21 @@ void ClientConnection::ReadMessageBody() {
 
                 StartReadingMessage();
 
-            }
+            } else {
 
+                incoming_game_messages.push_back(std::make_shared<GameMessage>(temporary_message, game), this->shared_from_this());
 
-        });
-
-
-    } else {
-
-
-         boost::asio::async_read(socket, boost::asio::buffer(temporary_game_message.body.data(), temporary_game_message.message_size), [this](std::error_code ec, size_t length) {
-
-            std::cout << "Read game message" << temporary_game_message.body.size() << " \n";
-
-            if (!ec) {
-
-                temporary_game_message.game = game;   
-
-                incoming_game_messages.push_back(std::make_shared<GameMessage>(temporary_game_message), this->shared_from_this());
-
-                temporary_game_message.body.clear();
-                temporary_game_message.message_size = 0;
+                temporary_message.body.clear();
+                temporary_message.message_size = 0;
 
                 StartReadingMessage();
 
-            }
+            } 
 
-        });
+        }
 
-   
-    }
+
+    });
+
 
 }
