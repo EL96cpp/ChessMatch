@@ -33,14 +33,14 @@ void Game::CreateStartField() {
 
     std::vector<std::shared_ptr<ChessFigure>> black_figures;
 
-    black_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::BLACK, 0, 0)));    
-    black_figures.push_back(std::make_shared<ChessFigure>(Knight(Color::BLACK, 0, 1))); 
-    black_figures.push_back(std::make_shared<ChessFigure>(Bishop(Color::BLACK, 0, 2)));
-    black_figures.push_back(std::make_shared<ChessFigure>(Queen(Color::BLACK, 0, 3))); 
-    black_figures.push_back(std::make_shared<ChessFigure>(King(Color::BLACK, 0, 4))); 
-    black_figures.push_back(std::make_shared<ChessFigure>(Bishop(Color::BLACK, 0, 5))); 
-    black_figures.push_back(std::make_shared<ChessFigure>(Knight(Color::BLACK, 0, 6))); 
-    black_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::BLACK, 0, 7))); 
+    black_figures.push_back(std::make_shared<Rook>(Rook(Color::BLACK, 0, 0)));    
+    black_figures.push_back(std::make_shared<Knight>(Knight(Color::BLACK, 0, 1))); 
+    black_figures.push_back(std::make_shared<Bishop>(Bishop(Color::BLACK, 0, 2)));
+    black_figures.push_back(std::make_shared<Queen>(Queen(Color::BLACK, 0, 3))); 
+    black_figures.push_back(std::make_shared<King>(King(Color::BLACK, 0, 4))); 
+    black_figures.push_back(std::make_shared<Bishop>(Bishop(Color::BLACK, 0, 5))); 
+    black_figures.push_back(std::make_shared<Knight>(Knight(Color::BLACK, 0, 6))); 
+    black_figures.push_back(std::make_shared<Rook>(Rook(Color::BLACK, 0, 7))); 
 
     board_cells.push_back(black_figures);
     
@@ -51,7 +51,7 @@ void Game::CreateStartField() {
 
     for (int i = 0; i < 8; ++i) {
 
-        black_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::BLACK, 1, i)));
+        black_pawns.push_back(std::make_shared<Pawn>(Pawn(Color::BLACK, 1, i)));
 
     }
     
@@ -81,7 +81,7 @@ void Game::CreateStartField() {
 
     for (int i = 0; i < 8; ++i) {
 
-        white_pawns.push_back(std::make_shared<ChessFigure>(Pawn(Color::WHITE, 6, i)));
+        white_pawns.push_back(std::make_shared<Pawn>(Pawn(Color::WHITE, 6, i)));
 
     }
 
@@ -92,14 +92,14 @@ void Game::CreateStartField() {
 
     std::vector<std::shared_ptr<ChessFigure>> white_figures;
     
-    white_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::WHITE, 7, 0)));
-    white_figures.push_back(std::make_shared<ChessFigure>(Knight(Color::WHITE, 7, 1)));
-    white_figures.push_back(std::make_shared<ChessFigure>(Bishop(Color::WHITE, 7, 2)));
-    white_figures.push_back(std::make_shared<ChessFigure>(Queen(Color::WHITE, 7, 3)));
-    white_figures.push_back(std::make_shared<ChessFigure>(King(Color::WHITE, 7, 4)));
-    white_figures.push_back(std::make_shared<ChessFigure>(Bishop(Color::WHITE, 7, 5)));
-    white_figures.push_back(std::make_shared<ChessFigure>(Knight(Color::WHITE, 7, 6)));
-    white_figures.push_back(std::make_shared<ChessFigure>(Rook(Color::WHITE, 7, 7)));
+    white_figures.push_back(std::make_shared<Rook>(Rook(Color::WHITE, 7, 0)));
+    white_figures.push_back(std::make_shared<Knight>(Knight(Color::WHITE, 7, 1)));
+    white_figures.push_back(std::make_shared<Bishop>(Bishop(Color::WHITE, 7, 2)));
+    white_figures.push_back(std::make_shared<Queen>(Queen(Color::WHITE, 7, 3)));
+    white_figures.push_back(std::make_shared<King>(King(Color::WHITE, 7, 4)));
+    white_figures.push_back(std::make_shared<Bishop>(Bishop(Color::WHITE, 7, 5)));
+    white_figures.push_back(std::make_shared<Knight>(Knight(Color::WHITE, 7, 6)));
+    white_figures.push_back(std::make_shared<Rook>(Rook(Color::WHITE, 7, 7)));
  
     board_cells.push_back(white_figures);
 
@@ -340,23 +340,58 @@ bool Game::CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player)
 
 bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
 
+    std::cout << "Check if move is correct for " << y_from << " " << x_from << " - " << y_to << " " << x_to << "\n";
+
     if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
         x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
+
+        std::cout << "Move: index out of range\n";
 
         return false;
 
     }
 
+
+    //Debug 
+    if (board_cells[y_from][x_from]->GetColor() == Color::WHITE) {
+    
+        std::cout << "white figure selected\n";
+
+    } else if (board_cells[y_from][x_from]->GetColor() == Color::BLACK) {
+
+        std::cout << "black figure selected\n";
+
+    } else {
+
+        std::cout << "empty field selected!\n";
+
+    }
+
+
+
+
     if (board_cells[y_from][x_from]->GetColor() == player_color) {
 
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
 
+        std::cout << "Possible moves size: " << possible_moves.size() << "\n";
+
+        for (auto& pair : possible_moves) {
+
+            std::cout << pair.first << " " << pair.second << " possible move\n";
+
+        }
+
         if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
             board_cells[y_to][x_to]->GetColor() == Color::EMPTY) {
-        
+            
+            std::cout << "Move accepted\n";
+
             return true;    
 
         } else {
+
+            std::cout << "Possible moves error!" << y_to << " " << x_to << "\n";
 
             return false;
 
@@ -364,6 +399,8 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
 
 
     } else {
+
+        std::cout << "Move: incorrect color!\n";
 
         return false;
 

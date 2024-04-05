@@ -6,14 +6,14 @@
 
 GamesManager::GamesManager(ThreadSafeQueue<GameResult>& game_results) : game_results(game_results) {
 
-    board_navigation_map["1"] = 0;
-    board_navigation_map["2"] = 1;
-    board_navigation_map["3"] = 2;
-    board_navigation_map["4"] = 3;
-    board_navigation_map["5"] = 4;
-    board_navigation_map["6"] = 5;
-    board_navigation_map["7"] = 6;
-    board_navigation_map["8"] = 7;
+    board_navigation_map["1"] = 7;
+    board_navigation_map["2"] = 6;
+    board_navigation_map["3"] = 5;
+    board_navigation_map["4"] = 4;
+    board_navigation_map["5"] = 3;
+    board_navigation_map["6"] = 2;
+    board_navigation_map["7"] = 1;
+    board_navigation_map["8"] = 0;
 
     board_navigation_map["a"] = 0;
     board_navigation_map["b"] = 1;
@@ -130,10 +130,10 @@ void GamesManager::ProcessGameMessages() {
                         if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
                             
                            
-                            size_t y_from = board_navigation_map[letter_from_str];
-                            size_t x_from = board_navigation_map[index_from_str];
-                            size_t y_to = board_navigation_map[letter_to_str];
-                            size_t x_to = board_navigation_map[index_to_str];
+                            size_t y_from = board_navigation_map[index_from_str];
+                            size_t x_from = board_navigation_map[letter_from_str];
+                            size_t y_to = board_navigation_map[index_to_str];
+                            size_t x_to = board_navigation_map[letter_to_str];
 
 
                             if (game_message->game->MakeMove(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
@@ -236,10 +236,10 @@ void GamesManager::ProcessGameMessages() {
                         if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
 
                            
-                            size_t y_from = board_navigation_map[letter_from_str];
-                            size_t x_from = board_navigation_map[index_from_str];
-                            size_t y_to = board_navigation_map[letter_to_str];
-                            size_t x_to = board_navigation_map[index_to_str];
+                            size_t y_from = board_navigation_map[index_from_str];
+                            size_t x_from = board_navigation_map[letter_from_str];
+                            size_t y_to = board_navigation_map[index_to_str];
+                            size_t x_to = board_navigation_map[letter_to_str];
 
 
                             if (game_message->game->EatFigure(y_from, x_from, y_to, x_to, 
@@ -339,10 +339,10 @@ void GamesManager::ProcessGameMessages() {
                         if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) { 
 
                             
-                            size_t y_from = board_navigation_map[letter_from_str];
-                            size_t x_from = board_navigation_map[index_from_str];
-                            size_t y_to = board_navigation_map[letter_to_str];
-                            size_t x_to = board_navigation_map[index_to_str];
+                            size_t y_from = board_navigation_map[index_from_str];
+                            size_t x_from = board_navigation_map[letter_from_str];
+                            size_t y_to = board_navigation_map[index_to_str];
+                            size_t x_to = board_navigation_map[letter_to_str];
 
                             
                             if (game_message->game->MakeCastling(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
@@ -441,10 +441,10 @@ void GamesManager::ProcessGameMessages() {
                         if (game_message->sender->GetPlayerColor() == game_message->game->GetCurrentTurnPlayerColor()) {
 
 
-                            size_t y_from = board_navigation_map[letter_from_str];
-                            size_t x_from = board_navigation_map[index_from_str];
-                            size_t y_to = board_navigation_map[letter_to_str];
-                            size_t x_to = board_navigation_map[index_to_str];
+                            size_t y_from = board_navigation_map[index_from_str];
+                            size_t x_from = board_navigation_map[letter_from_str];
+                            size_t y_to = board_navigation_map[index_to_str];
+                            size_t x_to = board_navigation_map[letter_to_str];
 
                             if (game_message->game->TransformPawn(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor(), figure_type_str)) {
 
