@@ -191,7 +191,25 @@ void Client::OnEatFigure(const QString &letter_from, const QString &index_from, 
 
 void Client::OnMakeCastling(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
+    QJsonObject json_message;
+    json_message[QStringLiteral("Action")] = QStringLiteral("Make_castling");
+    json_message[QStringLiteral("Letter_from")] = letter_from;
+    json_message[QStringLiteral("Index_from")] = index_from;
+    json_message[QStringLiteral("Letter_to")] = letter_to;
+    json_message[QStringLiteral("Index_to")] = index_to;
 
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
+
+    SendMessage(message);
 
 }
 
@@ -469,6 +487,16 @@ void Client::ProcessMessages() {
                     emit MakeMoveAccepted(letter_from, index_from, letter_to, index_to);
                     qDebug() << "Move accepted";
 
+                } else if (action_value.toString() == "Make_castling_accepted") {
+
+                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                    emit MakeCastlingAccepted(letter_from, index_from, letter_to, index_to);
+                    qDebug() << "Make castling accepted!";
+
                 } else if (action_value.toString() == "Pawn_transformation") {
 
 
@@ -496,6 +524,16 @@ void Client::ProcessMessages() {
                     QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
 
                     emit ShowErrorMessage("Eat figure error", "Eat figure at " +
+                                          letter_to + index_to + " is not allowed!");
+
+                } else if (action_value.toString() == "Make_castling_error") {
+
+                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                    emit ShowErrorMessage("Castling error", "Castling " + letter_from + index_from + "-" +
                                           letter_to + index_to + " is not allowed!");
 
                 }

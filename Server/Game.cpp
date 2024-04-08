@@ -321,21 +321,36 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
 }
     
 bool Game::MakeCastling(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
-
+    
     if (CheckIfCastlingIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
-
+        
         SwapFigures(y_from, x_from, y_to, x_to);
+        
+        if (x_from > x_to) {
+        
+            board_cells[y_from][0]->SetMadeFirstStep(true);
+            SwapFigures(y_from, 0, y_to, x_to+1);
+        
+        } else {
+        
+            board_cells[y_from][7]->SetMadeFirstStep(true);
+            SwapFigures(y_from, 7, y_to, x_to-1);
+        
+        }
+        
         board_cells[y_from][x_from]->SetMadeFirstStep(true);
         board_cells[y_to][x_to]->SetMadeFirstStep(true);
+    
+        ChangeCurrentTurnPlayerColor();
 
         return true;
-
+    
     } else {
         
         return false;
-
+    
     }
-
+    
 }
     
 bool Game::TransformPawn(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
@@ -434,35 +449,35 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
 }
 
 bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
-
+    
     if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
         x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
-
+    
         return false;
-
+    
     }
-
+    
     if (board_cells[y_from][x_from]->GetColor() == player_color) {
-
+    
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
-
+    
         if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
             board_cells[y_to][x_to]->GetColor() != Color::EMPTY && board_cells[y_to][x_to]->GetColor() != player_color) {
         
             return true;    
-
+    
         } else {
-
+    
             return false;
-
+    
         }
-
+    
     } else {
-
+    
         return false;
-
+    
     } 
-   
+     
 }
 
 bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
@@ -474,15 +489,18 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
 
     }
 
-    if (board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_to][x_to]->GetColor() == player_color) {
+    if (x_from > x_to) {
+        
+        if (!board_cells[y_from][x_from]->MadeFirstStep() && !board_cells[y_from][0]->MadeFirstStep() &&
+            board_cells[y_from][x_from]->GetType() == FigureType::KING && board_cells[y_from][0]->GetType() == FigureType::ROOK &&
+            board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_from][0]->GetColor() == player_color) {
+           
+            
+            std::cout << "Left castling requirements are met\n";
 
-        if (!board_cells[y_from][x_from]->MadeFirstStep() && !board_cells[y_to][x_to]->MadeFirstStep()) {
 
-            size_t min_x = std::min(x_from, x_to);
-            size_t max_x = std::max(x_from, x_to);
-
-            for (int i = min_x + 1; i < max_x; ++i) {
-
+            for (int i = 1; i < x_from; ++i) {
+            
                 if (board_cells[y_from][i]->GetColor() != Color::EMPTY) {
 
                     return false;
@@ -492,19 +510,59 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
             }
 
             return true;
-
+            
         } else {
+
+            std::cout << "Left castling error:\n";
+            
+            std::cout << !board_cells[y_from][x_from]->MadeFirstStep() << " " << !board_cells[y_from][0]->MadeFirstStep() << " " <<
+            (board_cells[y_from][x_from]->GetType() == FigureType::KING) << " " <<  (board_cells[y_from][0]->GetType() == FigureType::ROOK) << " " <<
+            (board_cells[y_from][x_from]->GetColor() == player_color) << " " <<  (board_cells[y_from][0]->GetColor() == player_color) << "\n";
+           
+
+
 
             return false;
 
         }
-
+            
 
     } else {
 
-        return false;
+        if (!board_cells[y_from][x_from]->MadeFirstStep() && !board_cells[y_from][7]->MadeFirstStep() &&
+            board_cells[y_from][x_from]->GetType() == FigureType::KING && board_cells[y_from][7]->GetType() == FigureType::ROOK &&
+            board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_from][7]->GetColor() == player_color) {
+            
 
-    } 
+            std::cout << "Right castling requirements are met\n";
+
+
+            for (int i = x_from+1; i < 7; ++i) {
+            
+                if (board_cells[y_from][i]->GetColor() != Color::EMPTY) {
+
+                    return false;
+
+                }
+
+            }
+
+            return true;
+            
+        } else {
+
+            std::cout << "Right castling error!\n";
+
+            std::cout << !board_cells[y_from][x_from]->MadeFirstStep() << " " << !board_cells[y_from][7]->MadeFirstStep() << " " <<
+            (board_cells[y_from][x_from]->GetType() == FigureType::KING) << " " <<  (board_cells[y_from][7]->GetType() == FigureType::ROOK) << " " <<
+            (board_cells[y_from][x_from]->GetColor() == player_color) << " " <<  (board_cells[y_from][7]->GetColor() == player_color) << "\n";
+ 
+
+            return false;
+
+        }
+ 
+    }
 
 }
 

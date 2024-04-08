@@ -1,8 +1,8 @@
 #include "king.h"
 
 King::King(const int &y, const int &x, const FigureColor& figure_color, const FigureOwner& figure_owner, QObject *parent)
-    : ChessFigure{y, x, parent}
-{
+    : ChessFigure{y, x, parent} {
+
     this->figure_color = figure_color;
     this->figure_owner = figure_owner;
     figure_type = FigureType::KING;
@@ -19,8 +19,8 @@ King::King(const int &y, const int &x, const FigureColor& figure_color, const Fi
 
 }
 
-QVector<std::pair<int, int> > King::CalculateMoves(QVector<QVector<ChessFigure*>>& figures)
-{
+QVector<std::pair<int, int> > King::CalculateMoves(QVector<QVector<ChessFigure*>>& figures) {
+
     QVector<std::pair<int, int>> possible_moves;
 
     int x = GetX() - 1, y = GetY() - 1;
@@ -184,7 +184,8 @@ QVector<std::pair<int, int> > King::CalculateMoves(QVector<QVector<ChessFigure*>
 
 }
 
-bool King::MadeCastling()
-{
+bool King::MadeCastling() {
+
     return made_castling;
+
 }

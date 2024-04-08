@@ -287,7 +287,7 @@ void GamesManager::ProcessGameMessages() {
                                 std::string eat_figure_error_json_string = eat_figure_error_json_stream.str();
                                 
                                 std::vector<uint8_t> eat_figure_error_message_body(eat_figure_error_json_string.begin(), 
-                                                                               eat_figure_error_json_string.end());
+                                                                                   eat_figure_error_json_string.end());
 
                                 std::shared_ptr<Message> eat_figure_error_message = std::make_shared<Message>();
                                 eat_figure_error_message->body = eat_figure_error_message_body;
@@ -316,7 +316,7 @@ void GamesManager::ProcessGameMessages() {
                             std::string eat_figure_error_json_string = eat_figure_error_json_stream.str();
                             
                             std::vector<uint8_t> eat_figure_error_message_body(eat_figure_error_json_string.begin(), 
-                                                                           eat_figure_error_json_string.end());
+                                                                               eat_figure_error_json_string.end());
 
                             std::shared_ptr<Message> eat_figure_error_message = std::make_shared<Message>();
                             eat_figure_error_message->body = eat_figure_error_message_body;
@@ -348,6 +348,9 @@ void GamesManager::ProcessGameMessages() {
                             
                             if (game_message->game->MakeCastling(y_from, x_from, y_to, x_to, game_message->sender->GetPlayerColor())) {
 
+                                
+                                std::cout << "Castling accepted!\n";
+
 
                                 boost::property_tree::ptree make_castling_accepted;
                                 make_castling_accepted.put("Method", "POST");
@@ -363,22 +366,27 @@ void GamesManager::ProcessGameMessages() {
                                 std::string make_castling_accepted_json_string = make_castling_accepted_json_stream.str();
                                 
                                 std::vector<uint8_t> make_castling_accepted_message_body(make_castling_accepted_json_string.begin(), 
-                                                                                      make_castling_accepted_json_string.end());
+                                                                                         make_castling_accepted_json_string.end());
 
                                 std::shared_ptr<Message> make_castling_accepted_message = std::make_shared<Message>();
                                 make_castling_accepted_message->body = make_castling_accepted_message_body;
                                 make_castling_accepted_message->message_size = make_castling_accepted_message_body.size();
  
+                                game_message->game->SendMessageToAll(make_castling_accepted_message);
 
 
                             } else {
+
+
+                                std::cout << "Castling error!\n";
+
 
                             
                                 boost::property_tree::ptree make_castling_error;
                                 make_castling_error.put("Method", "POST");
                                 make_castling_error.put("Action", "Make_castling_error");
                                 make_castling_error.put("Letter_from", letter_from_str);
-                                make_castling_error.put("Index_from", index_from_str);
+                                make_castling_error.put("Index_from", index_from_str);                                
                                 make_castling_error.put("Letter_to", letter_to_str);
                                 make_castling_error.put("Index_to", index_to_str);
 
@@ -465,7 +473,7 @@ void GamesManager::ProcessGameMessages() {
                                 std::string transform_pawn_accepted_json_string = transform_pawn_accepted_json_stream.str();
                                 
                                 std::vector<uint8_t> transform_pawn_accepted_message_body(transform_pawn_accepted_json_string.begin(), 
-                                                                                       transform_pawn_accepted_json_string.end());
+                                                                                          transform_pawn_accepted_json_string.end());
 
                                 std::shared_ptr<Message> transform_pawn_accepted_message = std::make_shared<Message>();
                                 transform_pawn_accepted_message->body = transform_pawn_accepted_message_body;

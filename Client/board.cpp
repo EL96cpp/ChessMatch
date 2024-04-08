@@ -2,7 +2,7 @@
 
 Board::Board(QGraphicsScene* board_scene, QObject *parent)
     : QObject{parent}, board_scene(board_scene), player_color(FigureColor::WHITE),
-    selected_figure(nullptr), transformation_pawn(nullptr), current_player(FigureColor::WHITE) {
+      selected_figure(nullptr), transformation_pawn(nullptr), current_player(FigureColor::WHITE) {
 
     light_brush.setColor(QColor(255, 206, 158));
     light_brush.setStyle(Qt::SolidPattern);
@@ -24,7 +24,8 @@ Board::Board(QGraphicsScene* board_scene, QObject *parent)
 
 void Board::OnMakeMoveAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
-    current_player = ((current_player == FigureColor::WHITE) ? FigureColor::BLACK : FigureColor::WHITE);
+    UnpaintSelectedFigureMoves();
+    ChangeCurrentPlayer();
 
     if (player_color == FigureColor::WHITE) {
 
@@ -37,8 +38,6 @@ void Board::OnMakeMoveAccepted(const QString &letter_from, const QString &index_
                               black_board_navigation_map_y.key(index_to), black_board_navigation_map_x.key(letter_to));
 
     }
-
-    ChangeCurrentPlayer();
 
     selected_figure = nullptr;
     selected_figure_moves.clear();
@@ -53,7 +52,23 @@ void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index
 
 void Board::OnMakeCastlingAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
+    UnpaintSelectedFigureMoves();
+    ChangeCurrentPlayer();
 
+    if (player_color == FigureColor::WHITE) {
+
+        MakeFiguresCastling(white_board_navigation_map_y.key(index_from), white_board_navigation_map_x.key(letter_from),
+                            white_board_navigation_map_y.key(index_to), white_board_navigation_map_x.key(letter_to));
+
+    } else {
+
+        MakeFiguresCastling(black_board_navigation_map_y.key(index_from), black_board_navigation_map_x.key(letter_from),
+                            black_board_navigation_map_y.key(index_to), black_board_navigation_map_x.key(letter_to));
+
+    }
+
+    selected_figure = nullptr;
+    selected_figure_moves.clear();
 
 }
 
@@ -97,23 +112,27 @@ void Board::BoardCellClicked(BoardCell* cell) {
         } else if (selected_figure->GetType() == FigureType::KING && !selected_figure->MadeFirstStep() &&
                    (cell->GetX() == selected_figure->GetX() + 2 || cell->GetX() == selected_figure->GetX() - 2)) {
 
-            //Emit MakeCastling signal
 
-            /*
-            if (cell->GetX() == selected_figure->GetX() - 2) {
+            if (player_color == FigureColor::WHITE) {
 
-                MakeLeftCastling(cell->GetY(), cell->GetX());
+                QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+                QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+                QString letter_to = white_board_navigation_map_x.value(cell->GetX());
+                QString index_to = white_board_navigation_map_y.value(cell->GetY());
 
-            } else if (cell->GetX() == selected_figure->GetX() + 2) {
+                emit MakeCastling(letter_from, index_from, letter_to, index_to);
 
-                MakeRightCastling(cell->GetY(), cell->GetX());
+            } else if (player_color == FigureColor::BLACK) {
+
+                QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
+                QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
+                QString letter_to = black_board_navigation_map_x.value(cell->GetX());
+                QString index_to = black_board_navigation_map_y.value(cell->GetY());
+
+                emit MakeCastling(letter_from, index_from, letter_to, index_to);
 
             }
 
-            ChangeCurrentPlayer();
-            selected_figure = nullptr;
-            selected_figure_moves.clear();
-            */
 
         } else if (selected_figure_moves.contains(std::make_pair(cell->GetY(), cell->GetX()))) {
 
@@ -451,37 +470,35 @@ void Board::SetBoardNavigationMaps() {
 
 void Board::MoveFigureToEmptyCell(const int& y_from, const int& x_from, const int& y_to, const int& x_to) {
 
-    UnpaintSelectedFigureMoves();
-
     figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
-    //selected_figure->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
 
     std::swap(figures[y_from][x_from], figures[y_to][x_to]);
 
-    ChangeCurrentPlayer();
+}
 
-    /*
+void Board::MakeFiguresCastling(const int &y_from, const int &x_from, const int &y_to, const int &x_to) {
 
-    if (figures[y_to][x_to]->GetType() == FigureType::PAWN) {
+    if (x_from > x_to) {
 
-        if (figures[y_to][x_to]->GetOwner() == FigureOwner::PLAYER && y_to == 0) {
+        //Left castling
 
-            transformation_pawn = figures[y_to][x_to];
-            QString pawn_color = (figures[y_to][x_to]->GetColor() == FigureColor::WHITE) ? ("White") : ("Black");
-            emit ShowTransformPawnChoice(pawn_color);
-            waiting_for_pawn_transformation = true;
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
 
-        } else if (figures[y_to][x_to]->GetOwner() == FigureOwner::OPPONENT && y_to == 7) {
+        figures[y_from][0]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to+1]);
+        std::swap(figures[y_from][0], figures[y_to][x_to+1]);
 
-            transformation_pawn = figures[y_to][x_to];
-            QString pawn_color = (figures[y_to][x_to]->GetColor() == FigureColor::WHITE) ? ("White") : ("Black");
-            emit ShowTransformPawnChoice(pawn_color);
-            waiting_for_pawn_transformation = true;
+    } else {
 
-        }
+        //Right castling
+
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
+
+        figures[y_from][7]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to-1]);
+        std::swap(figures[y_from][7], figures[y_to][x_to-1]);
 
     }
-    */
 
 }
 
@@ -560,26 +577,6 @@ void Board::ChangeCurrentPlayer() {
         emit SetMainWindowPlayerTurn(QString::fromLatin1("White turn"));
 
     }
-
-}
-
-void Board::MakeLeftCastling(const int &cell_y, const int &cell_x) {
-
-    /*
-    MoveFigureToEmptyCell(cell_y, cell_x);
-    selected_figure = figures[cell_y][0];
-    MoveFigureToEmptyCell(cell_y, cell_x + 1);
-    */
-
-}
-
-void Board::MakeRightCastling(const int &cell_y, const int &cell_x) {
-
-    /*
-    MoveFigureToEmptyCell(cell_y, cell_x);
-    selected_figure = figures[cell_y][7];
-    MoveFigureToEmptyCell(cell_y, cell_x - 1);
-    */
 
 }
 

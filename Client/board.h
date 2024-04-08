@@ -55,10 +55,9 @@ public slots:
 private:
     void SetBoardNavigationMaps();
     void MoveFigureToEmptyCell(const int& y_from, const int& x_from, const int& y_to, const int& x_to);
+    void MakeFiguresCastling(const int& y_from, const int& x_from, const int& y_to, const int& x_to);
     void SelectedFigureTakesFigure(const int& taken_y, const int& taken_x);
     void ChangeCurrentPlayer();
-    void MakeLeftCastling(const int& cell_y, const int& cell_x);
-    void MakeRightCastling(const int& cell_y, const int& cell_x);
 
     void SetBoardOutlineCells();
     void SetBoardOutlineText();
