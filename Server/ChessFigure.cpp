@@ -29,7 +29,7 @@ void ChessFigure::SetMadeFirstStep(const bool& made_first_step) {
 
 }
 
-void ChessFigure::MoveTo(const size_t& y_index_to, const size_t& x_index_to) {
+void ChessFigure::SetCoordinates(const size_t& y_index_to, const size_t& x_index_to) {
 
     y_index = y_index_to;
     x_index = x_index_to;

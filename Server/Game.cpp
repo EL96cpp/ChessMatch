@@ -20,6 +20,9 @@ Game::Game(std::shared_ptr<ClientConnection>& white_player,
     white_player->SetIsWaiting(false);
     black_player->SetIsWaiting(false);
 
+    white_player->SetPlayerColor(Color::WHITE);
+    black_player->SetPlayerColor(Color::BLACK);
+
     CreateStartField();
     SendStartGameMessages();
     
@@ -166,6 +169,23 @@ Color Game::GetCurrentTurnPlayerColor() {
 
 }
 
+void Game::ChangeCurrentTurnPlayerColor() {
+
+    if (current_turn_color == Color::WHITE) {
+
+        current_turn_color = Color::BLACK;
+        std::cout << "Changed current turn color to black\n";
+
+    } else {
+
+        current_turn_color = Color::WHITE;
+        std::cout << "Changed current turn color to white\n";
+
+    }
+
+
+}
+
 void Game::SendMessageToAll(std::shared_ptr<Message>& message) {
 
     white_player->SendMessage(message);
@@ -228,9 +248,13 @@ FigureType Game::GetFigureTypeFromString(const std::string& figure_type) {
 void Game::SwapFigures(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to) {
     
     std::swap(board_cells[y_from][x_from], board_cells[y_to][x_to]);
+    
+    board_cells[y_from][x_from]->SetCoordinates(y_from, x_from);
+    board_cells[y_to][x_to]->SetCoordinates(y_to, x_to);
+
     board_cells[y_from][x_from]->SetMadeFirstStep(true);
     board_cells[y_to][x_to]->SetMadeFirstStep(true);
-    
+
 }
 
 bool Game::MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
@@ -238,6 +262,8 @@ bool Game::MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_
     if (CheckIfMoveIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
         
         SwapFigures(y_from, x_from, y_to, x_to);
+
+        ChangeCurrentTurnPlayerColor();
 
         return true;
         
@@ -366,7 +392,6 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
         std::cout << "empty field selected!\n";
 
     }
-
 
 
 

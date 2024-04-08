@@ -11,6 +11,9 @@ std::vector<std::pair<size_t, size_t>> Pawn::CalculatePossibleMoves(std::vector<
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
+    std::cout << "Calculate pawn moves:\n";
+
+
     if (figure_color == Color::WHITE) {
 
 

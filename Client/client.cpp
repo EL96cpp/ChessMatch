@@ -461,6 +461,12 @@ void Client::ProcessMessages() {
 
                 } else if (action_value.toString() == "Move_accepted") {
 
+                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                    emit MakeMoveAccepted(letter_from, index_from, letter_to, index_to);
                     qDebug() << "Move accepted";
 
                 } else if (action_value.toString() == "Pawn_transformation") {

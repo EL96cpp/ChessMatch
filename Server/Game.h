@@ -34,6 +34,7 @@ public:
     void SetDrawOfferedBy(const Color& color);
     bool CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player);
     Color GetCurrentTurnPlayerColor();
+    void ChangeCurrentTurnPlayerColor();
     void SendMessageToAll(std::shared_ptr<Message>& message);
     FigureType GetFigureTypeFromString(const std::string& figure_type);
     std::shared_ptr<ChessFigure> CreateFigure(const Color& color, const FigureType& type, const size_t& y, const size_t& x);

@@ -196,6 +196,7 @@ void GamesManager::ProcessGameMessages() {
 
                         } else {
 
+                            std::cout << "Incorrect player color!\n";
 
                             boost::property_tree::ptree move_error;
                             move_error.put("Method", "POST");

@@ -89,6 +89,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::SetPlayerTurn(const QString &turn) {
 
+    qDebug() << turn << " changed!";
     ui->game_info_label->setText(turn);
 
 }

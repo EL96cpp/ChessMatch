@@ -39,8 +39,7 @@ public:
     bool MadeFirstStep();
     void SetMadeFirstStep(const bool& made_first_step);
 
-    void MoveTo(const size_t& y_index_to, const size_t& x_index_to);
-    
+    void SetCoordinates(const size_t& y_index_to, const size_t& x_index_to);
 
     virtual std::vector<std::pair<size_t, size_t>> CalculatePossibleMoves(std::vector<std::vector<std::shared_ptr<ChessFigure>>>& board_cells);
 

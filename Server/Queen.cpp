@@ -11,6 +11,8 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
+    std::cout << "Calculate queen moves:\n";
+
 
     //Diagonal moves
     	
@@ -134,6 +136,10 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
             possible_moves.push_back(std::pair<size_t, size_t>(y_index, x_left));
             break;
 
+        } else {
+
+            break;
+
         }
 
     }
@@ -151,6 +157,10 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
         } else if (board_cells[y_index][x_right]->GetColor() != figure_color) {
 
             possible_moves.push_back(std::pair<size_t, size_t>(y_index, x_right));
+            break;
+
+        } else {
+
             break;
 
         }
@@ -172,6 +182,10 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
             possible_moves.push_back(std::pair<size_t, size_t>(y_top, x_index));
             break;
 
+        } else {
+
+            break;
+
         }
 
     }
@@ -179,7 +193,7 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
 
     int y_bottom = y_index + 1;
 
-    while (y_bottom >= 0) {
+    while (y_bottom < 8) {
 
         if (board_cells[y_bottom][x_index]->GetColor() == Color::EMPTY) {
         
@@ -191,6 +205,10 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
             possible_moves.push_back(std::pair<size_t, size_t>(y_bottom, x_index));
             break;
 
+        } else {
+
+            break;
+    
         }
 
     }

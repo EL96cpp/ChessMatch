@@ -8,6 +8,7 @@ Rook::Rook(const Color& figure_color,
 
 std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<std::vector<std::shared_ptr<ChessFigure>>>& board_cells) {
 
+    std::cout << "Calculate rook moves:\n";
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
@@ -24,6 +25,10 @@ std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<
         } else if (board_cells[y_index][x_left]->GetColor() != figure_color) {
 
             possible_moves.push_back(std::pair<size_t, size_t>(y_index, x_left));
+            break;
+
+        } else {
+
             break;
 
         }
@@ -45,6 +50,10 @@ std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<
             possible_moves.push_back(std::pair<size_t, size_t>(y_index, x_right));
             break;
 
+        } else {
+
+            break;
+
         }
 
     }
@@ -55,13 +64,17 @@ std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<
     while (y_top >= 0) {
 
         if (board_cells[y_top][x_index]->GetColor() == Color::EMPTY) {
-        
+
             possible_moves.push_back(std::pair<size_t, size_t>(y_top, x_index));
             --y_top;    
         
         } else if (board_cells[y_top][x_index]->GetColor() != figure_color) {
 
             possible_moves.push_back(std::pair<size_t, size_t>(y_top, x_index));
+            break;
+
+        } else {
+
             break;
 
         }
@@ -71,7 +84,7 @@ std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<
 
     int y_bottom = y_index + 1;
 
-    while (y_bottom >= 0) {
+    while (y_bottom < 8) {
 
         if (board_cells[y_bottom][x_index]->GetColor() == Color::EMPTY) {
         
@@ -81,6 +94,10 @@ std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<
         } else if (board_cells[y_bottom][x_index]->GetColor() != figure_color) {
 
             possible_moves.push_back(std::pair<size_t, size_t>(y_bottom, x_index));
+            break;
+
+        } else {
+
             break;
 
         }
