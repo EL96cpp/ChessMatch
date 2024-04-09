@@ -6,6 +6,12 @@
 #include <QVector>
 
 #include "chessfigure.h"
+#include "pawn.h"
+#include "rook.h"
+#include "knight.h"
+#include "bishop.h"
+#include "queen.h"
+
 
 class TakenFiguresManager : public QObject
 {
@@ -17,8 +23,11 @@ signals:
 
 public slots:
     void StartNewGame();
-    void AddPlayerTakenFigure(ChessFigure* figure);
-    void AddOpponentTakenFigure(ChessFigure* figure);
+    void AddPlayerTakenFigure(const FigureType& figure_type, const FigureColor& figure_color);
+    void AddOpponentTakenFigure(const FigureType& figure_type, const FigureColor& figure_color);
+
+private:
+    ChessFigure *CreateTakenFigure(const FigureType& figure_type, const FigureColor& figure_color);
 
 private:
     QVector<ChessFigure*> opponent_taken_figures;

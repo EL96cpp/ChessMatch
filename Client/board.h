@@ -32,8 +32,8 @@ signals:
     void TransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
                        const QString& index_to, const FigureType& figure_type);
 
-    void PlayerFigureTaken(ChessFigure* fiugre);
-    void OpponentFigureTaken(ChessFigure* figure);
+    void PlayerFigureTaken(const FigureType& figure_type, const FigureColor& figure_color);
+    void OpponentFigureTaken(const FigureType& figure_type, const FigureColor& figure_color);
     void SetMainWindowPlayerTurn(const QString& turn);
     void GameOver(const QString& winner_color);
     void ShowTransformPawnChoice(const QString& pawn_color);

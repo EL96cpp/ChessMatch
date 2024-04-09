@@ -35,6 +35,7 @@ void GamesManager::Start() {
     games_creation_thread.join();
     messages_processing_thread.join();
 
+
 }
 
 

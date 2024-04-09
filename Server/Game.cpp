@@ -280,18 +280,28 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
 
     if (CheckIfEatFigureIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
 
-        if (board_cells[y_from][x_from]->GetType() == FigureType::PAWN && std::fabs(x_from - x_to) == 1) {
+        if (board_cells[y_from][x_from]->GetType() == FigureType::PAWN && ((player_color == Color::WHITE && y_to == 0) || (player_color == Color::BLACK && y_to == 7))) {
         
             FigureType figure_type = GetFigureTypeFromString(transformation_type);
 
             if (figure_type != FigureType::EMPTY) {
 
+                if (player_color == Color::WHITE) {
+
+                    taken_by_white_player.push_back(board_cells[y_to][x_to]);
+
+                } else {
+
+                    taken_by_black_player.push_back(board_cells[y_to][x_to]);
+
+                }
+
                 board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
                 board_cells[y_to][x_to] = CreateFigure(player_color, figure_type, y_to, x_to);
                 board_cells[y_to][x_to]->SetMadeFirstStep(true);
 
-                //TODO: add eaten figure to corresponding vector
-                
+                ChangeCurrentTurnPlayerColor();
+
                 return true;
 
             } else {
@@ -302,10 +312,21 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
         
         } else {
         
+
+            if (player_color == Color::WHITE) {
+
+                taken_by_white_player.push_back(board_cells[y_to][x_to]);
+
+            } else {
+
+                taken_by_black_player.push_back(board_cells[y_to][x_to]);
+
+            }   
+
             SwapFigures(y_from, x_from, y_to, x_to);
             board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
-        
-            //TODO: add eaten figure to corresponding vector
+       
+            ChangeCurrentTurnPlayerColor();
 
             return true;
         
@@ -459,20 +480,28 @@ bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from,
     
     if (board_cells[y_from][x_from]->GetColor() == player_color) {
     
+        std::cout << "Eat figure color is correct!\n";
+
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
     
         if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
             board_cells[y_to][x_to]->GetColor() != Color::EMPTY && board_cells[y_to][x_to]->GetColor() != player_color) {
         
+            std::cout << "Found cell in possible moves for eat\n";
+
             return true;    
     
         } else {
+
+            std::cout << "No cell in eat possible moves\n";
     
             return false;
     
         }
     
     } else {
+
+        std::cout << "Eat figure color error\n";
     
         return false;
     

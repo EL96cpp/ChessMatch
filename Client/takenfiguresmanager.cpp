@@ -19,8 +19,9 @@ void TakenFiguresManager::StartNewGame()
     opponent_taken_figures.clear();
 }
 
-void TakenFiguresManager::AddPlayerTakenFigure(ChessFigure *figure)
-{
+void TakenFiguresManager::AddPlayerTakenFigure(const FigureType& figure_type, const FigureColor& figure_color) {
+
+    ChessFigure* figure = CreateTakenFigure(figure_type, figure_color);
 
     figure->setScale(0.45);
     figure->setY(y_player_taken);
@@ -41,8 +42,9 @@ void TakenFiguresManager::AddPlayerTakenFigure(ChessFigure *figure)
 
 }
 
-void TakenFiguresManager::AddOpponentTakenFigure(ChessFigure *figure)
-{
+void TakenFiguresManager::AddOpponentTakenFigure(const FigureType& figure_type, const FigureColor& figure_color) {
+
+    ChessFigure* figure = CreateTakenFigure(figure_type, figure_color);
 
     figure->setScale(0.45);
     figure->setY(y_opponent_taken);
@@ -58,6 +60,32 @@ void TakenFiguresManager::AddOpponentTakenFigure(ChessFigure *figure)
     } else {
 
         x_opponent_taken += 30;
+
+    }
+
+}
+
+ChessFigure *TakenFiguresManager::CreateTakenFigure(const FigureType &figure_type, const FigureColor &figure_color) {
+
+    if (figure_type == FigureType::PAWN) {
+
+        return new Pawn(0, 0, figure_color, FigureOwner::OPPONENT, this);
+
+    } else if (figure_type == FigureType::ROOK) {
+
+        return new Rook(0, 0, figure_color, FigureOwner::OPPONENT, this);
+
+    } else if (figure_type == FigureType::KNIGHT) {
+
+        return new Knight(0, 0, figure_color, FigureOwner::OPPONENT, this);
+
+    } else if (figure_type == FigureType::BISHOP) {
+
+        return new Bishop(0, 0, figure_color, FigureOwner::OPPONENT, this);
+
+    } else if (figure_type == FigureType::QUEEN) {
+
+        return new Queen(0, 0, figure_color, FigureOwner::OPPONENT, this);
 
     }
 

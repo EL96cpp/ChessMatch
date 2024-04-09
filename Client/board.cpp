@@ -46,7 +46,63 @@ void Board::OnMakeMoveAccepted(const QString &letter_from, const QString &index_
 
 void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
+    UnpaintSelectedFigureMoves();
+    ChangeCurrentPlayer();
 
+    if (player_color == FigureColor::WHITE) {
+
+        size_t y_from = white_board_navigation_map_y.key(index_from);
+        size_t x_from = white_board_navigation_map_x.key(letter_from);
+        size_t y_to = white_board_navigation_map_y.key(index_to);
+        size_t x_to = white_board_navigation_map_x.key(letter_to);
+
+        FigureType figure_type = figures[y_to][x_to]->GetType();
+        FigureColor figure_color = figures[y_to][x_to]->GetColor();
+
+
+        if (figures[y_to][x_to]->GetColor() != player_color) {
+
+            emit OpponentFigureTaken(figure_type, figure_color);
+
+        } else {
+
+            emit PlayerFigureTaken(figure_type, figure_color);
+
+        }
+
+        board_scene->removeItem(figures[y_to][x_to]);
+
+        figures[y_to][x_to] = new EmptyFigure(y_to, x_to, this);
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
+
+    } else {
+
+        size_t y_from = black_board_navigation_map_y.key(index_from);
+        size_t x_from = black_board_navigation_map_x.key(letter_from);
+        size_t y_to = black_board_navigation_map_y.key(index_to);
+        size_t x_to = black_board_navigation_map_x.key(letter_to);
+
+        FigureType figure_type = figures[y_to][x_to]->GetType();
+        FigureColor figure_color = figures[y_to][x_to]->GetColor();
+
+        if (figures[y_to][x_to]->GetColor() != player_color) {
+
+            emit OpponentFigureTaken(figure_type, figure_color);
+
+        } else {
+
+            emit PlayerFigureTaken(figure_type, figure_color);
+
+        }
+
+        board_scene->removeItem(figures[y_to][x_to]);
+
+        figures[y_to][x_to] = new EmptyFigure(y_to, x_to, this);
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
+
+    }
 
 }
 
@@ -519,7 +575,7 @@ void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x) {
 
         }
 
-        emit OpponentFigureTaken(std::move(figures[taken_y][taken_x]));
+        //emit OpponentFigureTaken(std::move(figures[taken_y][taken_x]));
 
     } else {
 
@@ -531,7 +587,7 @@ void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x) {
 
         }
 
-        emit PlayerFigureTaken(std::move(figures[taken_y][taken_x]));
+        //emit PlayerFigureTaken(std::move(figures[taken_y][taken_x]));
 
     }
 
