@@ -384,6 +384,8 @@ bool Game::TransformPawn(const size_t& y_from, const size_t& x_from, const size_
         board_cells[y_to][x_to] = CreateFigure(player_color, transformation_type, y_to, x_to);
         board_cells[y_to][x_to]->SetMadeFirstStep(true);
 
+        ChangeCurrentTurnPlayerColor();
+
         return true;
     
     } else {

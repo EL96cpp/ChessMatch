@@ -64,7 +64,7 @@ private:
     void ReadBody();
     void AddToIncomingMessages();
     void ProcessMessages();
-
+    FigureType GetFigureTypeFromString(const QString& figure_type);
 
 private:
     ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;

@@ -160,7 +160,74 @@ void Board::OnMakeCastlingAccepted(const QString &letter_from, const QString &in
 
 void Board::OnTransformPawnAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to, const FigureType &figure_type) {
 
+    UnpaintSelectedFigureMoves();
+    ChangeCurrentPlayer();
 
+    /*
+        if (transformation_figure_type_str.length() != 0) {
+
+            transformation_type = PawnTransformation::NONE;
+
+            FigureType transformation_figure_type = GetFigureTypeFromString(transformation_figure_type_str);
+            FigureColor transformation_figure_color = figures[y_from][x_from]->GetColor();
+
+            board_scene->removeItem(figures[y_from][x_from]);
+
+            figures[y_from][x_from] = CreateFigure(y_from, x_from, transformation_figure_type, transformation_figure_color);
+            board_scene->addItem(figures[y_from][x_from]);
+
+        }
+
+        board_scene->removeItem(figures[y_to][x_to]);
+
+        figures[y_to][x_to] = new EmptyFigure(y_to, x_to, this);
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
+
+    */
+
+
+    if (player_color == FigureColor::WHITE) {
+
+        size_t y_from = white_board_navigation_map_y.key(index_from);
+        size_t x_from = white_board_navigation_map_x.key(letter_from);
+        size_t y_to = white_board_navigation_map_y.key(index_to);
+        size_t x_to = white_board_navigation_map_x.key(letter_to);
+
+        FigureColor figure_color = figures[y_from][x_from]->GetColor();
+
+        board_scene->removeItem(figures[y_from][x_from]);
+
+        figures[y_from][x_from] = CreateFigure(y_from, x_from, figure_type, figure_color);
+
+        board_scene->addItem(figures[y_from][x_from]);
+
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
+
+    } else {
+
+        size_t y_from = black_board_navigation_map_y.key(index_from);
+        size_t x_from = black_board_navigation_map_x.key(letter_from);
+        size_t y_to = black_board_navigation_map_y.key(index_to);
+        size_t x_to = black_board_navigation_map_x.key(letter_to);
+
+        FigureColor figure_color = figures[y_from][x_from]->GetColor();
+
+        board_scene->removeItem(figures[y_from][x_from]);
+
+        figures[y_from][x_from] = CreateFigure(y_from, x_from, figure_type, figure_color);
+
+        board_scene->addItem(figures[y_from][x_from]);
+
+        figures[y_from][x_from]->SwapCoordinatesAndMovePixmaps(figures[y_to][x_to]);
+        std::swap(figures[y_from][x_from], figures[y_to][x_to]);
+
+    }
+
+    selected_figure = nullptr;
+    selected_figure_moves.clear();
+    transformation_type = PawnTransformation::NONE;
 
 }
 
@@ -387,29 +454,49 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
 void Board::FigureClicked(ChessFigure* figure) {
 
+    qDebug() << "Figure clicked " << GetStringValueOfFigureType(figure->GetType()) << " " << GetStringValueOfColor(figure->GetColor()) <<
+        " at " << figure->GetY() << " " << figure->GetX();
+
     if (transformation_type != PawnTransformation::NONE) {
 
+        qDebug() << "Figure clicked when transformation is in process";
         return;
 
     }
 
     if (selected_figure == nullptr) {
 
+        qDebug() << "Selected figure is nullptr";
+
         if (figure->GetColor() == current_player && figure->GetColor() == player_color) {
 
+            qDebug() << "Selected new figure!";
+
             selected_figure = figure;
+
+            qDebug() << "Selected figure was set!";
+
             selected_figure_moves = selected_figure->CalculateMoves(figures);
+
+            qDebug() << "Possible moves were calculated!";
+
             PaintSelectedFigureMoves();
+
+            qDebug() << "Possible moves were painted!";
 
         }
 
     } else if (selected_figure->GetY() == figure->GetY() && selected_figure->GetX() == figure->GetX()) {
+
+        qDebug() << "Unpaint old selected figure";
 
         UnpaintSelectedFigureMoves();
         selected_figure_moves.clear();
         selected_figure = nullptr;
 
     } else if (figure->GetColor() == current_player && figure->GetColor() == player_color) {
+
+        qDebug() << "Unpaint old selected figure and set new!";
 
         UnpaintSelectedFigureMoves();
         selected_figure_moves.clear();
@@ -419,10 +506,13 @@ void Board::FigureClicked(ChessFigure* figure) {
 
     } else if (selected_figure_moves.contains(std::make_pair(figure->GetY(), figure->GetX()))) {
 
+        qDebug() << "Opponent figure clicked!!";
 
         if (player_color == FigureColor::WHITE) {
 
             if (selected_figure->GetType() == FigureType::PAWN && figure->GetY() == 0) {
+
+                qDebug() << "Transform white pawn!";
 
                 pawn_transformation_x = figure->GetX();
                 pawn_transformation_y = figure->GetY();
@@ -431,6 +521,8 @@ void Board::FigureClicked(ChessFigure* figure) {
                 emit ShowTransformPawnChoice(player_color);
 
             } else {
+
+                qDebug() << "Eat black figure!";
 
                 QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
                 QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
@@ -446,6 +538,8 @@ void Board::FigureClicked(ChessFigure* figure) {
 
             if (selected_figure->GetType() == FigureType::PAWN && figure->GetY() == 0) {
 
+                qDebug() << "Transform black pawn";
+
                 pawn_transformation_x = figure->GetX();
                 pawn_transformation_y = figure->GetY();
                 transformation_type = PawnTransformation::EAT_AND_TRANSFORM;
@@ -453,6 +547,8 @@ void Board::FigureClicked(ChessFigure* figure) {
                 emit ShowTransformPawnChoice(player_color);
 
             } else {
+
+                qDebug() << "Eat white figure!";
 
                 QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
                 QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
@@ -892,6 +988,28 @@ FigureType Board::GetFigureTypeFromString(const QString &figure_type) {
     } else if (figure_type == "King") {
 
         return FigureType::KING;
+
+    } else {
+
+        return FigureType::EMPTY;
+
+    }
+
+}
+
+QString Board::GetStringValueOfColor(const FigureColor &figure_color) {
+
+    if (figure_color == FigureColor::WHITE) {
+
+        return QString::fromLatin1("White");
+
+    } else if (figure_color == FigureColor::BLACK) {
+
+        return QString::fromLatin1("Black");
+
+    } else {
+
+        return QString::fromLatin1("Empty");
 
     }
 

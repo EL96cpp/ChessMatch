@@ -26,6 +26,8 @@ Queen::Queen(const int &y,
 
 QVector<std::pair<int, int> > Queen::CalculateMoves(QVector<QVector<ChessFigure*>>& figures)
 {
+    qDebug() << "Calculate queen possible moves";
+
     QVector<std::pair<int, int>> possible_moves;
 
     //Calculate diagonal moves

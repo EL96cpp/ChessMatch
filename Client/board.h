@@ -72,6 +72,7 @@ private:
     void ChangeCurrentPlayer();
     QString GetStringValueOfFigureType(const FigureType& figure_type);
     FigureType GetFigureTypeFromString(const QString& figure_type);
+    QString GetStringValueOfColor(const FigureColor& figure_color);
     ChessFigure *CreateFigure(const size_t& y, const size_t& x, const FigureType& figure_type, const FigureColor& figure_color);
 
     void SetBoardOutlineCells();

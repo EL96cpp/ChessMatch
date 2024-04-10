@@ -21,6 +21,8 @@ Pawn::Pawn(const int &y, const int &x, const FigureColor& figure_color, const Fi
 
 QVector<std::pair<int, int> > Pawn::CalculateMoves(QVector<QVector<ChessFigure*>>& figures)
 {
+    qDebug() << "Calculate pawn possible moves";
+
     QVector<std::pair<int, int>> possible_moves;
 
     if (figure_owner == FigureOwner::PLAYER) {

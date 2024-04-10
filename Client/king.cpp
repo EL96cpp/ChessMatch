@@ -21,6 +21,8 @@ King::King(const int &y, const int &x, const FigureColor& figure_color, const Fi
 
 QVector<std::pair<int, int> > King::CalculateMoves(QVector<QVector<ChessFigure*>>& figures) {
 
+    qDebug() << "Calculate king possible moves";
+
     QVector<std::pair<int, int>> possible_moves;
 
     int x = GetX() - 1, y = GetY() - 1;
@@ -33,6 +35,7 @@ QVector<std::pair<int, int> > King::CalculateMoves(QVector<QVector<ChessFigure*>
                 possible_moves.push_back(std::make_pair(y, x));
 
             }
+
             ++x;
 
         }

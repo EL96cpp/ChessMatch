@@ -25,6 +25,8 @@ Bishop::Bishop(const int &y,
 
 QVector<std::pair<int, int> > Bishop::CalculateMoves(QVector<QVector<ChessFigure*>>& figures) {
 
+    qDebug() << "Calculate bishop possible moves";
+
     QVector<std::pair<int, int>> possible_moves;
 
     int x = GetX() - 1, y = GetY() - 1;

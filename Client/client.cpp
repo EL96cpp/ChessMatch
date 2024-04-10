@@ -512,9 +512,16 @@ void Client::ProcessMessages() {
                     emit MakeCastlingAccepted(letter_from, index_from, letter_to, index_to);
                     qDebug() << "Make castling accepted!";
 
-                } else if (action_value.toString() == "Pawn_transformation") {
+                } else if (action_value.toString() == "Transform_pawn_accepted") {
 
+                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+                    QString figure_type_str = json_message_object.value(QLatin1String("Figure_type")).toString();
+                    FigureType figure_type = GetFigureTypeFromString(figure_type_str);
 
+                    emit TransformPawnAccepted(letter_from, index_from, letter_to, index_to, figure_type);
 
                 } else if (action_value.toString() == "Move_error") {
 
@@ -563,6 +570,40 @@ void Client::ProcessMessages() {
 
         }
 
+
+    }
+
+}
+
+FigureType Client::GetFigureTypeFromString(const QString &figure_type) {
+
+    if (figure_type == "Pawn") {
+
+        return FigureType::PAWN;
+
+    } else if (figure_type == "Rook") {
+
+        return FigureType::ROOK;
+
+    } else if (figure_type == "Knight") {
+
+        return FigureType::KNIGHT;
+
+    } else if (figure_type == "Bishop") {
+
+        return FigureType::BISHOP;
+
+    } else if (figure_type == "Queen") {
+
+        return FigureType::QUEEN;
+
+    } else if (figure_type == "King") {
+
+        return FigureType::KING;
+
+    } else {
+
+        return FigureType::EMPTY;
 
     }
 

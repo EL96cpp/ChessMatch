@@ -26,6 +26,8 @@ Rook::Rook(const int &y,
 
 QVector<std::pair<int, int> > Rook::CalculateMoves(QVector<QVector<ChessFigure*>>& figures)
 {
+    qDebug() << "Calculate rook possible moves";
+
     QVector<std::pair<int, int>> possible_moves;
 
     int x = GetX() - 1, y = GetY();

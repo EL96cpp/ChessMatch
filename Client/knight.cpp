@@ -26,6 +26,8 @@ Knight::Knight(const int &y,
 
 QVector<std::pair<int, int> > Knight::CalculateMoves(QVector<QVector<ChessFigure*>>& figures)
 {
+    qDebug() << "Calculate knight possible moves";
+
     QVector<std::pair<int, int>> possible_moves;
 
     if (GetX() - 2 >= 0 && GetY() - 1 >= 0) {
