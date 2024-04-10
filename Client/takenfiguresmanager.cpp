@@ -6,8 +6,8 @@ TakenFiguresManager::TakenFiguresManager(QGraphicsScene* opponent_taken_scene, Q
 
 }
 
-void TakenFiguresManager::StartNewGame()
-{
+void TakenFiguresManager::StartNewGame() {
+
     x_opponent_taken = -130;
     y_opponent_taken = -100;
     x_player_taken = -130;
@@ -17,6 +17,7 @@ void TakenFiguresManager::StartNewGame()
     opponent_taken_scene->clear();
     player_taken_figures.clear();
     opponent_taken_figures.clear();
+
 }
 
 void TakenFiguresManager::AddPlayerTakenFigure(const FigureType& figure_type, const FigureColor& figure_color) {

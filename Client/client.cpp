@@ -209,9 +209,28 @@ void Client::OnMakeCastling(const QString &letter_from, const QString &index_fro
 
 }
 
-void Client::OnTransformPawn(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to, const FigureType &figure_type) {
+void Client::OnTransformPawn(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to, const QString &figure_type) {
 
+    QJsonObject json_message;
+    json_message[QStringLiteral("Action")] = QStringLiteral("Transform_pawn");
+    json_message[QStringLiteral("Letter_from")] = letter_from;
+    json_message[QStringLiteral("Index_from")] = index_from;
+    json_message[QStringLiteral("Letter_to")] = letter_to;
+    json_message[QStringLiteral("Index_to")] = index_to;
+    json_message[QStringLiteral("Figure_type")] = figure_type;
 
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
+
+    SendMessage(message);
 
 }
 
@@ -513,8 +532,9 @@ void Client::ProcessMessages() {
                     QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
                     QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
                     QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+                    QString transformation_figure_type = json_message_object.value(QLatin1String("Transformation_type")).toString();
 
-                    emit EatFigureAccepted(letter_from, index_from, letter_to, index_to);
+                    emit EatFigureAccepted(letter_from, index_from, letter_to, index_to, transformation_figure_type);
 
 
                 } else if (action_value.toString() == "Eat_figure_error") {

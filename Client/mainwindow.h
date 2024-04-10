@@ -46,7 +46,7 @@ signals:
 
 public slots:
     void SetPlayerTurn(const QString& turn);
-    void ShowTransformPawnChoice(const QString& pawn_color);
+    void ShowTransformPawnChoice(const FigureColor& pawn_color);
     void PawnTransformFigureClicked(ChessFigure* figure);
     void GameOver(const QString& winner_color);
     void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);

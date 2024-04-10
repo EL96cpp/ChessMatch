@@ -1,18 +1,26 @@
 #include "chessfigure.h"
 
-ChessFigure::ChessFigure(const int &y_index, const int &x_index, QObject *parent) :
-    x_board_index(x_index), y_board_index(y_index), QObject(parent)
+ChessFigure::ChessFigure(const int &y_index,
+                         const int &x_index,
+                         QObject *parent,
+                         const bool& is_transform_pawn_choice_figure) : x_board_index(x_index),
+                                                                        y_board_index(y_index),
+                                                                        QObject(parent)
 {
+
+    this->is_transform_pawn_choice_figure = is_transform_pawn_choice_figure;
     setPos(50 + x_board_index*100, 50 + y_board_index*100);
+
 }
 
-ChessFigure::ChessFigure(ChessFigure &figure)
-{
+ChessFigure::ChessFigure(ChessFigure &figure) {
+
     x_board_index = figure.x_board_index;
     y_board_index = figure.y_board_index;
     figure_type = figure.figure_type;
     figure_color = figure.figure_color;
     made_first_step = figure.made_first_step;
+
 }
 
 int ChessFigure::GetX()
@@ -135,7 +143,16 @@ void ChessFigure::Debug()
 }
 
 
-void ChessFigure::ChessFigure::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    emit FigureClicked(this);
+void ChessFigure::ChessFigure::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+
+    if (is_transform_pawn_choice_figure) {
+
+        emit TransformFigureClicked(this);
+
+    } else {
+
+        emit FigureClicked(this);
+
+    }
+
 }

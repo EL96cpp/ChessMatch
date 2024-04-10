@@ -255,6 +255,7 @@ void GamesManager::ProcessGameMessages() {
                                 eat_figure_accepted.put("Index_from", index_from_str);
                                 eat_figure_accepted.put("Letter_to", letter_to_str);
                                 eat_figure_accepted.put("Index_to", index_to_str);
+                                eat_figure_accepted.put("Transformation_type", transformation_type);
 
 
                                 std::ostringstream eat_figure_accepted_json_stream;

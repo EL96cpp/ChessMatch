@@ -1,7 +1,11 @@
 #include "bishop.h"
 
-Bishop::Bishop(const int &y, const int &x, const FigureColor& figure_color, const FigureOwner& figure_owner, QObject *parent)
-    : ChessFigure{y, x, parent}
+Bishop::Bishop(const int &y,
+               const int &x,
+               const FigureColor& figure_color,
+               const FigureOwner& figure_owner,
+               QObject *parent,
+               const bool& is_transform_pawn_choice_figure) : ChessFigure{y, x, parent, is_transform_pawn_choice_figure}
 {
     this->figure_color = figure_color;
     this->figure_owner = figure_owner;

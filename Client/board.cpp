@@ -1,7 +1,7 @@
 #include "board.h"
 
 Board::Board(QGraphicsScene* board_scene, QObject *parent)
-    : QObject{parent}, board_scene(board_scene), player_color(FigureColor::WHITE),
+    : QObject{parent}, board_scene(board_scene), player_color(FigureColor::WHITE), transformation_type(PawnTransformation::NONE),
       selected_figure(nullptr), transformation_pawn(nullptr), current_player(FigureColor::WHITE) {
 
     light_brush.setColor(QColor(255, 206, 158));
@@ -44,7 +44,9 @@ void Board::OnMakeMoveAccepted(const QString &letter_from, const QString &index_
 
 }
 
-void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
+void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index_from,
+                                const QString &letter_to, const QString &index_to,
+                                const QString& transformation_figure_type_str) {
 
     UnpaintSelectedFigureMoves();
     ChangeCurrentPlayer();
@@ -67,6 +69,20 @@ void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index
         } else {
 
             emit PlayerFigureTaken(figure_type, figure_color);
+
+        }
+
+        if (transformation_figure_type_str.length() != 0) {
+
+            transformation_type = PawnTransformation::NONE;
+
+            FigureType transformation_figure_type = GetFigureTypeFromString(transformation_figure_type_str);
+            FigureColor transformation_figure_color = figures[y_from][x_from]->GetColor();
+
+            board_scene->removeItem(figures[y_from][x_from]);
+
+            figures[y_from][x_from] = CreateFigure(y_from, x_from, transformation_figure_type, transformation_figure_color);
+            board_scene->addItem(figures[y_from][x_from]);
 
         }
 
@@ -93,6 +109,20 @@ void Board::OnEatFigureAccepted(const QString &letter_from, const QString &index
         } else {
 
             emit PlayerFigureTaken(figure_type, figure_color);
+
+        }
+
+        if (transformation_figure_type_str.length() != 0) {
+
+            transformation_type = PawnTransformation::NONE;
+
+            FigureType transformation_figure_type = GetFigureTypeFromString(transformation_figure_type_str);
+            FigureColor transformation_figure_color = figures[y_from][x_from]->GetColor();
+
+            board_scene->removeItem(figures[y_from][x_from]);
+
+            figures[y_from][x_from] = CreateFigure(y_from, x_from, transformation_figure_type, transformation_figure_color);
+            board_scene->addItem(figures[y_from][x_from]);
 
         }
 
@@ -136,7 +166,7 @@ void Board::OnTransformPawnAccepted(const QString &letter_from, const QString &i
 
 void Board::BoardCellClicked(BoardCell* cell) {
 
-    if (waiting_for_pawn_transformation) {
+    if (transformation_type != PawnTransformation::NONE) {
 
         return;
 
@@ -168,6 +198,7 @@ void Board::BoardCellClicked(BoardCell* cell) {
         } else if (selected_figure->GetType() == FigureType::KING && !selected_figure->MadeFirstStep() &&
                    (cell->GetX() == selected_figure->GetX() + 2 || cell->GetX() == selected_figure->GetX() - 2)) {
 
+            //Castlings
 
             if (player_color == FigureColor::WHITE) {
 
@@ -197,21 +228,45 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
                 if (player_color == FigureColor::WHITE) {
 
-                    QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
-                    QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
-                    QString letter_to = white_board_navigation_map_x.value(cell->GetX());
-                    QString index_to = white_board_navigation_map_y.value(cell->GetY());
+                    if (selected_figure->GetColor() == FigureColor::WHITE && cell->GetY() == 0) {
 
-                    emit MakeMove(letter_from, index_from, letter_to, index_to);
+                        pawn_transformation_x = cell->GetX();
+                        pawn_transformation_y = cell->GetY();
+                        transformation_type = PawnTransformation::TRANSFORM;
+
+                        emit ShowTransformPawnChoice(player_color);
+
+                    } else {
+
+                        QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+                        QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+                        QString letter_to = white_board_navigation_map_x.value(cell->GetX());
+                        QString index_to = white_board_navigation_map_y.value(cell->GetY());
+
+                        emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+                    }
 
                 } else if (player_color == FigureColor::BLACK) {
 
-                    QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
-                    QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
-                    QString letter_to = black_board_navigation_map_x.value(cell->GetX());
-                    QString index_to = black_board_navigation_map_y.value(cell->GetY());
+                    if (selected_figure->GetColor() == FigureColor::BLACK && cell->GetY() == 0) {
 
-                    emit MakeMove(letter_from, index_from, letter_to, index_to);
+                        pawn_transformation_x = cell->GetX();
+                        pawn_transformation_y = cell->GetY();
+                        transformation_type = PawnTransformation::TRANSFORM;
+
+                        emit ShowTransformPawnChoice(player_color);
+
+                    } else {
+
+                        QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
+                        QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
+                        QString letter_to = black_board_navigation_map_x.value(cell->GetX());
+                        QString index_to = black_board_navigation_map_y.value(cell->GetY());
+
+                        emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+                    }
 
                 }
 
@@ -228,7 +283,13 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
                     if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 0) {
 
-                        //emit EatFigure(letter_from, index_from, letter_to, index_to, );
+                        //Pawn eats and transforms
+                        pawn_transformation_y = cell->GetY();
+                        pawn_transformation_x = cell->GetX();
+                        transformation_type = PawnTransformation::EAT_AND_TRANSFORM;
+
+                        emit ShowTransformPawnChoice(player_color);
+
 
                     } else {
 
@@ -245,9 +306,14 @@ void Board::BoardCellClicked(BoardCell* cell) {
                     QString letter_to = black_board_navigation_map_x.value(cell->GetX());
                     QString index_to = black_board_navigation_map_y.value(cell->GetY());
 
-                    if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 7) {
+                    if (selected_figure->GetType() == FigureType::PAWN && cell->GetY() == 0) {
 
+                        //Pawn eats and transforms
+                        pawn_transformation_y = cell->GetY();
+                        pawn_transformation_x = cell->GetX();
+                        transformation_type = PawnTransformation::EAT_AND_TRANSFORM;
 
+                        emit ShowTransformPawnChoice(player_color);
 
                     } else {
 
@@ -321,7 +387,7 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
 void Board::FigureClicked(ChessFigure* figure) {
 
-    if (waiting_for_pawn_transformation) {
+    if (transformation_type != PawnTransformation::NONE) {
 
         return;
 
@@ -353,25 +419,50 @@ void Board::FigureClicked(ChessFigure* figure) {
 
     } else if (selected_figure_moves.contains(std::make_pair(figure->GetY(), figure->GetX()))) {
 
-        //Need to send message
 
         if (player_color == FigureColor::WHITE) {
 
-            QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
-            QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
-            QString letter_to = white_board_navigation_map_x.value(figure->GetX());
-            QString index_to = white_board_navigation_map_y.value(figure->GetY());
+            if (selected_figure->GetType() == FigureType::PAWN && figure->GetY() == 0) {
 
-            emit MakeMove(letter_from, index_from, letter_to, index_to);
+                pawn_transformation_x = figure->GetX();
+                pawn_transformation_y = figure->GetY();
+                transformation_type = PawnTransformation::EAT_AND_TRANSFORM;
+
+                emit ShowTransformPawnChoice(player_color);
+
+            } else {
+
+                QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+                QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+                QString letter_to = white_board_navigation_map_x.value(figure->GetX());
+                QString index_to = white_board_navigation_map_y.value(figure->GetY());
+
+                emit EatFigure(letter_from, index_from, letter_to, index_to);
+                //emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+            }
 
         } else if (player_color == FigureColor::BLACK) {
 
-            QString letter_from = black_board_navigation_map_x.value(selected_figure->GetX());
-            QString index_from = black_board_navigation_map_y.value(selected_figure->GetY());
-            QString letter_to = black_board_navigation_map_x.value(figure->GetX());
-            QString index_to = black_board_navigation_map_y.value(figure->GetY());
+            if (selected_figure->GetType() == FigureType::PAWN && figure->GetY() == 0) {
 
-            emit MakeMove(letter_from, index_from, letter_to, index_to);
+                pawn_transformation_x = figure->GetX();
+                pawn_transformation_y = figure->GetY();
+                transformation_type = PawnTransformation::EAT_AND_TRANSFORM;
+
+                emit ShowTransformPawnChoice(player_color);
+
+            } else {
+
+                QString letter_from = white_board_navigation_map_x.value(selected_figure->GetX());
+                QString index_from = white_board_navigation_map_y.value(selected_figure->GetY());
+                QString letter_to = white_board_navigation_map_x.value(figure->GetX());
+                QString index_to = white_board_navigation_map_y.value(figure->GetY());
+
+                emit EatFigure(letter_from, index_from, letter_to, index_to);
+                //emit MakeMove(letter_from, index_from, letter_to, index_to);
+
+            }
 
         }
 
@@ -393,6 +484,64 @@ void Board::FigureClicked(ChessFigure* figure) {
 
 }
 
+void Board::TransformFigureClicked(ChessFigure *figure) {
+
+    if (transformation_type == PawnTransformation::TRANSFORM) {
+
+
+        QString figure_type = GetStringValueOfFigureType(figure->GetType());
+
+        if (player_color == FigureColor::WHITE) {
+
+            QString letter_from = white_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = white_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = white_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = white_board_navigation_map_y[pawn_transformation_y];
+
+            emit TransformPawn(letter_from, index_from, letter_to, index_to, figure_type);
+
+        } else if (player_color == FigureColor::BLACK) {
+
+            QString letter_from = black_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = black_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = black_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = black_board_navigation_map_y[pawn_transformation_y];
+
+            emit TransformPawn(letter_from, index_from, letter_to, index_to, figure_type);
+
+        }
+
+
+    } else if (transformation_type == PawnTransformation::EAT_AND_TRANSFORM) {
+
+
+        QString figure_type = GetStringValueOfFigureType(figure->GetType());
+
+        if (player_color == FigureColor::WHITE) {
+
+            QString letter_from = white_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = white_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = white_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = white_board_navigation_map_y[pawn_transformation_y];
+
+            emit EatFigure(letter_from, index_from, letter_to, index_to, figure_type);
+
+        } else if (player_color == FigureColor::BLACK) {
+
+            QString letter_from = black_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = black_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = black_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = black_board_navigation_map_y[pawn_transformation_y];
+
+            emit EatFigure(letter_from, index_from, letter_to, index_to, figure_type);
+
+        }
+
+
+    }
+
+}
+
 void Board::StartNewGame() {
 
     board_scene->clear();
@@ -404,7 +553,7 @@ void Board::StartNewGame() {
     selected_figure_moves.clear();
     game_over = false;
     transformation_pawn = nullptr;
-    waiting_for_pawn_transformation = false;
+    transformation_type = PawnTransformation::NONE;
     current_player = FigureColor::WHITE;
 
     SetBoardOutlineCells();
@@ -437,8 +586,59 @@ void Board::SetBrushes(const QColor& light_color, const QColor& dark_color, cons
 
 void Board::SetPawnTransformChoice(const FigureType &figure_type) {
 
+    if (transformation_type == PawnTransformation::TRANSFORM) {
+
+        QString figure_type_str = GetStringValueOfFigureType(figure_type);
+
+        if (player_color == FigureColor::WHITE) {
+
+            QString letter_from = white_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = white_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = white_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = white_board_navigation_map_y[pawn_transformation_y];
+
+            emit TransformPawn(letter_from, index_from, letter_to, index_to, figure_type_str);
+
+        } else if (player_color == FigureColor::BLACK) {
+
+            QString letter_from = black_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = black_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = black_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = black_board_navigation_map_y[pawn_transformation_y];
+
+            emit TransformPawn(letter_from, index_from, letter_to, index_to, figure_type_str);
+
+        }
+
+    } else if (transformation_type == PawnTransformation::EAT_AND_TRANSFORM) {
+
+        QString figure_type_str = GetStringValueOfFigureType(figure_type);
+
+        if (player_color == FigureColor::WHITE) {
+
+            QString letter_from = white_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = white_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = white_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = white_board_navigation_map_y[pawn_transformation_y];
+
+            emit EatFigure(letter_from, index_from, letter_to, index_to, figure_type_str);
+
+        } else if (player_color == FigureColor::BLACK) {
+
+            QString letter_from = black_board_navigation_map_x[selected_figure->GetX()];
+            QString index_from = black_board_navigation_map_y[selected_figure->GetY()];
+            QString letter_to = black_board_navigation_map_x[pawn_transformation_x];
+            QString index_to = black_board_navigation_map_y[pawn_transformation_y];
+
+            emit EatFigure(letter_from, index_from, letter_to, index_to, figure_type_str);
+
+        }
+
+    }
+
+    /*
     qDebug() << "Pawn transformation ";
-    int y = transformation_pawn->GetY(), x = transformation_pawn->GetX();
+    size_t y = transformation_pawn->GetY(), x = transformation_pawn->GetX();
     qDebug() << y << " " << x;
     board_scene->removeItem(figures[y][x]);
     FigureColor color = transformation_pawn->GetColor();
@@ -479,7 +679,8 @@ void Board::SetPawnTransformChoice(const FigureType &figure_type) {
     figures[y][x] = std::move(figure);
 
     transformation_pawn = nullptr;
-    waiting_for_pawn_transformation = false;
+    transformation_type = PawnTransformation::NONE;
+    */
 
 }
 
@@ -603,16 +804,16 @@ void Board::SelectedFigureTakesFigure(const int &taken_y, const int &taken_x) {
         if (figures[taken_y][taken_x]->GetOwner() == FigureOwner::PLAYER && taken_y == 0) {
 
             transformation_pawn = figures[taken_y][taken_x];
-            QString pawn_color = (figures[taken_y][taken_x]->GetColor() == FigureColor::WHITE) ? ("White") : ("Black");
-            emit ShowTransformPawnChoice(pawn_color);
-            waiting_for_pawn_transformation = true;
+            //QString pawn_color = (figures[taken_y][taken_x]->GetColor() == FigureColor::WHITE) ? ("White") : ("Black");
+            //emit ShowTransformPawnChoice(pawn_color);
+            //waiting_for_pawn_transformation = true;
 
         } else if (figures[taken_y][taken_x]->GetOwner() == FigureOwner::OPPONENT && taken_y == 7) {
 
             transformation_pawn = figures[taken_y][taken_x];
-            QString pawn_color = (figures[taken_y][taken_x]->GetColor() == FigureColor::WHITE) ? ("White") : ("Black");
-            emit ShowTransformPawnChoice(pawn_color);
-            waiting_for_pawn_transformation = true;
+            //QString pawn_color = (figures[taken_y][taken_x]->GetColor() == FigureColor::WHITE) ? ("White") : ("Black");
+            //emit ShowTransformPawnChoice(pawn_color);
+            //waiting_for_pawn_transformation = true;
 
         }
 
@@ -633,6 +834,109 @@ void Board::ChangeCurrentPlayer() {
         emit SetMainWindowPlayerTurn(QString::fromLatin1("White turn"));
 
     }
+
+}
+
+QString Board::GetStringValueOfFigureType(const FigureType &figure_type) {
+
+    if (figure_type == FigureType::PAWN) {
+
+        return QString::fromLatin1("Pawn");
+
+    } else if (figure_type == FigureType::ROOK) {
+
+        return QString::fromLatin1("Rook");
+
+    } else if (figure_type == FigureType::KNIGHT) {
+
+        return QString::fromLatin1("Knight");
+
+    } else if (figure_type == FigureType::BISHOP) {
+
+        return QString::fromLatin1("Bishop");
+
+    } else if (figure_type == FigureType::QUEEN) {
+
+        return QString::fromLatin1("Queen");
+
+    } else if (figure_type == FigureType::KING) {
+
+        return QString::fromLatin1("King");
+
+    }
+
+}
+
+FigureType Board::GetFigureTypeFromString(const QString &figure_type) {
+
+    if (figure_type == "Pawn") {
+
+        return FigureType::PAWN;
+
+    } else if (figure_type == "Rook") {
+
+        return FigureType::ROOK;
+
+    } else if (figure_type == "Knight") {
+
+        return FigureType::KNIGHT;
+
+    } else if (figure_type == "Bishop") {
+
+        return FigureType::BISHOP;
+
+    } else if (figure_type == "Queen") {
+
+        return FigureType::QUEEN;
+
+    } else if (figure_type == "King") {
+
+        return FigureType::KING;
+
+    }
+
+}
+
+ChessFigure *Board::CreateFigure(const size_t &y, const size_t &x, const FigureType &figure_type, const FigureColor &figure_color) {
+
+    if (figure_type == FigureType::PAWN) {
+
+        Pawn* figure = new Pawn(y, x, figure_color, FigureOwner::PLAYER, this);
+        connect(figure, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
+        return figure;
+
+    } else if (figure_type == FigureType::ROOK) {
+
+        Rook* figure = new Rook(y, x, figure_color, FigureOwner::PLAYER, this);
+        connect(figure, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
+        return figure;
+
+    } else if (figure_type == FigureType::KNIGHT) {
+
+        Knight* figure = new Knight(y, x, figure_color, FigureOwner::PLAYER, this);
+        connect(figure, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
+        return figure;
+
+    } else if (figure_type == FigureType::BISHOP) {
+
+        Bishop* figure = new Bishop(y, x, figure_color, FigureOwner::PLAYER, this);
+        connect(figure, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
+        return figure;
+
+    } else if (figure_type == FigureType::QUEEN) {
+
+        Queen* figure = new Queen(y, x, figure_color, FigureOwner::PLAYER, this);
+        connect(figure, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
+        return figure;
+
+    } else if (figure_type == FigureType::KING) {
+
+        King* figure = new King(y, x, figure_color, FigureOwner::PLAYER, this);
+        connect(figure, &ChessFigure::FigureClicked, this, &Board::FigureClicked);
+        return figure;
+
+    }
+
 
 }
 

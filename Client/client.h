@@ -39,7 +39,7 @@ public slots:
                      const QString& index_to, const QString& transformation_type = "");
     void OnMakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnTransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
-                         const QString& index_to, const FigureType& figure_type);
+                         const QString& index_to, const QString& figure_type);
 
 signals:
     void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
@@ -48,7 +48,9 @@ signals:
     void StartWaitingForOpponentAccepted();
     void GameStarted(const QString& player_color);
     void MakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
-    void EatFigureAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
+    void EatFigureAccepted(const QString& letter_from, const QString& index_from,
+                           const QString& letter_to, const QString& index_to,
+                           const QString& transformation_figure_type = "");
     void MakeCastlingAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void TransformPawnAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to,
                                const QString& index_to, const FigureType& figure_type);

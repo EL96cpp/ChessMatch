@@ -36,7 +36,8 @@ class ChessFigure : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    ChessFigure(const int& y_index, const int& x_index, QObject *parent = nullptr);
+    ChessFigure(const int& y_index, const int& x_index,
+                QObject *parent = nullptr, const bool& is_transform_pawn_choice_figure = false);
     ChessFigure(ChessFigure& figure);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     int GetX();
@@ -57,6 +58,7 @@ public:
 
 signals:
     void FigureClicked(ChessFigure* figure);
+    void TransformFigureClicked(ChessFigure* figure);
 
 protected:
     int y_board_index;
@@ -64,6 +66,7 @@ protected:
     FigureType figure_type;
     FigureColor figure_color;
     FigureOwner figure_owner;
+    bool is_transform_pawn_choice_figure;
     bool made_first_step = false;
 
 };

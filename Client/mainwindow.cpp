@@ -94,17 +94,17 @@ void MainWindow::SetPlayerTurn(const QString &turn) {
 
 }
 
-void MainWindow::ShowTransformPawnChoice(const QString& pawn_color) {
+void MainWindow::ShowTransformPawnChoice(const FigureColor& pawn_color) {
 
     ui->pawnTransformView->setScene(pawn_transform_scene);
     ui->pawnTransformView->show();
     ui->pawnTransformView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    if (QString::compare(pawn_color, QString::fromLatin1("White"), Qt::CaseInsensitive) == 0) {
+    if (pawn_color == FigureColor::WHITE) {
 
         SetWhitePawnTransformChoice();
 
-    } else if (QString::compare(pawn_color, QString::fromLatin1("Black"), Qt::CaseInsensitive) == 0) {
+    } else if (pawn_color == FigureColor::BLACK) {
 
         SetBlackPawnTransformChoice();
 
@@ -381,29 +381,29 @@ void MainWindow::SetWhitePawnTransformChoice()
 {
     int x = 0, y = 0;
 
-    ChessFigure* rook = new Rook(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this);
-    connect(rook, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* rook = new Rook(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this, true);
+    connect(rook, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     rook->setScale(0.6);
     pawn_transform_figures.push_back(rook);
     pawn_transform_scene->addItem(rook);
 
     ++y;
-    ChessFigure* knight = new Knight(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this);
-    connect(knight, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* knight = new Knight(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this, true);
+    connect(knight, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     knight->setScale(0.6);
     pawn_transform_figures.push_back(knight);
     pawn_transform_scene->addItem(knight);
 
     ++y;
-    ChessFigure* bishop = new Bishop(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this);
-    connect(bishop, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* bishop = new Bishop(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this, true);
+    connect(bishop, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     bishop->setScale(0.6);
     pawn_transform_figures.push_back(bishop);
     pawn_transform_scene->addItem(bishop);
 
     ++y;
-    ChessFigure* queen = new Queen(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this);
-    connect(queen, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* queen = new Queen(y, x, FigureColor::WHITE, FigureOwner::PLAYER, this, true);
+    connect(queen, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     queen->setScale(0.6);
     pawn_transform_figures.push_back(queen);
     pawn_transform_scene->addItem(queen);
@@ -415,29 +415,29 @@ void MainWindow::SetBlackPawnTransformChoice()
 {
     int x = 0, y = 0;
 
-    ChessFigure* rook = new Rook(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this);
-    connect(rook, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* rook = new Rook(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this, true);
+    connect(rook, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     rook->setScale(0.6);
     pawn_transform_figures.push_back(rook);
     pawn_transform_scene->addItem(rook);
 
     ++y;
-    ChessFigure* knight = new Knight(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this);
-    connect(knight, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* knight = new Knight(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this, true);
+    connect(knight, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     knight->setScale(0.6);
     pawn_transform_figures.push_back(knight);
     pawn_transform_scene->addItem(knight);
 
     ++y;
-    ChessFigure* bishop = new Bishop(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this);
-    connect(bishop, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* bishop = new Bishop(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this, true);
+    connect(bishop, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     bishop->setScale(0.6);
     pawn_transform_figures.push_back(bishop);
     pawn_transform_scene->addItem(bishop);
 
     ++y;
-    ChessFigure* queen = new Queen(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this);
-    connect(queen, &ChessFigure::FigureClicked, this, &MainWindow::PawnTransformFigureClicked);
+    ChessFigure* queen = new Queen(y, x, FigureColor::BLACK, FigureOwner::PLAYER, this, true);
+    connect(queen, &ChessFigure::TransformFigureClicked, this, &MainWindow::PawnTransformFigureClicked);
     queen->setScale(0.6);
     pawn_transform_figures.push_back(queen);
     pawn_transform_scene->addItem(queen);
