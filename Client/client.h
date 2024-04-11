@@ -55,6 +55,7 @@ signals:
     void TransformPawnAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to,
                                const QString& index_to, const FigureType& figure_type);
     void ShowErrorMessage(const QString& title, const QString& error_description);
+    void GameOver(const QString& game_result);
 
 private:
     void SendMessage(const std::shared_ptr<Message>& message);

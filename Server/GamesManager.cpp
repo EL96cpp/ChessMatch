@@ -4,7 +4,7 @@
 #include "ClientConnection.h"
 
 
-GamesManager::GamesManager(ThreadSafeQueue<GameResult>& game_results) : game_results(game_results) {
+GamesManager::GamesManager(ThreadSafeQueue<GameResult>& game_results) : game_results(game_results), waiting_players(game_results) {
 
     board_navigation_map["1"] = 7;
     board_navigation_map["2"] = 6;
@@ -248,28 +248,82 @@ void GamesManager::ProcessGameMessages() {
                                 game_message->sender->GetPlayerColor(), transformation_type)) {
 
 
-                                boost::property_tree::ptree eat_figure_accepted;
-                                eat_figure_accepted.put("Method", "POST");
-                                eat_figure_accepted.put("Action", "Eat_figure_accepted");
-                                eat_figure_accepted.put("Letter_from", letter_from_str);
-                                eat_figure_accepted.put("Index_from", index_from_str);
-                                eat_figure_accepted.put("Letter_to", letter_to_str);
-                                eat_figure_accepted.put("Index_to", index_to_str);
-                                eat_figure_accepted.put("Transformation_type", transformation_type);
+                                if (game_message->game->GetGameResultType() == GameResultType::IN_PROCESS) {
 
 
-                                std::ostringstream eat_figure_accepted_json_stream;
-                                boost::property_tree::write_json(eat_figure_accepted_json_stream, eat_figure_accepted);        
-                                std::string eat_figure_accepted_json_string = eat_figure_accepted_json_stream.str();
-                                
-                                std::vector<uint8_t> eat_figure_accepted_message_body(eat_figure_accepted_json_string.begin(), 
-                                                                               eat_figure_accepted_json_string.end());
+                                    boost::property_tree::ptree eat_figure_accepted;
+                                    eat_figure_accepted.put("Method", "POST");
+                                    eat_figure_accepted.put("Action", "Eat_figure_accepted");
+                                    eat_figure_accepted.put("Letter_from", letter_from_str);
+                                    eat_figure_accepted.put("Index_from", index_from_str);
+                                    eat_figure_accepted.put("Letter_to", letter_to_str);
+                                    eat_figure_accepted.put("Index_to", index_to_str);
+                                    eat_figure_accepted.put("Transformation_type", transformation_type);
 
-                                std::shared_ptr<Message> eat_figure_accepted_message = std::make_shared<Message>();
-                                eat_figure_accepted_message->body = eat_figure_accepted_message_body;
-                                eat_figure_accepted_message->message_size = eat_figure_accepted_message_body.size();
-                                
-                                game_message->game->SendMessageToAll(eat_figure_accepted_message);
+
+                                    std::ostringstream eat_figure_accepted_json_stream;
+                                    boost::property_tree::write_json(eat_figure_accepted_json_stream, eat_figure_accepted);        
+                                    std::string eat_figure_accepted_json_string = eat_figure_accepted_json_stream.str();
+                                    
+                                    std::vector<uint8_t> eat_figure_accepted_message_body(eat_figure_accepted_json_string.begin(), 
+                                                                                   eat_figure_accepted_json_string.end());
+
+                                    std::shared_ptr<Message> eat_figure_accepted_message = std::make_shared<Message>();
+                                    eat_figure_accepted_message->body = eat_figure_accepted_message_body;
+                                    eat_figure_accepted_message->message_size = eat_figure_accepted_message_body.size();
+                                    
+                                    game_message->game->SendMessageToAll(eat_figure_accepted_message);
+
+
+                                } else if (game_message->game->GetGameResultType() == GameResultType::WHITE_WINS) {
+
+
+                                    boost::property_tree::ptree game_over;
+                                    game_over.put("Method", "POST");
+                                    game_over.put("Action", "Game_over");
+                                    game_over.put("Result", "White_wins");
+
+
+                                    std::ostringstream game_over_json_stream;
+                                    boost::property_tree::write_json(game_over_json_stream, game_over);        
+                                    std::string game_over_json_string = game_over_json_stream.str();
+                                    
+                                    std::vector<uint8_t> game_over_message_body(game_over_json_string.begin(), 
+                                                                                   game_over_json_string.end());
+
+                                    std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
+                                    game_over_message->body = game_over_message_body;
+                                    game_over_message->message_size = game_over_message_body.size();
+                                    
+                                    game_message->game->SendMessageToAll(game_over_message);
+
+ 
+
+                                } else if (game_message->game->GetGameResultType() == GameResultType::BLACK_WINS) {
+
+
+                                    boost::property_tree::ptree game_over;
+                                    game_over.put("Method", "POST");
+                                    game_over.put("Action", "Game_over");
+                                    game_over.put("Result", "Black_wins");
+
+
+                                    std::ostringstream game_over_json_stream;
+                                    boost::property_tree::write_json(game_over_json_stream, game_over);        
+                                    std::string game_over_json_string = game_over_json_stream.str();
+                                    
+                                    std::vector<uint8_t> game_over_message_body(game_over_json_string.begin(), 
+                                                                                   game_over_json_string.end());
+
+                                    std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
+                                    game_over_message->body = game_over_message_body;
+                                    game_over_message->message_size = game_over_message_body.size();
+                                    
+                                    game_message->game->SendMessageToAll(game_over_message);
+
+
+
+                                }
 
 
                             } else {
@@ -575,7 +629,50 @@ void GamesManager::ProcessGameMessages() {
 
                     } else if (action == "Accept_draw") {
 
-                    
+                        
+                        if (game_message->game->DrawOfferedBy() != Color::EMPTY && game_message->game->DrawOfferedBy() != game_message->sender->GetPlayerColor()) {
+
+                            
+                            boost::property_tree::ptree offer_draw;
+                            offer_draw.put("Action", "Draw_accepted");
+                            
+                            std::ostringstream offer_draw_json_stream;
+                            boost::property_tree::write_json(offer_draw_json_stream, offer_draw);        
+                            std::string offer_draw_json_string = offer_draw_json_stream.str();
+                            
+                            std::vector<uint8_t> offer_draw_message_body(offer_draw_json_string.begin(), offer_draw_json_string.end());
+
+                            std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                            new_message->body = offer_draw_message_body;
+                            new_message->message_size = offer_draw_message_body.size();
+
+                            game_message->sender->SendMessage(new_message);
+
+                           
+
+
+                        } else {
+
+
+                            boost::property_tree::ptree offer_draw;
+                            offer_draw.put("Action", "Accept_draw_error");
+                            
+                            std::ostringstream offer_draw_json_stream;
+                            boost::property_tree::write_json(offer_draw_json_stream, offer_draw);        
+                            std::string offer_draw_json_string = offer_draw_json_stream.str();
+                            
+                            std::vector<uint8_t> offer_draw_message_body(offer_draw_json_string.begin(), offer_draw_json_string.end());
+
+                            std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                            new_message->body = offer_draw_message_body;
+                            new_message->message_size = offer_draw_message_body.size();
+
+                            game_message->sender->SendMessage(new_message);
+
+
+                        }
+
+
 
                     } else if (action == "Cancel_draw") {
 

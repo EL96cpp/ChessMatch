@@ -22,6 +22,12 @@ Board::Board(QGraphicsScene* board_scene, QObject *parent)
 
 }
 
+void Board::SetGameOver(const bool &game_over) {
+
+    this->game_over = game_over;
+
+}
+
 void Board::OnMakeMoveAccepted(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
     UnpaintSelectedFigureMoves();
@@ -233,6 +239,11 @@ void Board::OnTransformPawnAccepted(const QString &letter_from, const QString &i
 
 void Board::BoardCellClicked(BoardCell* cell) {
 
+    if (game_over) {
+
+        return;
+
+    }
 
     if (selected_figure == nullptr) {
 
@@ -465,8 +476,11 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
 void Board::FigureClicked(ChessFigure* figure) {
 
-    qDebug() << "Figure clicked " << GetStringValueOfFigureType(figure->GetType()) << " " << GetStringValueOfColor(figure->GetColor()) <<
-        " at " << figure->GetY() << " " << figure->GetX();
+    if (game_over) {
+
+        return;
+
+    }
 
     if (selected_figure == nullptr) {
 

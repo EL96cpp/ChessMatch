@@ -22,7 +22,7 @@ public:
 
     bool IsConnected();
 
-    void OnLoggedIn(const std::string& nickname, const size_t& rating);
+    void OnLoggedIn(const std::string& nickname, const size_t& rating, const size_t& games_played);
     void Logout();
     void SetIsWaiting(const bool& is_waiting);
 
@@ -38,6 +38,7 @@ public:
     void SetPlayerColor(const Color& player_color);
     std::string GetNickname();
     size_t GetRating();
+    size_t GetGamesPlayed();
     bool LoggedIn();
     bool IsWaiting();
     void SetGame(std::shared_ptr<Game>& game);
@@ -55,6 +56,7 @@ private:
     Color player_color;
     std::string nickname;
     size_t rating;
+    size_t games_played;
     bool logged_in;
     bool is_waiting;
     std::vector<uint8_t> message_size;

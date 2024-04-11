@@ -7,15 +7,20 @@
 #include "Bishop.h"
 #include "Queen.h"
 #include "King.h"
+#include "GameResult.h"
+#include "ThreadSafeQueue.h"
 
 
 
-Game::Game() : white_player(nullptr), black_player(nullptr), draw_offered_by(Color::EMPTY) {}
+Game::Game(ThreadSafeQueue<GameResult>& game_results_queue) : white_player(nullptr), black_player(nullptr), draw_offered_by(Color::EMPTY),
+                                                              game_results_queue(game_results_queue) {}
 
 
 Game::Game(std::shared_ptr<ClientConnection>& white_player, 
-           std::shared_ptr<ClientConnection>& black_player) : white_player(white_player), black_player(black_player),
-                                                              current_turn_color(Color::WHITE), draw_offered_by(Color::EMPTY) {
+           std::shared_ptr<ClientConnection>& black_player,
+           ThreadSafeQueue<GameResult>& game_results_queue) : white_player(white_player), black_player(black_player),
+                                                              current_turn_color(Color::WHITE), draw_offered_by(Color::EMPTY),
+                                                              game_results_queue(game_results_queue) {
 
     white_player->SetIsWaiting(false);
     black_player->SetIsWaiting(false);
@@ -26,6 +31,8 @@ Game::Game(std::shared_ptr<ClientConnection>& white_player,
     CreateStartField();
     SendStartGameMessages();
     
+    game_result_type = GameResultType::IN_PROCESS;
+
     start_timepoint = std::chrono::system_clock::now();
 
 }
@@ -296,13 +303,33 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
 
                 }
 
-                board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
-                board_cells[y_to][x_to] = CreateFigure(player_color, figure_type, y_to, x_to);
-                board_cells[y_to][x_to]->SetMadeFirstStep(true);
+                if (board_cells[y_to][x_to]->GetType() != FigureType::KING) {
 
-                ChangeCurrentTurnPlayerColor();
+                    board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
+                    board_cells[y_to][x_to] = CreateFigure(player_color, figure_type, y_to, x_to);
+                    board_cells[y_to][x_to]->SetMadeFirstStep(true);
 
-                return true;
+                    ChangeCurrentTurnPlayerColor();
+
+                    return true;
+                
+                } else {
+
+                    //Game over
+                    if (board_cells[y_from][x_from]->GetColor() == Color::WHITE) {
+
+                        game_result_type = GameResultType::WHITE_WINS;
+
+                    } else if (board_cells[y_from][x_from]->GetColor() == Color::BLACK) {
+
+                        game_result_type = GameResultType::BLACK_WINS;
+
+                    }
+
+                    return true;
+
+                }
+               
 
             } else {
 
@@ -323,13 +350,32 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
 
             }   
 
-            SwapFigures(y_from, x_from, y_to, x_to);
-            board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
-       
-            ChangeCurrentTurnPlayerColor();
+            if (board_cells[y_to][x_to]->GetType() != FigureType::KING) {
 
-            return true;
-        
+                SwapFigures(y_from, x_from, y_to, x_to);
+                board_cells[y_from][x_from] = std::make_shared<ChessFigure>(Color::EMPTY, FigureType::EMPTY, y_from, x_from);
+           
+                ChangeCurrentTurnPlayerColor();
+
+                return true;
+                
+            } else {
+
+                //Game over
+                if (board_cells[y_from][x_from]->GetColor() == Color::WHITE) {
+
+                    game_result_type = GameResultType::WHITE_WINS;
+
+                } else if (board_cells[y_from][x_from]->GetColor() == Color::BLACK) {
+
+                    game_result_type = GameResultType::BLACK_WINS;
+
+                }
+
+                return true;
+
+            }
+
         }
 
     } else {
@@ -646,5 +692,63 @@ bool Game::CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t
 
 }
 
+size_t Game::CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, std::shared_ptr<ClientConnection>& opponent, const PlayersGameResult& game_result) {
 
+    size_t player_rating = player->GetRating();
+    size_t player_games_played = player->GetGamesPlayed();
+    size_t opponent_rating = opponent->GetRating();
+
+    double e = 1.0 / (1.0 + std::pow(10.0, (opponent_rating - player_rating)/400.0));    
+    
+    double s;
+
+    if (game_result == PlayersGameResult::WINNER) {
+
+        s = 1.0;
+
+    } else if (game_result == PlayersGameResult::DRAW) {
+
+        s = 0.5;
+
+    } else if (game_result == PlayersGameResult::LOOSER) {
+
+        s = 0.0;
+
+    }
+
+    double k;
+
+    if (player_rating >= 2400) {
+
+        k = 10.0;        
+
+    } else if (player_rating < 2400 && player_games_played >= 30) {
+
+        k = 20.0;
+
+    } else {
+
+        k = 40.0;
+
+    }
+
+    double new_player_rating =  player_rating + k * (s - e);
+    
+    std::cout << "New plaer rating for " << player->GetNickname() << " is " << new_player_rating << "\n";
+
+    
+
+}
+
+GameResultType Game::GetGameResultType() {
+
+    return game_result_type;
+
+}
+
+void Game::OnGameOver() {
+
+
+
+}
 

@@ -32,6 +32,7 @@ class Board : public QObject
     Q_OBJECT
 public:
     Board(QGraphicsScene* board_scene, QObject *parent = nullptr);
+    void SetGameOver(const bool& game_over);
 
 signals:
     void MakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);

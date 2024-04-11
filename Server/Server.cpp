@@ -4,7 +4,8 @@
 #include "ThreadSafeQueue.cpp"
 
 
-Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)), games_manager(game_results) {}
+Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)), 
+                                        games_manager(game_results), client_connections(game_results) {}
 
 bool Server::Start() {
 
@@ -239,7 +240,7 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
         }
         
-        client_connection->OnLoggedIn(nickname, rating);
+        client_connection->OnLoggedIn(nickname, rating, games_played);
 
         boost::property_tree::ptree property_tree;
         property_tree.put("Method", "POST");

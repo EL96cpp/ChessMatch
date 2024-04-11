@@ -4,6 +4,9 @@
 #include "Game.cpp"
 #include "ChessFigure.h"
 #include "ChessFigure.cpp"
+#include "GameResult.h"
+
+ThreadSafeClientsQueue::ThreadSafeClientsQueue(ThreadSafeQueue<GameResult>& game_results_queue) : game_results_queue(game_results_queue) {}
 
 
 bool ThreadSafeClientsQueue::contains_nickname(const std::string& nickname) {
@@ -49,7 +52,7 @@ std::vector<std::shared_ptr<Game>> ThreadSafeClientsQueue::create_games() {
 
             //Some problems, game constructor is undefined error!!
 
-            std::shared_ptr<Game> game = std::make_shared<Game>(deque[i], deque[j]);
+            std::shared_ptr<Game> game = std::make_shared<Game>(deque[i], deque[j], game_results_queue);
             deque[i]->SetGame(game);
             deque[j]->SetGame(game);
             games.push_back(game);

@@ -1264,7 +1264,7 @@ font: 18pt ;</string>
        </rect>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>1020</x>
@@ -1290,13 +1290,13 @@ font: 18pt ;</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>1100</x>
         <y>500</y>
         <width>231</width>
-        <height>111</height>
+        <height>134</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -1387,6 +1387,28 @@ QPushButton:hover {
          </property>
          <property name="text">
           <string>Resign</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="gameExitButton">
+         <property name="styleSheet">
+          <string notr="true">QPushButton { 
+	border-radius: 10px;	
+	background-color: &quot;#12372A&quot;;
+	color: rgb(255, 255, 255);	
+	font: 18pt ;
+}
+
+QPushButton:hover { 
+	
+	color: &quot;#FF9C42&quot;;
+	background-color: &quot;#415f55&quot;;
+
+}</string>
+         </property>
+         <property name="text">
+          <string>Exit</string>
          </property>
         </widget>
        </item>

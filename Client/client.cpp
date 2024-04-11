@@ -564,6 +564,13 @@ void Client::ProcessMessages() {
                     emit ShowErrorMessage("Castling error", "Castling " + letter_from + index_from + "-" +
                                           letter_to + index_to + " is not allowed!");
 
+                } else if (action_value.toString() == "Game_over") {
+
+                    QString result = json_message_object.value(QLatin1String("Result")).toString();
+
+                    emit GameOver(result);
+
+
                 }
 
             }

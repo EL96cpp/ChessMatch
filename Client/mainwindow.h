@@ -56,6 +56,7 @@ public slots:
     void OnStartWaitingForOpponentAccepted();
     void OnGameStarted(const QString& player_color);
     void OnShowErrorMessage(const QString& title, const QString& error_description);
+    void OnGameOver(const QString& game_result);
 
 private slots:
     void on_BoardStyleComboBox_currentTextChanged(const QString &arg1);

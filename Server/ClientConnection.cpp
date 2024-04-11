@@ -24,10 +24,11 @@ bool ClientConnection::IsConnected() {
 
 }
 
-void ClientConnection::OnLoggedIn(const std::string& nickname, const size_t& rating) {
+void ClientConnection::OnLoggedIn(const std::string& nickname, const size_t& rating, const size_t& games_played) {
 
     this->nickname = nickname;
     this->rating = rating;
+    this->games_played = games_played;
     logged_in = true;
 
 }
@@ -67,6 +68,12 @@ std::string ClientConnection::GetNickname() {
 size_t ClientConnection::GetRating() {
 
     return rating;
+
+}
+
+size_t ClientConnection::GetGamesPlayed() {
+
+    return games_played;
 
 }
 

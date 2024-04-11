@@ -13,15 +13,33 @@
 class ChessFigure;
 class ClientConnection;
 class Message;
+class GameResult;
 enum class Color;
 enum class FigureType;
+
+enum class PlayersGameResult {
+
+    WINNER,
+    LOOSER,
+    DRAW
+
+};
+
+enum class GameResultType {
+
+    IN_PROCESS,
+    WHITE_WINS,
+    BLACK_WINS,
+    DRAW
+
+};
 
 
 class Game {
 
 public:
-    Game();
-    Game(std::shared_ptr<ClientConnection>& white_player, std::shared_ptr<ClientConnection>& black_player);
+    Game(ThreadSafeQueue<GameResult>& game_results_queue);
+    Game(std::shared_ptr<ClientConnection>& white_player, std::shared_ptr<ClientConnection>& black_player, ThreadSafeQueue<GameResult>& game_results_queue);
 
     bool MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
     bool EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
@@ -38,6 +56,7 @@ public:
     void SendMessageToAll(std::shared_ptr<Message>& message);
     FigureType GetFigureTypeFromString(const std::string& figure_type);
     std::shared_ptr<ChessFigure> CreateFigure(const Color& color, const FigureType& type, const size_t& y, const size_t& x);
+    GameResultType GetGameResultType();
 
 
 private:
@@ -51,6 +70,8 @@ private:
     bool CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
     bool CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
                                             const Color& player_color, const std::string& figure_type);
+    void OnGameOver();
+    size_t CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, std::shared_ptr<ClientConnection>& opponent, const PlayersGameResult& game_result);
 
 private:
     std::shared_ptr<ClientConnection> white_player;
@@ -59,6 +80,10 @@ private:
     Color draw_offered_by;
 
     Color current_turn_color;
+
+    GameResultType game_result_type;
+
+    ThreadSafeQueue<GameResult>& game_results_queue;
 
     std::chrono::time_point<std::chrono::system_clock> start_timepoint;
     std::chrono::time_point<std::chrono::system_clock> end_timepoint;

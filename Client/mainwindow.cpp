@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::Registered, this, &MainWindow::OnRegistered);
     connect(client, &Client::StartWaitingForOpponentAccepted, this, &MainWindow::OnStartWaitingForOpponentAccepted);
     connect(client, &Client::GameStarted, this, &MainWindow::OnGameStarted);
+    connect(client, &Client::GameOver, this, &MainWindow::OnGameOver);
 
     connect(client, &Client::MakeMoveAccepted, board, &Board::OnMakeMoveAccepted);
     connect(client, &Client::EatFigureAccepted, board, &Board::OnEatFigureAccepted);
@@ -68,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->boardGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     ui->pawnTransformView->hide();
+    ui->gameExitButton->hide();
 
     //Start page
 
@@ -257,6 +259,31 @@ void MainWindow::OnGameStarted(const QString &player_color) {
 void MainWindow::OnShowErrorMessage(const QString &title, const QString &error_description) {
 
     QMessageBox::warning(this, title, error_description);
+
+}
+
+void MainWindow::OnGameOver(const QString &game_result) {
+
+    if (game_result == "White_wins") {
+
+        QMessageBox::information(this, "Game over!", "White player wins!");
+        ui->game_info_label->setText("White player wins!");
+
+    } else if (game_result == "Black_wins") {
+
+        QMessageBox::information(this, "Game over!", "Black player wins!");
+        ui->game_info_label->setText("Black player wins!");
+
+    } else if (game_result == "Draw") {
+
+        QMessageBox::information(this, "Game over!", "Draw!");
+        ui->game_info_label->setText("Draw!");
+
+    }
+
+    ui->gameExitButton->show();
+
+    board->SetGameOver(true);
 
 }
 
