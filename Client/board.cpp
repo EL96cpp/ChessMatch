@@ -233,11 +233,6 @@ void Board::OnTransformPawnAccepted(const QString &letter_from, const QString &i
 
 void Board::BoardCellClicked(BoardCell* cell) {
 
-    if (transformation_type != PawnTransformation::NONE) {
-
-        return;
-
-    }
 
     if (selected_figure == nullptr) {
 
@@ -257,6 +252,14 @@ void Board::BoardCellClicked(BoardCell* cell) {
         if (selected_figure->GetX() == cell->GetX() && selected_figure->GetY() == cell->GetY()) {
 
             // Make selected figure nullptr
+
+            if (transformation_type != PawnTransformation::NONE) {
+
+                //Hide transformation scene
+                emit HideTransformPawnChoice();
+                transformation_type = PawnTransformation::NONE;
+
+            }
 
             UnpaintSelectedFigureMoves();
             selected_figure = nullptr;
@@ -438,6 +441,14 @@ void Board::BoardCellClicked(BoardCell* cell) {
 
                 // Set another selected_figure
 
+                if (transformation_type != PawnTransformation::NONE) {
+
+                    //Hide transformation scene
+                    emit HideTransformPawnChoice();
+                    transformation_type = PawnTransformation::NONE;
+
+                }
+
                 UnpaintSelectedFigureMoves();
                 selected_figure_moves.clear();
                 selected_figure = figures[cell->GetY()][cell->GetX()];
@@ -456,13 +467,6 @@ void Board::FigureClicked(ChessFigure* figure) {
 
     qDebug() << "Figure clicked " << GetStringValueOfFigureType(figure->GetType()) << " " << GetStringValueOfColor(figure->GetColor()) <<
         " at " << figure->GetY() << " " << figure->GetX();
-
-    if (transformation_type != PawnTransformation::NONE) {
-
-        qDebug() << "Figure clicked when transformation is in process";
-        return;
-
-    }
 
     if (selected_figure == nullptr) {
 
@@ -490,6 +494,14 @@ void Board::FigureClicked(ChessFigure* figure) {
 
         qDebug() << "Unpaint old selected figure";
 
+        if (transformation_type != PawnTransformation::NONE) {
+
+            //Hide transformation scene
+            emit HideTransformPawnChoice();
+            transformation_type = PawnTransformation::NONE;
+
+        }
+
         UnpaintSelectedFigureMoves();
         selected_figure_moves.clear();
         selected_figure = nullptr;
@@ -497,6 +509,14 @@ void Board::FigureClicked(ChessFigure* figure) {
     } else if (figure->GetColor() == current_player && figure->GetColor() == player_color) {
 
         qDebug() << "Unpaint old selected figure and set new!";
+
+        if (transformation_type != PawnTransformation::NONE) {
+
+            //Hide transformation scene
+            emit HideTransformPawnChoice();
+            transformation_type = PawnTransformation::NONE;
+
+        }
 
         UnpaintSelectedFigureMoves();
         selected_figure_moves.clear();

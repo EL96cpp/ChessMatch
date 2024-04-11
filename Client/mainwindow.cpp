@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(board, &Board::PlayerFigureTaken, taken_figures_manager, &TakenFiguresManager::AddPlayerTakenFigure);
     connect(board, &Board::OpponentFigureTaken, taken_figures_manager, &TakenFiguresManager::AddOpponentTakenFigure);
     connect(board, &Board::ShowTransformPawnChoice, this, &MainWindow::ShowTransformPawnChoice);
+    connect(board, &Board::HideTransformPawnChoice, this, &MainWindow::HideTransformPawnChoice);
     connect(this, &MainWindow::SetPawnTransformChoice, board, &Board::SetPawnTransformChoice);
     connect(board, &Board::GameOver, this, &MainWindow::GameOver);
 
@@ -109,6 +110,19 @@ void MainWindow::ShowTransformPawnChoice(const FigureColor& pawn_color) {
         SetBlackPawnTransformChoice();
 
     }
+
+}
+
+void MainWindow::HideTransformPawnChoice() {
+
+    for (auto& figure : pawn_transform_figures) {
+
+        pawn_transform_scene->removeItem(figure);
+
+    }
+
+    pawn_transform_figures.clear();
+    ui->pawnTransformView->hide();
 
 }
 

@@ -46,6 +46,7 @@ signals:
     void SetMainWindowPlayerTurn(const QString& turn);
     void GameOver(const QString& winner_color);
     void ShowTransformPawnChoice(const FigureColor& pawn_color);
+    void HideTransformPawnChoice();
 
 public slots:
     void OnMakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
