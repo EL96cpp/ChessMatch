@@ -549,8 +549,9 @@ void Client::ProcessMessages() {
                 } else if (action_value.toString() == "Start_game") {
 
                     QString player_color = json_message_object.value(QLatin1String("Player_color")).toString();
+                    QString opponent_nickname = json_message_object.value(QLatin1String("Opponent_nickname")).toString();
                     qDebug() << player_color << " game started";
-                    emit GameStarted(player_color);
+                    emit GameStarted(player_color, nickname, opponent_nickname);
 
                 } else if (action_value.toString() == "Move_accepted") {
 

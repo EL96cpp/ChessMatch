@@ -57,7 +57,7 @@ public slots:
     void OnLoggedout();
     void OnRegistered(const QString& nickname);
     void OnStartWaitingForOpponentAccepted();
-    void OnGameStarted(const QString& player_color);
+    void OnGameStarted(const QString& player_color, const QString& player_nickname, const QString& opponent_nickname);
     void OnShowErrorMessage(const QString& title, const QString& error_description);
     void OnGameOver(const QString& game_result);
     void OnUpdatePlayerRatingAndGamesPlayed(const QString& new_rating);
@@ -65,10 +65,6 @@ public slots:
 
 private slots:
     void on_BoardStyleComboBox_currentTextChanged(const QString &arg1);
-
-    void on_PlayerColorComboBox_currentTextChanged(const QString &arg1);
-
-    void on_NewGameButton_clicked();
 
     void on_loginButton_clicked();
 

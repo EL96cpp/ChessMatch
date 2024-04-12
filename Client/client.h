@@ -49,7 +49,7 @@ signals:
     void Loggedout();
     void Registered(const QString& nickname);
     void StartWaitingForOpponentAccepted();
-    void GameStarted(const QString& player_color);
+    void GameStarted(const QString& player_color, const QString& player_nickname, const QString& opponent_nickname);
     void MakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void EatFigureAccepted(const QString& letter_from, const QString& index_from,
                            const QString& letter_to, const QString& index_to,

@@ -239,7 +239,7 @@ void MainWindow::OnStartWaitingForOpponentAccepted() {
 
 }
 
-void MainWindow::OnGameStarted(const QString &player_color) {
+void MainWindow::OnGameStarted(const QString &player_color, const QString& player_nickname, const QString& opponent_nickname) {
 
     qDebug() << "Game started slot " << player_color;
 
@@ -255,6 +255,8 @@ void MainWindow::OnGameStarted(const QString &player_color) {
 
     ui->game_info_label->setText("White turn");
     ui->gameExitButton->hide();
+    ui->player_taken_figures_label->setText(player_nickname + " taken figures");
+    ui->opponent_taken_figures_label->setText(opponent_nickname + " taken figures");
     board->StartNewGame();
     taken_figures_manager->StartNewGame();
 
@@ -339,36 +341,6 @@ void MainWindow::on_BoardStyleComboBox_currentTextChanged(const QString &arg1) {
 
 }
 
-
-
-void MainWindow::on_PlayerColorComboBox_currentTextChanged(const QString &player_color) {
-
-    ui->game_info_label->setText("White turn");
-
-    if (QString::compare(player_color, QString::fromLatin1("White"), Qt::CaseInsensitive) == 0) {
-
-        board->SetPlayerColor(FigureColor::WHITE);
-
-    } else {
-
-        board->SetPlayerColor(FigureColor::BLACK);
-
-    }
-
-    board->StartNewGame();
-    taken_figures_manager->StartNewGame();
-
-}
-
-
-void MainWindow::on_NewGameButton_clicked() {
-
-    ui->game_info_label->setText("White turn");
-    board->StartNewGame();
-    taken_figures_manager->StartNewGame();
-
-}
-
 void MainWindow::SetFont() {
 
     qint32 logo_font_id = QFontDatabase::addApplicationFont(":/Fonts/LogoFont.ttf");
@@ -439,11 +411,8 @@ void MainWindow::SetFont() {
     ui->regReturnButton->setFont(QFont(typing_font_family));
 
     ui->game_info_label->setFont(QFont(typing_font_family));
-    ui->NewGameButton->setFont(QFont(typing_font_family));
     ui->board_style_label->setFont(QFont(typing_font_family));
-    ui->player_color_label->setFont(QFont(typing_font_family));
     ui->BoardStyleComboBox->setFont(QFont(typing_font_family));
-    ui->PlayerColorComboBox->setFont(QFont(typing_font_family));
 
 }
 
