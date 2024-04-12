@@ -192,6 +192,7 @@ void GamesManager::ProcessGameMessages() {
                                 
                                 game_message->sender->SendMessage(move_error_message);
 
+
                             }
 
 
@@ -298,7 +299,6 @@ void GamesManager::ProcessGameMessages() {
                                     game_message->game->SendMessageToAll(game_over_message);
 
  
-
                                 } else if (game_message->game->GetGameResultType() == GameResultType::BLACK_WINS) {
 
 
@@ -320,7 +320,6 @@ void GamesManager::ProcessGameMessages() {
                                     game_over_message->message_size = game_over_message_body.size();
                                     
                                     game_message->game->SendMessageToAll(game_over_message);
-
 
 
                                 }
@@ -434,10 +433,6 @@ void GamesManager::ProcessGameMessages() {
                             } else {
 
 
-                                std::cout << "Castling error!\n";
-
-
-                            
                                 boost::property_tree::ptree make_castling_error;
                                 make_castling_error.put("Method", "POST");
                                 make_castling_error.put("Action", "Make_castling_error");
@@ -630,9 +625,9 @@ void GamesManager::ProcessGameMessages() {
                     } else if (action == "Accept_draw") {
 
                         
-                        if (game_message->game->DrawOfferedBy() != Color::EMPTY && game_message->game->DrawOfferedBy() != game_message->sender->GetPlayerColor()) {
+                        if (game_message->game->AcceptDraw(game_message->sender)) {
+            
 
-                            
                             boost::property_tree::ptree offer_draw;
                             offer_draw.put("Action", "Draw_accepted");
                             
@@ -646,10 +641,8 @@ void GamesManager::ProcessGameMessages() {
                             new_message->body = offer_draw_message_body;
                             new_message->message_size = offer_draw_message_body.size();
 
-                            game_message->sender->SendMessage(new_message);
-
-                           
-
+                            game_message->game->SendMessageToAll(new_message);
+                        
 
                         } else {
 
@@ -673,16 +666,104 @@ void GamesManager::ProcessGameMessages() {
                         }
 
 
-
                     } else if (action == "Cancel_draw") {
-
                         
+                        
+                        if (game_message->game->DrawOfferedBy() != Color::EMPTY && game_message->game->DrawOfferedBy() != game_message->sender->GetPlayerColor()) {
 
+                            
+                            boost::property_tree::ptree cancel_draw;
+                            cancel_draw.put("Action", "Cancel_draw_accepted");
+                            
+                            std::ostringstream cancel_draw_json_stream;
+                            boost::property_tree::write_json(cancel_draw_json_stream, cancel_draw);        
+                            std::string cancel_draw_json_string = cancel_draw_json_stream.str();
+                            
+                            std::vector<uint8_t> cancel_draw_message_body(cancel_draw_json_string.begin(), cancel_draw_json_string.end());
+
+                            std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                            new_message->body = cancel_draw_message_body;
+                            new_message->message_size = cancel_draw_message_body.size();
+
+                            game_message->game->SendMessageToAll(new_message);
+
+
+                        } else {
+
+
+                            boost::property_tree::ptree cancel_draw;
+                            cancel_draw.put("Action", "Cancel_draw_error");
+                            
+                            std::ostringstream cancel_draw_json_stream;
+                            boost::property_tree::write_json(cancel_draw_json_stream, cancel_draw);        
+                            std::string cancel_draw_json_string = cancel_draw_json_stream.str();
+                            
+                            std::vector<uint8_t> cancel_draw_message_body(cancel_draw_json_string.begin(), cancel_draw_json_string.end());
+
+                            std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                            new_message->body = cancel_draw_message_body;
+                            new_message->message_size = cancel_draw_message_body.size();
+
+                            game_message->sender->SendMessage(new_message);
+
+
+                        }
+                        
+                        
                     } else if (action == "Resign") {
 
                         
+                        game_message->game->Resign(game_message->sender);
+                        
+                        if (game_message->sender->GetPlayerColor() == Color::WHITE) {
+
+
+                            boost::property_tree::ptree game_over;
+                            game_over.put("Method", "POST");
+                            game_over.put("Action", "Game_over");
+                            game_over.put("Result", "Black_wins");
+
+                            std::ostringstream game_over_json_stream;
+                            boost::property_tree::write_json(game_over_json_stream, game_over);        
+                            std::string game_over_json_string = game_over_json_stream.str();
+                            
+                            std::vector<uint8_t> game_over_message_body(game_over_json_string.begin(), 
+                                                                           game_over_json_string.end());
+
+                            std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
+                            game_over_message->body = game_over_message_body;
+                            game_over_message->message_size = game_over_message_body.size();
+                            
+                            game_message->game->SendMessageToAll(game_over_message);
+
+
+                        } else if (game_message->sender->GetPlayerColor() == Color::BLACK) {
+
+ 
+                            boost::property_tree::ptree game_over;
+                            game_over.put("Method", "POST");
+                            game_over.put("Action", "Game_over");
+                            game_over.put("Result", "White_wins");
+
+                            std::ostringstream game_over_json_stream;
+                            boost::property_tree::write_json(game_over_json_stream, game_over);        
+                            std::string game_over_json_string = game_over_json_stream.str();
+                            
+                            std::vector<uint8_t> game_over_message_body(game_over_json_string.begin(), 
+                                                                           game_over_json_string.end());
+
+                            std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
+                            game_over_message->body = game_over_message_body;
+                            game_over_message->message_size = game_over_message_body.size();
+                            
+                            game_message->game->SendMessageToAll(game_over_message);
+                           
+
+                        }
+                        
 
                     }
+
 
                 } else {
 

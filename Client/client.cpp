@@ -137,7 +137,6 @@ void Client::OnStartWaitingForOpponent() {
 void Client::OnMakeMove(const QString &letter_from, const QString &index_from, const QString &letter_to, const QString &index_to) {
 
     QJsonObject json_message;
-    //json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Action")] = QStringLiteral("Make_move");
     json_message[QStringLiteral("Letter_from")] = letter_from;
     json_message[QStringLiteral("Index_from")] = index_from;
@@ -163,7 +162,6 @@ void Client::OnEatFigure(const QString &letter_from, const QString &index_from, 
                          const QString &index_to, const QString& transformation_type) {
 
     QJsonObject json_message;
-    //json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Action")] = QStringLiteral("Eat_figure");
     json_message[QStringLiteral("Letter_from")] = letter_from;
     json_message[QStringLiteral("Index_from")] = index_from;
@@ -218,6 +216,46 @@ void Client::OnTransformPawn(const QString &letter_from, const QString &index_fr
     json_message[QStringLiteral("Letter_to")] = letter_to;
     json_message[QStringLiteral("Index_to")] = index_to;
     json_message[QStringLiteral("Figure_type")] = figure_type;
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
+
+    SendMessage(message);
+
+}
+
+void Client::OnOfferDraw() {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Action")] = QStringLiteral("Offer_draw");
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
+
+    SendMessage(message);
+
+}
+
+void Client::OnResign() {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Action")] = QStringLiteral("Resign");
 
     QByteArray byte_array = QJsonDocument(json_message).toJson();
     byte_array.append("\n");

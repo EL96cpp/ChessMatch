@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::Logout, client, &Client::OnLogout);
     connect(this, &MainWindow::Register, client, &Client::OnRegister);
     connect(this, &MainWindow::StartWaitingForOpponent, client, &Client::OnStartWaitingForOpponent);
+    connect(this, &MainWindow::OfferDraw, client, &Client::OnOfferDraw);
+    connect(this, &MainWindow::Resign, client, &Client::OnResign);
     connect(client, &Client::ShowErrorMessage, this, &MainWindow::OnShowErrorMessage);
     connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
     connect(client, &Client::Loggedout, this, &MainWindow::OnLoggedout);
@@ -43,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::StartWaitingForOpponentAccepted, this, &MainWindow::OnStartWaitingForOpponentAccepted);
     connect(client, &Client::GameStarted, this, &MainWindow::OnGameStarted);
     connect(client, &Client::GameOver, this, &MainWindow::OnGameOver);
+    connect(client, &Client::DrawOffered, this, &MainWindow::OnDrawOffered);
 
     connect(client, &Client::MakeMoveAccepted, board, &Board::OnMakeMoveAccepted);
     connect(client, &Client::EatFigureAccepted, board, &Board::OnEatFigureAccepted);
@@ -284,6 +287,23 @@ void MainWindow::OnGameOver(const QString &game_result) {
     ui->gameExitButton->show();
 
     board->SetGameOver(true);
+
+}
+
+void MainWindow::OnDrawOffered() {
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Draw offered", "Opponent offeres you a draw, do you agree?", QMessageBox::Yes|QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+
+        emit AcceptDraw();
+
+    } else {
+
+
+
+    }
 
 }
 
@@ -608,6 +628,49 @@ void MainWindow::on_exitProfileButton_clicked() {
 void MainWindow::on_logoutButton_clicked() {
 
     emit Logout(ui->nickname_value_label->text());
+
+}
+
+
+void MainWindow::on_gameExitButton_clicked() {
+
+    ui->stackedWidget->setCurrentWidget(ui->profile_page);
+
+}
+
+
+void MainWindow::on_OfferDrawButton_clicked() {
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Offer draw", "Do you realy whant to offer draw?", QMessageBox::Yes|QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+
+        emit OfferDraw();
+
+    } else {
+
+
+
+    }
+
+}
+
+
+void MainWindow::on_ResignButton_clicked() {
+
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Resign", "Do you realy whant to resign?", QMessageBox::Yes|QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+
+        emit Resign();
+
+    } else {
+
+
+
+    }
 
 }
 

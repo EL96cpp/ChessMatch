@@ -1208,9 +1208,9 @@ QPushButton:hover {
      <widget class="QLabel" name="game_info_label">
       <property name="geometry">
        <rect>
-        <x>1130</x>
+        <x>1040</x>
         <y>40</y>
-        <width>161</width>
+        <width>331</width>
         <height>31</height>
        </rect>
       </property>

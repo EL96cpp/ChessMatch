@@ -40,6 +40,8 @@ public slots:
     void OnMakeCastling(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnTransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
                          const QString& index_to, const QString& figure_type);
+    void OnOfferDraw();
+    void OnResign();
 
 signals:
     void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
@@ -56,6 +58,7 @@ signals:
                                const QString& index_to, const FigureType& figure_type);
     void ShowErrorMessage(const QString& title, const QString& error_description);
     void GameOver(const QString& game_result);
+    void DrawOffered();
 
 private:
     void SendMessage(const std::shared_ptr<Message>& message);

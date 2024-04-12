@@ -43,6 +43,9 @@ signals:
     void Logout(const QString& nickname);
     void Register(const QString& nickname, const QString& password);
     void StartWaitingForOpponent();
+    void OfferDraw();
+    void Resign();
+    void AcceptDraw();
 
 public slots:
     void SetPlayerTurn(const QString& turn);
@@ -57,6 +60,7 @@ public slots:
     void OnGameStarted(const QString& player_color);
     void OnShowErrorMessage(const QString& title, const QString& error_description);
     void OnGameOver(const QString& game_result);
+    void OnDrawOffered();
 
 private slots:
     void on_BoardStyleComboBox_currentTextChanged(const QString &arg1);
@@ -88,6 +92,12 @@ private slots:
     void on_exitProfileButton_clicked();
 
     void on_logoutButton_clicked();
+
+    void on_gameExitButton_clicked();
+
+    void on_OfferDrawButton_clicked();
+
+    void on_ResignButton_clicked();
 
 private:
     void SetFont();
