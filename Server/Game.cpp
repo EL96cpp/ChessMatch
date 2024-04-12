@@ -169,6 +169,18 @@ void Game::SetDrawOfferedBy(const Color& color) {
 
 }
 
+std::shared_ptr<ClientConnection> Game::GetWhitePlayer() {
+
+    return white_player;
+
+}
+
+std::shared_ptr<ClientConnection> Game::GetBlackPlayer() {
+
+    return black_player;
+
+}
+
 
 Color Game::GetCurrentTurnPlayerColor() {
 
@@ -319,25 +331,35 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
                     
                     end_timepoint = std::chrono::system_clock::now();
                     std::string winner;
+                    size_t new_white_player_rating;
+                    size_t new_black_player_rating;
 
                     //Game over
                     if (board_cells[y_from][x_from]->GetColor() == Color::WHITE) {
 
                         game_result_type = GameResultType::WHITE_WINS;
                         winner = white_player->GetNickname();
+                        new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::WINNER);
+                        new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::LOOSER);
 
                     } else if (board_cells[y_from][x_from]->GetColor() == Color::BLACK) {
 
                         game_result_type = GameResultType::BLACK_WINS;
                         winner = black_player->GetNickname();
+                        new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::WINNER);
+                        new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::LOOSER);
 
                     }
 
+                    white_player->SetNewRatingAndIncrementGamesPlayed(new_white_player_rating);
+                    black_player->SetNewRatingAndIncrementGamesPlayed(new_black_player_rating);
+
                     size_t total_time = std::chrono::duration_cast<std::chrono::seconds>(end_timepoint - start_timepoint).count();
-                    std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), winner, number_of_moves, total_time);
+                    std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), winner, number_of_moves, 
+                                                                                      total_time, new_white_player_rating, white_player->GetGamesPlayed(), 
+                                                                                      new_black_player_rating, black_player->GetGamesPlayed());
 
                     game_results_queue.push_back(result);
-
 
 
                     return true;
@@ -380,27 +402,39 @@ bool Game::EatFigure(const size_t& y_from, const size_t& x_from, const size_t& y
                 
                 end_timepoint = std::chrono::system_clock::now();
                 std::string winner;
+                size_t new_white_player_rating;
+                size_t new_black_player_rating;
 
                 //Game over
                 if (board_cells[y_from][x_from]->GetColor() == Color::WHITE) {
 
                     game_result_type = GameResultType::WHITE_WINS;
                     winner = white_player->GetNickname();
+                    new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::WINNER);
+                    new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::LOOSER);
 
                 } else if (board_cells[y_from][x_from]->GetColor() == Color::BLACK) {
 
                     game_result_type = GameResultType::BLACK_WINS;
                     winner = black_player->GetNickname();
+                    new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::WINNER);
+                    new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::LOOSER);
 
                 }
 
+                white_player->SetNewRatingAndIncrementGamesPlayed(new_white_player_rating);
+                black_player->SetNewRatingAndIncrementGamesPlayed(new_black_player_rating);
+
+
                 size_t total_time = std::chrono::duration_cast<std::chrono::seconds>(end_timepoint - start_timepoint).count();
-                std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), winner, number_of_moves, total_time);
-                
+                std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), winner, number_of_moves, 
+                                                                                  total_time, new_white_player_rating, white_player->GetGamesPlayed(), 
+                                                                                  new_black_player_rating, black_player->GetGamesPlayed());
+
                 game_results_queue.push_back(result);
 
-                return true;
 
+                return true;
 
             }
 
@@ -474,9 +508,18 @@ bool Game::AcceptDraw(std::shared_ptr<ClientConnection>& player) {
 
     if (draw_offered_by != Color::EMPTY && draw_offered_by != player->GetPlayerColor()) {
 
+        size_t new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::DRAW);
+        size_t new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::DRAW);
+
+        white_player->SetNewRatingAndIncrementGamesPlayed(new_white_player_rating);
+        black_player->SetNewRatingAndIncrementGamesPlayed(new_black_player_rating);
+
+
         end_timepoint = std::chrono::system_clock::now();
         size_t total_time = std::chrono::duration_cast<std::chrono::seconds>(end_timepoint - start_timepoint).count();
-        std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), "Draw", number_of_moves, total_time);
+        std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), "Draw", number_of_moves, 
+                                                                          total_time, new_white_player_rating, white_player->GetGamesPlayed(), 
+                                                                          new_black_player_rating, black_player->GetGamesPlayed());
 
         game_results_queue.push_back(result);
 
@@ -494,20 +537,34 @@ bool Game::AcceptDraw(std::shared_ptr<ClientConnection>& player) {
 void Game::Resign(std::shared_ptr<ClientConnection>& player) {
 
     std::string winner;
+    size_t new_white_player_rating;
+    size_t new_black_player_rating;
+
 
     if (player->GetNickname() == white_player->GetNickname()) {
 
         winner = black_player->GetNickname();
+        new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::LOOSER);
+        new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::WINNER);
 
     } else if (player->GetNickname() == black_player->GetNickname()) {
 
         winner = white_player->GetNickname();
+        new_white_player_rating = CalculateNewEloRating(white_player, black_player, PlayersGameResult::WINNER);
+        new_black_player_rating = CalculateNewEloRating(black_player, white_player, PlayersGameResult::LOOSER);
 
     }
 
+
+    white_player->SetNewRatingAndIncrementGamesPlayed(new_white_player_rating);
+    black_player->SetNewRatingAndIncrementGamesPlayed(new_black_player_rating);
+
+
     end_timepoint = std::chrono::system_clock::now();
     size_t total_time = std::chrono::duration_cast<std::chrono::seconds>(end_timepoint - start_timepoint).count();
-    std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), winner, number_of_moves, total_time);
+    std::shared_ptr<GameResult> result = std::make_shared<GameResult>(white_player->GetNickname(), black_player->GetNickname(), winner, number_of_moves, 
+                                                                      total_time, new_white_player_rating, white_player->GetGamesPlayed(), 
+                                                                      new_black_player_rating, black_player->GetGamesPlayed());
 
     game_results_queue.push_back(result);
 
@@ -769,7 +826,7 @@ size_t Game::CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, st
     size_t player_games_played = player->GetGamesPlayed();
     size_t opponent_rating = opponent->GetRating();
 
-    double e = 1.0 / (1.0 + std::pow(10.0, (opponent_rating - player_rating)/400.0));    
+    double e = 1.0 / (1.0 + std::pow(10.0, std::fabs(opponent_rating - player_rating)/400.0));    
     
     double s;
 
@@ -803,11 +860,13 @@ size_t Game::CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, st
 
     }
 
-    double new_player_rating =  player_rating + k * (s - e);
-    
-    std::cout << "New plaer rating for " << player->GetNickname() << " is " << new_player_rating << "\n";
+    double new_player_rating = player_rating + k * (s - e);
 
-    return new_player_rating;
+    new_player_rating = (new_player_rating < 0) ? 0 : new_player_rating;
+    
+    std::cout << "New player rating for " << player->GetNickname() << " is " << new_player_rating << "\n";
+
+    return std::floor(new_player_rating);
 
 }
 

@@ -50,6 +50,9 @@ public:
     bool AcceptDraw(std::shared_ptr<ClientConnection>& player);
     void Resign(std::shared_ptr<ClientConnection>& player);
 
+    std::shared_ptr<ClientConnection> GetWhitePlayer();
+    std::shared_ptr<ClientConnection> GetBlackPlayer();
+
     Color DrawOfferedBy();
     void SetDrawOfferedBy(const Color& color);
     bool CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player);

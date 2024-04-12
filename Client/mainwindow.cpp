@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::Register, client, &Client::OnRegister);
     connect(this, &MainWindow::StartWaitingForOpponent, client, &Client::OnStartWaitingForOpponent);
     connect(this, &MainWindow::OfferDraw, client, &Client::OnOfferDraw);
+    connect(this, &MainWindow::AcceptDraw, client, &Client::OnDrawAccepted);
     connect(this, &MainWindow::Resign, client, &Client::OnResign);
     connect(client, &Client::ShowErrorMessage, this, &MainWindow::OnShowErrorMessage);
     connect(client, &Client::LoggedIn, this, &MainWindow::OnLoggedIn);
@@ -45,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::StartWaitingForOpponentAccepted, this, &MainWindow::OnStartWaitingForOpponentAccepted);
     connect(client, &Client::GameStarted, this, &MainWindow::OnGameStarted);
     connect(client, &Client::GameOver, this, &MainWindow::OnGameOver);
+    connect(client, &Client::UpdatePlayerRatingAndGamesPlayed, this, &MainWindow::OnUpdatePlayerRatingAndGamesPlayed);
     connect(client, &Client::DrawOffered, this, &MainWindow::OnDrawOffered);
 
     connect(client, &Client::MakeMoveAccepted, board, &Board::OnMakeMoveAccepted);
@@ -252,6 +254,7 @@ void MainWindow::OnGameStarted(const QString &player_color) {
     }
 
     ui->game_info_label->setText("White turn");
+    ui->gameExitButton->hide();
     board->StartNewGame();
     taken_figures_manager->StartNewGame();
 
@@ -290,6 +293,16 @@ void MainWindow::OnGameOver(const QString &game_result) {
 
 }
 
+void MainWindow::OnUpdatePlayerRatingAndGamesPlayed(const QString &new_rating) {
+
+    ui->rating_value_label->setText(new_rating);
+    QString games_played_str = ui->games_played_value_label->text();
+    int games_played = games_played_str.toInt();
+    ++games_played;
+    ui->games_played_value_label->setText(QString::number(games_played));
+
+}
+
 void MainWindow::OnDrawOffered() {
 
     QMessageBox::StandardButton reply;
@@ -298,10 +311,6 @@ void MainWindow::OnDrawOffered() {
     if (reply == QMessageBox::Yes) {
 
         emit AcceptDraw();
-
-    } else {
-
-
 
     }
 
@@ -648,10 +657,6 @@ void MainWindow::on_OfferDrawButton_clicked() {
 
         emit OfferDraw();
 
-    } else {
-
-
-
     }
 
 }
@@ -665,10 +670,6 @@ void MainWindow::on_ResignButton_clicked() {
     if (reply == QMessageBox::Yes) {
 
         emit Resign();
-
-    } else {
-
-
 
     }
 

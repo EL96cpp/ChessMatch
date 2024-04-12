@@ -65,10 +65,10 @@ RegisterResult SqlService::Register(const std::string& nickname, const std::stri
 
     if (!CheckIfUserExists(nickname)) {
 
-        sql_connection.prepare("insert", "INSERT INTO users VALUES($1, $2, 0, 0)");
+        sql_connection.prepare("register", "INSERT INTO users VALUES($1, $2, 0, 0)");
         pqxx::work work{sql_connection};
 
-        work.exec_prepared("insert", nickname, password);
+        work.exec_prepared("register", nickname, password);
         work.commit();
 
         return RegisterResult::SUCCESS; 
@@ -86,24 +86,26 @@ RegisterResult SqlService::Register(const std::string& nickname, const std::stri
 
 void SqlService::AddGameResult(const std::string& white_nickname, const std::string& black_nickname, const std::string& winner, const int& number_of_moves, const int& total_time) {
 
-    sql_connection.prepare("insert", "INSERT INTO games VALUES($1, $2, $3, $4, $5)");
+    sql_connection.prepare("insert_game_result", "INSERT INTO games VALUES($1, $2, $3, $4, $5)");
     pqxx::work work{sql_connection};
 
-    work.exec_prepared("insert", white_nickname, black_nickname, winner, number_of_moves, total_time);
+    work.exec_prepared("insert_game_result", white_nickname, black_nickname, winner, number_of_moves, total_time);
     work.commit();
  
 
 }
 
 
-UpdateRatingResult SqlService::UpdatePlayerRating(const std::string& nickname, const size_t& new_rating) {
+UpdateRatingResult SqlService::UpdatePlayerRating(const std::string& nickname, const size_t& new_rating, const size_t& games_played) {
 
     if (CheckIfUserExists(nickname)) {
 
-        sql_connection.prepare("insert", "UPDATE users SET rating = $1 WHERE nickname = $2");
-        pqxx::work work{sql_connection};
+        std::cout << "Sql service update " << nickname << " new rating " << new_rating << " " << games_played << "\n";
 
-        work.exec_prepared("insert", new_rating,  nickname);
+        sql_connection.prepare("update_rating", "UPDATE users SET rating = $1, games_played = $2 WHERE nickname = $3");
+        pqxx::work work{sql_connection};
+        
+        work.exec_prepared("update_rating", new_rating, games_played, nickname);
         work.commit();
 
         return UpdateRatingResult::SUCCESS; 
@@ -129,7 +131,6 @@ int SqlService::GetPlayerRating(const std::string& nickname) {
     int rating = result[0]["rating"].as<int>();
 
     return rating;
- 
 
 } 
 
@@ -144,7 +145,6 @@ int SqlService::GetPlayersGamesPlayed(const std::string& nickname) {
 
     return games_played;
  
-
 } 
 
 

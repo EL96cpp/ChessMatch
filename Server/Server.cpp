@@ -130,6 +130,7 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                 
                 if (message->sender->LoggedIn()) {
 
+                    std::cout << "Start waiting accepted!\n";
 
                     games_manager.AddWaitingPlayer(message->sender);    
                     
@@ -153,6 +154,8 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
 
                 } else {
 
+                    
+                    std::cout << "Start waiting error!\n";
                     
                     boost::property_tree::ptree property_tree;
                     property_tree.put("Method", "POST");
@@ -466,9 +469,12 @@ void Server::ProcessGameResults() {
         while (!game_results.empty()) {
 
             std::shared_ptr<GameResult> result = game_results.pop_front();
-            
+             
             sql_service.AddGameResult(result->white_nickname, result->black_nickname, result->winner, result->number_of_moves, result->total_time);
+            sql_service.UpdatePlayerRating(result->white_nickname, result->new_white_player_rating, result->white_player_games_played);
+            sql_service.UpdatePlayerRating(result->black_nickname, result->new_black_player_rating, result->black_player_games_played);
 
+            std::cout << "Updated ratings for " << result->white_nickname << " and " << result->black_nickname << "\n";
 
         }
 

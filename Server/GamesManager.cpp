@@ -296,6 +296,10 @@ void GamesManager::ProcessGameMessages() {
                                     game_over_message->body = game_over_message_body;
                                     game_over_message->message_size = game_over_message_body.size();
                                     
+
+                                    SendUpdatedRatingToPlayer(game_message->game->GetWhitePlayer());
+                                    SendUpdatedRatingToPlayer(game_message->game->GetBlackPlayer());
+
                                     game_message->game->SendMessageToAll(game_over_message);
 
  
@@ -318,7 +322,10 @@ void GamesManager::ProcessGameMessages() {
                                     std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
                                     game_over_message->body = game_over_message_body;
                                     game_over_message->message_size = game_over_message_body.size();
-                                    
+
+                                    SendUpdatedRatingToPlayer(game_message->game->GetWhitePlayer());
+                                    SendUpdatedRatingToPlayer(game_message->game->GetBlackPlayer());
+
                                     game_message->game->SendMessageToAll(game_over_message);
 
 
@@ -603,6 +610,7 @@ void GamesManager::ProcessGameMessages() {
                             game_message->game->SetDrawOfferedBy(game_message->sender->GetPlayerColor());    
                             
                             boost::property_tree::ptree offer_draw;
+                            offer_draw.put("Method", "POST");
                             offer_draw.put("Action", "Draw_offered");
                             offer_draw.put("Nickname", game_message->sender->GetNickname());
                             
@@ -626,8 +634,33 @@ void GamesManager::ProcessGameMessages() {
 
                         
                         if (game_message->game->AcceptDraw(game_message->sender)) {
-            
 
+
+                            boost::property_tree::ptree game_over;
+                            game_over.put("Method", "POST");
+                            game_over.put("Action", "Game_over");
+                            game_over.put("Result", "Draw");
+
+                            std::ostringstream game_over_json_stream;
+                            boost::property_tree::write_json(game_over_json_stream, game_over);        
+                            std::string game_over_json_string = game_over_json_stream.str();
+                            
+                            std::vector<uint8_t> game_over_message_body(game_over_json_string.begin(), 
+                                                                           game_over_json_string.end());
+
+                            std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
+                            game_over_message->body = game_over_message_body;
+                            game_over_message->message_size = game_over_message_body.size();
+
+                            
+                            SendUpdatedRatingToPlayer(game_message->game->GetWhitePlayer());
+                            SendUpdatedRatingToPlayer(game_message->game->GetBlackPlayer());
+
+                            game_message->game->SendMessageToAll(game_over_message);
+
+
+
+                            /*
                             boost::property_tree::ptree offer_draw;
                             offer_draw.put("Action", "Draw_accepted");
                             
@@ -641,8 +674,13 @@ void GamesManager::ProcessGameMessages() {
                             new_message->body = offer_draw_message_body;
                             new_message->message_size = offer_draw_message_body.size();
 
+
+                            SendUpdatedRatingToPlayer(white_player);
+                            SendUpdatedRatingToPlayer(black_player);
+
                             game_message->game->SendMessageToAll(new_message);
-                        
+                            */
+
 
                         } else {
 
@@ -673,6 +711,7 @@ void GamesManager::ProcessGameMessages() {
 
                             
                             boost::property_tree::ptree cancel_draw;
+                            cancel_draw.put("Method", "POST");
                             cancel_draw.put("Action", "Cancel_draw_accepted");
                             
                             std::ostringstream cancel_draw_json_stream;
@@ -692,6 +731,7 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree cancel_draw;
+                            cancel_draw.put("Method", "POST");
                             cancel_draw.put("Action", "Cancel_draw_error");
                             
                             std::ostringstream cancel_draw_json_stream;
@@ -733,7 +773,11 @@ void GamesManager::ProcessGameMessages() {
                             std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
                             game_over_message->body = game_over_message_body;
                             game_over_message->message_size = game_over_message_body.size();
+
                             
+                            SendUpdatedRatingToPlayer(game_message->game->GetWhitePlayer());
+                            SendUpdatedRatingToPlayer(game_message->game->GetBlackPlayer());
+
                             game_message->game->SendMessageToAll(game_over_message);
 
 
@@ -755,7 +799,11 @@ void GamesManager::ProcessGameMessages() {
                             std::shared_ptr<Message> game_over_message = std::make_shared<Message>();
                             game_over_message->body = game_over_message_body;
                             game_over_message->message_size = game_over_message_body.size();
-                            
+
+
+                            SendUpdatedRatingToPlayer(game_message->game->GetWhitePlayer());
+                            SendUpdatedRatingToPlayer(game_message->game->GetBlackPlayer());
+
                             game_message->game->SendMessageToAll(game_over_message);
                            
 
@@ -765,12 +813,7 @@ void GamesManager::ProcessGameMessages() {
                     }
 
 
-                } else {
-
-
-
-
-                }
+                } 
 
             
             }
@@ -785,4 +828,29 @@ void GamesManager::ProcessGameMessages() {
 
 }
 
+void GamesManager::SendUpdatedRatingToPlayer(const std::shared_ptr<ClientConnection>& player) {
+
+
+    size_t new_rating = player->GetRating();
+
+    boost::property_tree::ptree new_rating_tree;
+    new_rating_tree.put("Method", "POST");
+    new_rating_tree.put("Action", "Update_rating");
+    new_rating_tree.put("New_rating", new_rating);
+
+    std::ostringstream new_rating_json_stream;
+    boost::property_tree::write_json(new_rating_json_stream, new_rating_tree);        
+    std::string new_rating_json_string = new_rating_json_stream.str();
+    
+    std::vector<uint8_t> new_rating_message_body(new_rating_json_string.begin(), 
+                                                   new_rating_json_string.end());
+
+    std::shared_ptr<Message> new_rating_message = std::make_shared<Message>();
+    new_rating_message->body = new_rating_message_body;
+    new_rating_message->message_size = new_rating_message_body.size();
+
+    player->SendMessage(new_rating_message);
+
+
+}
 

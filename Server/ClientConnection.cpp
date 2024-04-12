@@ -96,7 +96,15 @@ void ClientConnection::SetGame(std::shared_ptr<Game>& game) {
     this->game = game;
 
 }
+    
+void ClientConnection::SetNewRatingAndIncrementGamesPlayed(const size_t& new_player_rating) {
 
+    rating = new_player_rating;
+    ++games_played;
+    game = nullptr;
+
+}
+ 
 void ClientConnection::WriteMessageHeader() {
 
     boost::asio::async_write(socket, boost::asio::buffer(&outcoming_messages.front()->message_size, sizeof(uint32_t)), 
@@ -249,3 +257,5 @@ void ClientConnection::ReadMessageBody() {
 
 
 }
+
+

@@ -30,6 +30,7 @@ public:
     void MatchOpponents();
     void ProcessGameMessages();
 
+    void SendUpdatedRatingToPlayer(const std::shared_ptr<ClientConnection>& player);
 
 private:
     std::thread games_creation_thread;

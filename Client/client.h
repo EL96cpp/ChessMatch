@@ -41,6 +41,7 @@ public slots:
     void OnTransformPawn(const QString& letter_from, const QString& index_from, const QString& letter_to,
                          const QString& index_to, const QString& figure_type);
     void OnOfferDraw();
+    void OnDrawAccepted();
     void OnResign();
 
 signals:
@@ -58,6 +59,7 @@ signals:
                                const QString& index_to, const FigureType& figure_type);
     void ShowErrorMessage(const QString& title, const QString& error_description);
     void GameOver(const QString& game_result);
+    void UpdatePlayerRatingAndGamesPlayed(const QString& new_rating);
     void DrawOffered();
 
 private:
@@ -74,6 +76,7 @@ private:
     ThreadSafeQueue<std::shared_ptr<Message>> incoming_messages;
     ThreadSafeQueue<std::shared_ptr<Message>> outcoming_messages;
 
+    QString nickname;
     bool is_playing;
 
     Message incoming_temporary_message;

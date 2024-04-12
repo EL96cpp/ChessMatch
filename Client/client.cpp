@@ -252,6 +252,26 @@ void Client::OnOfferDraw() {
 
 }
 
+void Client::OnDrawAccepted() {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Action")] = QStringLiteral("Accept_draw");
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
+
+    SendMessage(message);
+
+}
+
 void Client::OnResign() {
 
     QJsonObject json_message;
@@ -461,6 +481,8 @@ void Client::ProcessMessages() {
                         QString games_played = json_message_object.value(QLatin1String("Games_played")).toString();
                         QJsonArray rating_array = json_message_object.value(QLatin1String("Top_players")).toArray();
 
+                        this->nickname = nickname;
+
                         QMap<QString, QString> rating_map;
 
                         for (auto line : rating_array) {
@@ -602,12 +624,29 @@ void Client::ProcessMessages() {
                     emit ShowErrorMessage("Castling error", "Castling " + letter_from + index_from + "-" +
                                           letter_to + index_to + " is not allowed!");
 
+                } else if (action_value.toString() == "Draw_offered") {
+
+                    QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
+
+                    qDebug() << "Draw offered by " << nickname;
+
+                    if (this->nickname != nickname) {
+
+                        emit DrawOffered();
+
+                    }
+
                 } else if (action_value.toString() == "Game_over") {
 
                     QString result = json_message_object.value(QLatin1String("Result")).toString();
 
                     emit GameOver(result);
 
+                } else if (action_value.toString() == "Update_rating") {
+
+                    QString new_rating = json_message_object.value(QLatin1String("New_rating")).toString();
+
+                    emit UpdatePlayerRatingAndGamesPlayed(new_rating);
 
                 }
 

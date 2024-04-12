@@ -41,9 +41,8 @@ public:
     size_t GetGamesPlayed();
     bool LoggedIn();
     bool IsWaiting();
-    void SetGame(std::shared_ptr<Game>& game);
-    
-
+    void SetGame(std::shared_ptr<Game>& game);    
+    void SetNewRatingAndIncrementGamesPlayed(const size_t& new_player_rating);
 
 private:
     boost::asio::ip::tcp::socket socket;
