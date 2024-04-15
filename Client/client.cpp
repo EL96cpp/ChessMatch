@@ -42,7 +42,7 @@ void Client::OnLogin(const QString &nickname, const QString &password) {
 
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+
     json_message[QStringLiteral("Action")] = QStringLiteral("Login");
     json_message[QStringLiteral("Nickname")] = nickname;
     json_message[QStringLiteral("Password")] = password;
@@ -64,7 +64,7 @@ void Client::OnLogin(const QString &nickname, const QString &password) {
 void Client::OnLogout(const QString &nickname) {
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+
     json_message[QStringLiteral("Action")] = QStringLiteral("Logout");
     json_message[QStringLiteral("Nickname")] = nickname;
     QByteArray byte_array = QJsonDocument(json_message).toJson();
@@ -85,7 +85,7 @@ void Client::OnLogout(const QString &nickname) {
 void Client::OnRegister(const QString &nickname, const QString &password) {
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+
     json_message[QStringLiteral("Action")] = QStringLiteral("Register");
     json_message[QStringLiteral("Nickname")] = nickname;
     json_message[QStringLiteral("Password")] = password;
@@ -107,7 +107,7 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 void Client::OnStartWaitingForOpponent() {
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+
     json_message[QStringLiteral("Action")] = QStringLiteral("Start_waiting");
     QByteArray byte_array = QJsonDocument(json_message).toJson();
     byte_array.append("\n");
@@ -458,203 +458,197 @@ void Client::ProcessMessages() {
 
             QJsonObject json_message_object = json_document_message.object();
 
-            QJsonValue method_value = json_message_object.value(QLatin1String("Method"));
             QJsonValue action_value = json_message_object.value(QLatin1String("Action"));
             QJsonValue code_value = json_message_object.value(QLatin1String("Code"));
 
-            if (method_value.toString() == "POST") {
+            if (action_value.toString() == "Login") {
 
-                if (action_value.toString() == "Login") {
+                if (code_value.toString() == "200") {
 
-                    if (code_value.toString() == "200") {
+                    QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
+                    QString rating = json_message_object.value(QLatin1String("Rating")).toString();
+                    QString games_played = json_message_object.value(QLatin1String("Games_played")).toString();
+                    QJsonArray rating_array = json_message_object.value(QLatin1String("Top_players")).toArray();
 
-                        QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
-                        QString rating = json_message_object.value(QLatin1String("Rating")).toString();
-                        QString games_played = json_message_object.value(QLatin1String("Games_played")).toString();
-                        QJsonArray rating_array = json_message_object.value(QLatin1String("Top_players")).toArray();
+                    this->nickname = nickname;
 
-                        this->nickname = nickname;
+                    QList<QPair<QString, QString>> rating_map;
 
-                        QList<QPair<QString, QString>> rating_map;
+                    for (auto line : rating_array) {
 
-                        for (auto line : rating_array) {
+                        foreach(const QString& player_nickname, line.toObject().keys()) {
 
-                            foreach(const QString& player_nickname, line.toObject().keys()) {
-
-                                QJsonValue value = line.toObject().value(player_nickname);
-                                rating_map.push_back(QPair(player_nickname, value.toString()));
-
-                            }
+                            QJsonValue value = line.toObject().value(player_nickname);
+                            rating_map.push_back(QPair(player_nickname, value.toString()));
 
                         }
 
-                        emit LoggedIn(nickname, rating, games_played, rating_map);
-
-                    } else if (code_value.toString() == "403") {
-
-                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
-                        emit ShowErrorMessage("Login error", error_description);
-
                     }
 
-                } else if (action_value.toString() == "Logout") {
+                    emit LoggedIn(nickname, rating, games_played, rating_map);
 
-                    if (code_value.toString() == "200") {
+                } else if (code_value.toString() == "403") {
 
-                        emit Loggedout();
-
-                    } else if (code_value.toString() == "403") {
-
-                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
-                        emit ShowErrorMessage("Logout error", error_description);
-
-                    }
-
-
-                } else if (action_value.toString() == "Register") {
-
-                    if (code_value.toString() == "200") {
-
-                        QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
-                        emit Registered(nickname);
-
-                    } else {
-
-                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
-                        emit ShowErrorMessage("Register error", error_description);
-
-                    }
-
-                } else if (action_value.toString() == "Start_waiting") {
-
-                    if (code_value.toString() == "200") {
-
-                        emit StartWaitingForOpponentAccepted();
-
-                    } else {
-
-                        QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
-                        emit ShowErrorMessage("Start game error", error_description);
-
-                    }
-
-                } else if (action_value.toString() == "Start_game") {
-
-                    QString player_color = json_message_object.value(QLatin1String("Player_color")).toString();
-                    QString opponent_nickname = json_message_object.value(QLatin1String("Opponent_nickname")).toString();
-                    qDebug() << player_color << " game started";
-                    emit GameStarted(player_color, nickname, opponent_nickname);
-
-                } else if (action_value.toString() == "Stop_waiting_accepted") {
-
-                    emit StopWaitingForOpponentAccepted();
-
-                } else if (action_value.toString() == "Stop_waiting_error") {
-
-                    emit ShowErrorMessage("Stop waiting", "Stop waiting for opponent error!");
-
-                } else if (action_value.toString() == "Move_accepted") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-
-                    emit MakeMoveAccepted(letter_from, index_from, letter_to, index_to);
-                    qDebug() << "Move accepted";
-
-                } else if (action_value.toString() == "Make_castling_accepted") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-
-                    emit MakeCastlingAccepted(letter_from, index_from, letter_to, index_to);
-                    qDebug() << "Make castling accepted!";
-
-                } else if (action_value.toString() == "Transform_pawn_accepted") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-                    QString figure_type_str = json_message_object.value(QLatin1String("Figure_type")).toString();
-                    FigureType figure_type = GetFigureTypeFromString(figure_type_str);
-
-                    emit TransformPawnAccepted(letter_from, index_from, letter_to, index_to, figure_type);
-
-                } else if (action_value.toString() == "Move_error") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-
-                    emit ShowErrorMessage("Incorrect move", "Move " + letter_from + index_from + "-" +
-                                          letter_to + index_to + " is not allowed!");
-
-                } else if (action_value.toString() == "Eat_figure_accepted") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-                    QString transformation_figure_type = json_message_object.value(QLatin1String("Transformation_type")).toString();
-
-                    emit EatFigureAccepted(letter_from, index_from, letter_to, index_to, transformation_figure_type);
-
-
-                } else if (action_value.toString() == "Eat_figure_error") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-
-                    emit ShowErrorMessage("Eat figure error", "Eat figure at " +
-                                          letter_to + index_to + " is not allowed!");
-
-                } else if (action_value.toString() == "Make_castling_error") {
-
-                    QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
-                    QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
-                    QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
-                    QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
-
-                    emit ShowErrorMessage("Castling error", "Castling " + letter_from + index_from + "-" +
-                                          letter_to + index_to + " is not allowed!");
-
-                } else if (action_value.toString() == "Draw_offered") {
-
-                    QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
-
-                    qDebug() << "Draw offered by " << nickname;
-
-                    if (this->nickname != nickname) {
-
-                        emit DrawOffered();
-
-                    }
-
-                } else if (action_value.toString() == "Game_over") {
-
-                    QString result = json_message_object.value(QLatin1String("Result")).toString();
-
-                    emit GameOver(result);
-
-                } else if (action_value.toString() == "Update_rating") {
-
-                    QString new_rating = json_message_object.value(QLatin1String("New_rating")).toString();
-
-                    emit UpdatePlayerRatingAndGamesPlayed(new_rating);
+                    QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                    emit ShowErrorMessage("Login error", error_description);
 
                 }
+
+            } else if (action_value.toString() == "Logout") {
+
+                if (code_value.toString() == "200") {
+
+                    emit Loggedout();
+
+                } else if (code_value.toString() == "403") {
+
+                    QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                    emit ShowErrorMessage("Logout error", error_description);
+
+                }
+
+
+            } else if (action_value.toString() == "Register") {
+
+                if (code_value.toString() == "200") {
+
+                    QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
+                    emit Registered(nickname);
+
+                } else {
+
+                    QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                    emit ShowErrorMessage("Register error", error_description);
+
+                }
+
+            } else if (action_value.toString() == "Start_waiting") {
+
+                if (code_value.toString() == "200") {
+
+                    emit StartWaitingForOpponentAccepted();
+
+                } else {
+
+                    QString error_description = json_message_object.value(QLatin1String("Error_description")).toString();
+                    emit ShowErrorMessage("Start game error", error_description);
+
+                }
+
+            } else if (action_value.toString() == "Start_game") {
+
+                QString player_color = json_message_object.value(QLatin1String("Player_color")).toString();
+                QString opponent_nickname = json_message_object.value(QLatin1String("Opponent_nickname")).toString();
+                qDebug() << player_color << " game started";
+                emit GameStarted(player_color, nickname, opponent_nickname);
+
+            } else if (action_value.toString() == "Stop_waiting_accepted") {
+
+                emit StopWaitingForOpponentAccepted();
+
+            } else if (action_value.toString() == "Stop_waiting_error") {
+
+                emit ShowErrorMessage("Stop waiting", "Stop waiting for opponent error!");
+
+            } else if (action_value.toString() == "Move_accepted") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                emit MakeMoveAccepted(letter_from, index_from, letter_to, index_to);
+                qDebug() << "Move accepted";
+
+            } else if (action_value.toString() == "Make_castling_accepted") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                emit MakeCastlingAccepted(letter_from, index_from, letter_to, index_to);
+                qDebug() << "Make castling accepted!";
+
+            } else if (action_value.toString() == "Transform_pawn_accepted") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+                QString figure_type_str = json_message_object.value(QLatin1String("Figure_type")).toString();
+                FigureType figure_type = GetFigureTypeFromString(figure_type_str);
+
+                emit TransformPawnAccepted(letter_from, index_from, letter_to, index_to, figure_type);
+
+            } else if (action_value.toString() == "Move_error") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                emit ShowErrorMessage("Incorrect move", "Move " + letter_from + index_from + "-" +
+                                      letter_to + index_to + " is not allowed!");
+
+            } else if (action_value.toString() == "Eat_figure_accepted") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+                QString transformation_figure_type = json_message_object.value(QLatin1String("Transformation_type")).toString();
+
+                emit EatFigureAccepted(letter_from, index_from, letter_to, index_to, transformation_figure_type);
+
+
+            } else if (action_value.toString() == "Eat_figure_error") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                emit ShowErrorMessage("Eat figure error", "Eat figure at " +
+                                      letter_to + index_to + " is not allowed!");
+
+            } else if (action_value.toString() == "Make_castling_error") {
+
+                QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
+                QString index_from = json_message_object.value(QLatin1String("Index_from")).toString();
+                QString letter_to = json_message_object.value(QLatin1String("Letter_to")).toString();
+                QString index_to = json_message_object.value(QLatin1String("Index_to")).toString();
+
+                emit ShowErrorMessage("Castling error", "Castling " + letter_from + index_from + "-" +
+                                      letter_to + index_to + " is not allowed!");
+
+            } else if (action_value.toString() == "Draw_offered") {
+
+                QString nickname = json_message_object.value(QLatin1String("Nickname")).toString();
+
+                qDebug() << "Draw offered by " << nickname;
+
+                if (this->nickname != nickname) {
+
+                    emit DrawOffered();
+
+                }
+
+            } else if (action_value.toString() == "Game_over") {
+
+                QString result = json_message_object.value(QLatin1String("Result")).toString();
+
+                emit GameOver(result);
+
+            } else if (action_value.toString() == "Update_rating") {
+
+                QString new_rating = json_message_object.value(QLatin1String("New_rating")).toString();
+
+                emit UpdatePlayerRatingAndGamesPlayed(new_rating);
 
             }
 
         }
-
 
     }
 
@@ -697,7 +691,7 @@ FigureType Client::GetFigureTypeFromString(const QString &figure_type) {
 void Client::OnExitApplication() {
 
     QJsonObject json_message;
-    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+
     json_message[QStringLiteral("Action")] = QStringLiteral("Disconnect");
 
     QByteArray byte_array = QJsonDocument(json_message).toJson();
@@ -713,6 +707,7 @@ void Client::OnExitApplication() {
 
     SendMessage(message);
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
     io_context.stop();
 

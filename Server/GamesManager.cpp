@@ -4,7 +4,9 @@
 #include "ClientConnection.h"
 
 
-GamesManager::GamesManager(ThreadSafeQueue<GameResult>& game_results) : game_results(game_results), waiting_players(game_results) {
+GamesManager::GamesManager(ThreadSafeQueue<GameResult>& game_results, ThreadSafeClientsQueue& client_connections) : game_results(game_results), 
+                                                                                                                    client_connections(client_connections),
+                                                                                                                    waiting_players(game_results) {
 
     board_navigation_map["1"] = 7;
     board_navigation_map["2"] = 6;
@@ -145,7 +147,6 @@ void GamesManager::ProcessGameMessages() {
                                 std::cout << "Make move accepted\n";
 
                                 boost::property_tree::ptree move_confirm;
-                                move_confirm.put("Method", "POST");
                                 move_confirm.put("Action", "Move_accepted");
                                 move_confirm.put("Letter_from", letter_from_str);
                                 move_confirm.put("Index_from", index_from_str);
@@ -173,7 +174,6 @@ void GamesManager::ProcessGameMessages() {
                                 std::cout << "Make move error\n";
 
                                 boost::property_tree::ptree move_error;
-                                move_error.put("Method", "POST");
                                 move_error.put("Action", "Move_error");
                                 move_error.put("Letter_from", letter_from_str);
                                 move_error.put("Index_from", index_from_str);
@@ -203,7 +203,6 @@ void GamesManager::ProcessGameMessages() {
                             std::cout << "Incorrect player color!\n";
 
                             boost::property_tree::ptree move_error;
-                            move_error.put("Method", "POST");
                             move_error.put("Action", "Move_error");
                             move_error.put("Letter_from", letter_from_str);
                             move_error.put("Index_from", index_from_str);
@@ -255,7 +254,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                     boost::property_tree::ptree eat_figure_accepted;
-                                    eat_figure_accepted.put("Method", "POST");
                                     eat_figure_accepted.put("Action", "Eat_figure_accepted");
                                     eat_figure_accepted.put("Letter_from", letter_from_str);
                                     eat_figure_accepted.put("Index_from", index_from_str);
@@ -282,7 +280,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                     boost::property_tree::ptree game_over;
-                                    game_over.put("Method", "POST");
                                     game_over.put("Action", "Game_over");
                                     game_over.put("Result", "White_wins");
 
@@ -309,7 +306,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                     boost::property_tree::ptree game_over;
-                                    game_over.put("Method", "POST");
                                     game_over.put("Action", "Game_over");
                                     game_over.put("Result", "Black_wins");
 
@@ -338,7 +334,6 @@ void GamesManager::ProcessGameMessages() {
 
                             
                                 boost::property_tree::ptree eat_figure_error;
-                                eat_figure_error.put("Method", "POST");
                                 eat_figure_error.put("Action", "Eat_figure_error");
                                 eat_figure_error.put("Letter_from", letter_from_str);
                                 eat_figure_error.put("Index_from", index_from_str);
@@ -367,7 +362,6 @@ void GamesManager::ProcessGameMessages() {
 
                             
                             boost::property_tree::ptree eat_figure_error;
-                            eat_figure_error.put("Method", "POST");
                             eat_figure_error.put("Action", "Eat_figure_error");
                             eat_figure_error.put("Letter_from", letter_from_str);
                             eat_figure_error.put("Index_from", index_from_str);
@@ -417,7 +411,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                 boost::property_tree::ptree make_castling_accepted;
-                                make_castling_accepted.put("Method", "POST");
                                 make_castling_accepted.put("Action", "Make_castling_accepted");
                                 make_castling_accepted.put("Letter_from", letter_from_str);
                                 make_castling_accepted.put("Index_from", index_from_str);
@@ -443,7 +436,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                 boost::property_tree::ptree make_castling_error;
-                                make_castling_error.put("Method", "POST");
                                 make_castling_error.put("Action", "Make_castling_error");
                                 make_castling_error.put("Letter_from", letter_from_str);
                                 make_castling_error.put("Index_from", index_from_str);                                
@@ -472,7 +464,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree make_castling_error;
-                            make_castling_error.put("Method", "POST");
                             make_castling_error.put("Action", "Make_castling_error");
                             make_castling_error.put("Letter_from", letter_from_str);
                             make_castling_error.put("Index_from", index_from_str);
@@ -519,7 +510,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                 boost::property_tree::ptree transform_pawn_accepted;
-                                transform_pawn_accepted.put("Method", "POST");
                                 transform_pawn_accepted.put("Action", "Transform_pawn_accepted");
                                 transform_pawn_accepted.put("Letter_from", letter_from_str);
                                 transform_pawn_accepted.put("Index_from", index_from_str);
@@ -546,7 +536,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                                 boost::property_tree::ptree transform_pawn_error;
-                                transform_pawn_error.put("Method", "POST");
                                 transform_pawn_error.put("Action", "Transform_pawn_error");
                                 transform_pawn_error.put("Letter_from", letter_from_str);
                                 transform_pawn_error.put("Index_from", index_from_str);
@@ -577,7 +566,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree transform_pawn_error;
-                            transform_pawn_error.put("Method", "POST");
                             transform_pawn_error.put("Action", "Transform_pawn_error");
                             transform_pawn_error.put("Letter_from", letter_from_str);
                             transform_pawn_error.put("Index_from", index_from_str);
@@ -612,7 +600,6 @@ void GamesManager::ProcessGameMessages() {
                             game_message->game->SetDrawOfferedBy(game_message->sender->GetPlayerColor());    
                             
                             boost::property_tree::ptree offer_draw;
-                            offer_draw.put("Method", "POST");
                             offer_draw.put("Action", "Draw_offered");
                             offer_draw.put("Nickname", game_message->sender->GetNickname());
                             
@@ -639,7 +626,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree game_over;
-                            game_over.put("Method", "POST");
                             game_over.put("Action", "Game_over");
                             game_over.put("Result", "Draw");
 
@@ -690,7 +676,6 @@ void GamesManager::ProcessGameMessages() {
 
                             
                             boost::property_tree::ptree cancel_draw;
-                            cancel_draw.put("Method", "POST");
                             cancel_draw.put("Action", "Cancel_draw_accepted");
                             
                             std::ostringstream cancel_draw_json_stream;
@@ -710,7 +695,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree cancel_draw;
-                            cancel_draw.put("Method", "POST");
                             cancel_draw.put("Action", "Cancel_draw_error");
                             
                             std::ostringstream cancel_draw_json_stream;
@@ -738,7 +722,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree game_over;
-                            game_over.put("Method", "POST");
                             game_over.put("Action", "Game_over");
                             game_over.put("Result", "Black_wins");
 
@@ -764,7 +747,6 @@ void GamesManager::ProcessGameMessages() {
 
  
                             boost::property_tree::ptree game_over;
-                            game_over.put("Method", "POST");
                             game_over.put("Action", "Game_over");
                             game_over.put("Result", "White_wins");
 
@@ -789,6 +771,15 @@ void GamesManager::ProcessGameMessages() {
                         }
                         
 
+                    } else if (action == "Disconnect") {
+
+                        
+                        std::cout << game_message->sender->GetNickname() << " disconnected from server\n";
+
+                        waiting_players.delete_connection(game_message->sender->GetNickname());
+                        client_connections.delete_connection(game_message->sender->GetNickname()); 
+
+
                     }
 
 
@@ -810,7 +801,6 @@ void GamesManager::ProcessGameMessages() {
                             waiting_players.delete_connection(game_message->sender->GetNickname());
 
                             boost::property_tree::ptree stop_waiting;
-                            stop_waiting.put("Method", "POST");
                             stop_waiting.put("Action", "Stop_waiting_accepted");
 
                             std::ostringstream stop_waiting_json_stream;
@@ -831,7 +821,6 @@ void GamesManager::ProcessGameMessages() {
 
 
                             boost::property_tree::ptree stop_waiting_error;
-                            stop_waiting_error.put("Method", "POST");
                             stop_waiting_error.put("Action", "Stop_waiting_error");
 
                             std::ostringstream stop_waiting_error_json_stream;
@@ -850,6 +839,15 @@ void GamesManager::ProcessGameMessages() {
 
 
                         }
+
+
+                    } else if (action == "Disconnect") {
+
+
+                        std::cout << game_message->sender->GetNickname() << " disconnected from server!\n";
+            
+                        waiting_players.delete_connection(game_message->sender->GetNickname());
+                        client_connections.delete_connection(game_message->sender->GetNickname());
 
 
                     }
@@ -876,7 +874,6 @@ void GamesManager::SendUpdatedRatingToPlayer(const std::shared_ptr<ClientConnect
     size_t new_rating = player->GetRating();
 
     boost::property_tree::ptree new_rating_tree;
-    new_rating_tree.put("Method", "POST");
     new_rating_tree.put("Action", "Update_rating");
     new_rating_tree.put("New_rating", new_rating);
 

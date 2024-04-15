@@ -5,7 +5,7 @@
 
 
 Server::Server(const size_t& port_id) : acceptor(io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_id)), 
-                                        games_manager(game_results), client_connections(game_results) {}
+                                        client_connections(game_results), games_manager(game_results, client_connections) {}
 
 bool Server::Start() {
 
@@ -71,15 +71,14 @@ void Server::UpdateIncomingMessages() {
 
         OnMessage(message);
 
-    }
-
-    
-
+    }    
 
 }
   
 
 void Server::OnMessage(std::shared_ptr<Message>& message) {
+
+    std::cout << "New message processing\n";
 
     std::string message_str(message->body.begin(), message->body.end());
     
@@ -87,110 +86,107 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
     boost::property_tree::ptree root;
     boost::property_tree::read_json(message_stream, root);
 
+
+    std::cout << message_str << "\n";
+
+
     if (root.empty()) {
 
         std::cout << "empty\n";
 
     } else {
 
-        std::string method = root.get<std::string>("Method");
+
         std::string action = root.get<std::string>("Action");
 
-        std::cout << method << " " << action << "\n";
 
-        if (method == "POST") {
+        if (action == "Login") {
 
-            if (action == "Login") {
+            
+            std::string nickname = root.get<std::string>("Nickname");
+            std::string password = root.get<std::string>("Password");
+
+            OnLogin(nickname, password, message->sender);             
+
+
+        } else if (action == "Logout") {
+
+
+            std::string nickname = root.get<std::string>("Nickname");
+            OnLogout(nickname, message->sender);
+
+
+        } else if (action == "Register") {
+
+            
+            std::string nickname = root.get<std::string>("Nickname");
+            std::string password = root.get<std::string>("Password");
+
+            OnRegister(nickname, password, message->sender);
+
+
+        } else if (action == "Start_waiting") {
+
+            
+            if (message->sender->LoggedIn()) {
+
+                std::cout << "Start waiting accepted!\n";
+
+                games_manager.AddWaitingPlayer(message->sender);    
+                
+                boost::property_tree::ptree property_tree;
+                property_tree.put("Action", "Start_waiting");
+                property_tree.put("Code", "200");
+
+                std::ostringstream json_stream;
+                boost::property_tree::write_json(json_stream, property_tree);        
+                std::string json_string = json_stream.str();
+                
+                std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+                std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                new_message->body = message_body;
+                new_message->message_size = message_body.size();
+
+                message->sender->SendMessage(new_message);         
+
+
+            } else {
 
                 
-                std::string nickname = root.get<std::string>("Nickname");
-                std::string password = root.get<std::string>("Password");
-
-                OnLogin(nickname, password, message->sender);             
-
-
-            } else if (action == "Logout") {
-
-
-                std::string nickname = root.get<std::string>("Nickname");
-                OnLogout(nickname, message->sender);
-
-
-            } else if (action == "Register") {
-
+                std::cout << "Start waiting error!\n";
                 
-                std::string nickname = root.get<std::string>("Nickname");
-                std::string password = root.get<std::string>("Password");
+                boost::property_tree::ptree property_tree;
+                property_tree.put("Action", "Start_waiting");
+                property_tree.put("Code", "403");
+                property_tree.put("Error_description", "User is not logged");
 
-                OnRegister(nickname, password, message->sender);
-
-
-            } else if (action == "Start_waiting") {
-
+                std::ostringstream json_stream;
+                boost::property_tree::write_json(json_stream, property_tree);        
+                std::string json_string = json_stream.str();
                 
-                if (message->sender->LoggedIn()) {
+                std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
 
-                    std::cout << "Start waiting accepted!\n";
+                std::shared_ptr<Message> new_message = std::make_shared<Message>();
+                new_message->body = message_body;
+                new_message->message_size = message_body.size();
 
-                    games_manager.AddWaitingPlayer(message->sender);    
-                    
-                    boost::property_tree::ptree property_tree;
-                    property_tree.put("Method", "POST");
-                    property_tree.put("Action", "Start_waiting");
-                    property_tree.put("Code", "200");
-
-                    std::ostringstream json_stream;
-                    boost::property_tree::write_json(json_stream, property_tree);        
-                    std::string json_string = json_stream.str();
-                    
-                    std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
-
-                    std::shared_ptr<Message> new_message = std::make_shared<Message>();
-                    new_message->body = message_body;
-                    new_message->message_size = message_body.size();
-
-                    message->sender->SendMessage(new_message);         
+                message->sender->SendMessage(new_message);         
 
 
-                } else {
-
-                    
-                    std::cout << "Start waiting error!\n";
-                    
-                    boost::property_tree::ptree property_tree;
-                    property_tree.put("Method", "POST");
-                    property_tree.put("Action", "Start_waiting");
-                    property_tree.put("Code", "403");
-                    property_tree.put("Error_description", "User is not logged");
-
-                    std::ostringstream json_stream;
-                    boost::property_tree::write_json(json_stream, property_tree);        
-                    std::string json_string = json_stream.str();
-                    
-                    std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
-
-                    std::shared_ptr<Message> new_message = std::make_shared<Message>();
-                    new_message->body = message_body;
-                    new_message->message_size = message_body.size();
-
-                    message->sender->SendMessage(new_message);         
+            }
 
 
-                }
+        } else if (action == "Disconnect") {
 
 
-            } else if (action == "Disconnect") {
+            std::cout << message->sender->GetNickname() << " disconnected from server!\n";
+            
+            client_connections.delete_connection(message->sender->GetNickname());
 
 
-                std::cout << message->sender->GetNickname() << " disconnected from server!\n";
-                
-                client_connections.delete_connection(message->sender->GetNickname());
+        } 
 
-
-            } 
-
-
-        }
 
 
     }
@@ -207,7 +203,6 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Login");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "User already logged");
@@ -252,7 +247,6 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
         client_connection->OnLoggedIn(nickname, rating, games_played);
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Login");
         property_tree.put("Code", "200");
         property_tree.put("Nickname", nickname);
@@ -285,7 +279,6 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
         
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Login");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Incorrect password");
@@ -308,7 +301,6 @@ void Server::OnLogin(const std::string& nickname, const std::string& password, s
 
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Login");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Nickname is not registered");
@@ -340,7 +332,6 @@ void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnect
         client_connection->Logout();        
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Logout");
         property_tree.put("Code", "200");
 
@@ -361,7 +352,6 @@ void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnect
 
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Logout");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "User is not logged in");
@@ -383,7 +373,6 @@ void Server::OnLogout(const std::string& nickname, std::shared_ptr<ClientConnect
 
         
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Logout");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Incorrect user nickname");
@@ -419,7 +408,6 @@ void Server::OnRegister(const std::string& nickname, const std::string& password
 
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Register");
         property_tree.put("Code", "200");
         property_tree.put("Nickname", nickname);
@@ -441,7 +429,6 @@ void Server::OnRegister(const std::string& nickname, const std::string& password
 
 
         boost::property_tree::ptree property_tree;
-        property_tree.put("Method", "POST");
         property_tree.put("Action", "Register");
         property_tree.put("Code", "403");
         property_tree.put("Error_description", "Nickname is already registered");

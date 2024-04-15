@@ -12,8 +12,6 @@ bool RatingProxyModel::lessThan(const QModelIndex &source_left, const QModelInde
     int left_value = left_variant_value.toInt();
     int right_value = right_variant_value.toInt();
 
-    qDebug() << "Comparing " << left_value << " and " << right_value;
-
     return left_value < right_value;
 
 }

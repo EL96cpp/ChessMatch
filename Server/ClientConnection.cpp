@@ -112,7 +112,7 @@ void ClientConnection::WriteMessageHeader() {
 
             std::cout << "Message header writing handler\n";
 
-            if (!ec) {
+            if (ec || !ec) {
             
                 if (outcoming_messages.front()->body.size() > 0) {
                 
@@ -130,10 +130,6 @@ void ClientConnection::WriteMessageHeader() {
 
 
                 }
-
-            } else {
-
-                std::cout << "Error while writing message header " << ec.message() << "\n";            
 
             }
 
@@ -256,8 +252,11 @@ void ClientConnection::ReadMessageBody() {
 
             } 
 
-        }
+        } else {
 
+            std::cout << "Error while reading message body: " << ec.message() << "\n";
+
+        }
 
     });
 

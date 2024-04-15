@@ -26,8 +26,12 @@ void ThreadSafeClientsQueue::delete_connection(const std::string& nickname) {
 
     std::scoped_lock lock(blocking_mutex);
 
+    std::cout << "Delete user " + nickname << " size: " << deque.size() << "\n";
+
     auto it = std::remove_if(deque.begin(), deque.end(), [nickname](std::shared_ptr<ClientConnection>& client) { return client->GetNickname() == nickname; });
     deque.erase(it, deque.end());
+
+    std::cout << "Delete user " + nickname << " size: " << deque.size() << "\n";
 
 }
 

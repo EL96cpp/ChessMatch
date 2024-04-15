@@ -20,7 +20,7 @@ class ClientConnection;
 class GamesManager {
 
 public:
-    GamesManager(ThreadSafeQueue<GameResult>& game_results);
+    GamesManager(ThreadSafeQueue<GameResult>& game_results, ThreadSafeClientsQueue& client_connections);
 
     void Start();
 
@@ -42,5 +42,6 @@ private:
     ThreadSafeQueue<GameResult>& game_results;
     ThreadSafeGameMessagesQueue game_messages;
     ThreadSafeClientsQueue waiting_players;
+    ThreadSafeClientsQueue& client_connections;
 
 };
