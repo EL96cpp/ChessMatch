@@ -161,7 +161,7 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                     property_tree.put("Method", "POST");
                     property_tree.put("Action", "Start_waiting");
                     property_tree.put("Code", "403");
-                    property_tree.put("Error_description", "User in not logged");
+                    property_tree.put("Error_description", "User is not logged");
 
                     std::ostringstream json_stream;
                     boost::property_tree::write_json(json_stream, property_tree);        
@@ -179,9 +179,15 @@ void Server::OnMessage(std::shared_ptr<Message>& message) {
                 }
 
 
+            } else if (action == "Disconnect") {
+
+
+                std::cout << message->sender->GetNickname() << " disconnected from server!\n";
+                
+                client_connections.delete_connection(message->sender->GetNickname());
+
 
             } 
-
 
 
         }

@@ -90,7 +90,7 @@
 }</string>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="start_page">
      <property name="styleSheet">
@@ -1177,7 +1177,7 @@ QPushButton:hover {
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: &quot;#FBFADA&quot;;</string>
+       <string notr="true">background-color: &quot;#59736a&quot;;</string>
       </property>
      </widget>
      <widget class="QGraphicsView" name="boardGraphicsView">
@@ -1202,7 +1202,7 @@ QPushButton:hover {
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255);</string>
+       <string notr="true">background-color: rgb(0, 54, 33);</string>
       </property>
      </widget>
      <widget class="QLabel" name="game_info_label">
@@ -1230,7 +1230,7 @@ font: 18pt ;</string>
       <property name="geometry">
        <rect>
         <x>1020</x>
-        <y>130</y>
+        <y>140</y>
         <width>371</width>
         <height>401</height>
        </rect>
@@ -1274,66 +1274,82 @@ font: 15pt ;</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QGroupBox" name="groupBox_4">
       <property name="geometry">
        <rect>
-        <x>1110</x>
-        <y>600</y>
-        <width>231</width>
-        <height>134</height>
+        <x>1050</x>
+        <y>590</y>
+        <width>311</width>
+        <height>171</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_15">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="board_style_label">
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 255, 255);
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(0, 82, 79);</string>
+      </property>
+      <property name="title">
+       <string/>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>20</y>
+         <width>231</width>
+         <height>134</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="board_style_label">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);
 font: 15pt ;</string>
-           </property>
-           <property name="text">
-            <string>Style:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="BoardStyleComboBox">
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 255, 255);
-font: 15pt ;</string>
-           </property>
-           <item>
-            <property name="text">
-             <string>Classic</string>
             </property>
-           </item>
-           <item>
             <property name="text">
-             <string>Green</string>
+             <string>Style:</string>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Blue</string>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Red</string>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="BoardStyleComboBox">
+            <property name="styleSheet">
+             <string notr="true">color: &quot;#12372A&quot;;
+font: 15pt ;
+text.color: rbg(255, 255, 255);</string>
             </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QPushButton" name="OfferDrawButton">
-         <property name="styleSheet">
-          <string notr="true">QPushButton { 
+            <item>
+             <property name="text">
+              <string>Classic</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Green</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blue</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Red</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="OfferDrawButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton { 
 	border-radius: 10px;	
 	background-color: &quot;#12372A&quot;;
 	color: rgb(255, 255, 255);	
@@ -1346,16 +1362,16 @@ QPushButton:hover {
 	background-color: &quot;#415f55&quot;;
 
 }</string>
-         </property>
-         <property name="text">
-          <string>Offer draw</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="ResignButton">
-         <property name="styleSheet">
-          <string notr="true">QPushButton { 
+          </property>
+          <property name="text">
+           <string>Offer draw</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ResignButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton { 
 	border-radius: 10px;	
 	background-color: &quot;#12372A&quot;;
 	color: rgb(255, 255, 255);	
@@ -1368,16 +1384,16 @@ QPushButton:hover {
 	background-color: &quot;#415f55&quot;;
 
 }</string>
-         </property>
-         <property name="text">
-          <string>Resign</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="gameExitButton">
-         <property name="styleSheet">
-          <string notr="true">QPushButton { 
+          </property>
+          <property name="text">
+           <string>Resign</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="gameExitButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton { 
 	border-radius: 10px;	
 	background-color: &quot;#12372A&quot;;
 	color: rgb(255, 255, 255);	
@@ -1390,13 +1406,14 @@ QPushButton:hover {
 	background-color: &quot;#415f55&quot;;
 
 }</string>
-         </property>
-         <property name="text">
-          <string>Exit</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+          </property>
+          <property name="text">
+           <string>Exit</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </widget>

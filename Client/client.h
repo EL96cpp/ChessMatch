@@ -27,13 +27,14 @@ public:
     explicit Client(QObject *parent);
 
     void ConnectToServer(const std::string& address, const quint16& port);
-    void Disconnect();
+    void OnExitApplication();
 
 public slots:
     void OnLogin(const QString& nickname, const QString& password);
     void OnLogout(const QString& nickname);
     void OnRegister(const QString& nickname, const QString& password);
     void OnStartWaitingForOpponent();
+    void OnStopWaitingForOpponent();
     void OnMakeMove(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void OnEatFigure(const QString& letter_from, const QString& index_from, const QString& letter_to,
                      const QString& index_to, const QString& transformation_type = "");
@@ -49,6 +50,7 @@ signals:
     void Loggedout();
     void Registered(const QString& nickname);
     void StartWaitingForOpponentAccepted();
+    void StopWaitingForOpponentAccepted();
     void GameStarted(const QString& player_color, const QString& player_nickname, const QString& opponent_nickname);
     void MakeMoveAccepted(const QString& letter_from, const QString& index_from, const QString& letter_to, const QString& index_to);
     void EatFigureAccepted(const QString& letter_from, const QString& index_from,

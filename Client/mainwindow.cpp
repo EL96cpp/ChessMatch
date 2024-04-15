@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::Logout, client, &Client::OnLogout);
     connect(this, &MainWindow::Register, client, &Client::OnRegister);
     connect(this, &MainWindow::StartWaitingForOpponent, client, &Client::OnStartWaitingForOpponent);
+    connect(this, &MainWindow::StopWaitingForOpponent, client, &Client::OnStopWaitingForOpponent);
     connect(this, &MainWindow::OfferDraw, client, &Client::OnOfferDraw);
     connect(this, &MainWindow::AcceptDraw, client, &Client::OnDrawAccepted);
     connect(this, &MainWindow::Resign, client, &Client::OnResign);
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::Loggedout, this, &MainWindow::OnLoggedout);
     connect(client, &Client::Registered, this, &MainWindow::OnRegistered);
     connect(client, &Client::StartWaitingForOpponentAccepted, this, &MainWindow::OnStartWaitingForOpponentAccepted);
+    connect(client, &Client::StopWaitingForOpponentAccepted, this, &MainWindow::OnStopWaitingForOpponentAccepted);
     connect(client, &Client::GameStarted, this, &MainWindow::OnGameStarted);
     connect(client, &Client::GameOver, this, &MainWindow::OnGameOver);
     connect(client, &Client::UpdatePlayerRatingAndGamesPlayed, this, &MainWindow::OnUpdatePlayerRatingAndGamesPlayed);
@@ -90,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
 
-    client->Disconnect();
+    client->OnExitApplication();
     delete ui;
 
 }
@@ -199,7 +201,9 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
 
     }
 
-    ui->ratingTableView->sortByColumn(1, Qt::DescendingOrder);
+    ui->ratingTableView->setSortingEnabled(true);
+
+    ui->ratingTableView->setModel(rating_model);
 
     ui->nicknameLogLineEdit->clear();
     ui->passwordLogLineEdit->clear();
@@ -236,6 +240,14 @@ void MainWindow::OnStartWaitingForOpponentAccepted() {
 
     waiting_dots_timer.start();
     waiting_rectangles_timer.start();
+
+}
+
+void MainWindow::OnStopWaitingForOpponentAccepted() {
+
+    waiting_dots_timer.stop();
+    waiting_rectangles_timer.stop();
+    ui->stackedWidget->setCurrentWidget(ui->profile_page);
 
 }
 
@@ -589,9 +601,7 @@ void MainWindow::updateWaitingLabel() {
 
 void MainWindow::on_waitingExitButton_clicked() {
 
-    waiting_dots_timer.stop();
-    waiting_rectangles_timer.stop();
-    ui->stackedWidget->setCurrentWidget(ui->profile_page);
+    emit StopWaitingForOpponent();
 
 }
 

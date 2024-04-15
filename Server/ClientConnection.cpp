@@ -232,6 +232,8 @@ void ClientConnection::ReadMessageBody() {
 
             if (!is_waiting && game == nullptr) {
 
+                std::cout << "Push into messages\n";
+
                 incoming_messages.push_back_with_sender(std::make_shared<Message>(temporary_message), this->shared_from_this());
 
                 temporary_message.body.clear();
@@ -241,12 +243,16 @@ void ClientConnection::ReadMessageBody() {
 
             } else {
 
+                std::cout << "Push into game messages\n";
+
                 incoming_game_messages.push_back(std::make_shared<GameMessage>(temporary_message, game), this->shared_from_this());
 
                 temporary_message.body.clear();
                 temporary_message.message_size = 0;
 
                 StartReadingMessage();
+
+                std::cout << "Push into game messages success!\n";
 
             } 
 

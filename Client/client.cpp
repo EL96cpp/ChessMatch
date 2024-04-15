@@ -38,18 +38,6 @@ void Client::ConnectToServer(const std::string& address, const quint16 &port) {
 
 }
 
-void Client::Disconnect() {
-
-    io_context.stop();
-
-    if (context_thread.joinable()) {
-
-        context_thread.join();
-
-    }
-
-}
-
 void Client::OnLogin(const QString &nickname, const QString &password) {
 
 
@@ -118,6 +106,8 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 
 void Client::OnStartWaitingForOpponent() {
 
+    qDebug() << "Start waiting message sent!";
+
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Action")] = QStringLiteral("Start_waiting");
@@ -129,6 +119,28 @@ void Client::OnStartWaitingForOpponent() {
     std::shared_ptr<Message> message = std::make_shared<Message>();
     message->message_size = size;
     message->body = byte_array;
+
+    SendMessage(message);
+
+}
+
+void Client::OnStopWaitingForOpponent() {
+
+    qDebug() << "Stop waiting message sent!";
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Action")] = QStringLiteral("Stop_waiting");
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
 
     SendMessage(message);
 
@@ -553,6 +565,14 @@ void Client::ProcessMessages() {
                     qDebug() << player_color << " game started";
                     emit GameStarted(player_color, nickname, opponent_nickname);
 
+                } else if (action_value.toString() == "Stop_waiting_accepted") {
+
+                    emit StopWaitingForOpponentAccepted();
+
+                } else if (action_value.toString() == "Stop_waiting_error") {
+
+                    emit ShowErrorMessage("Stop waiting", "Stop waiting for opponent error!");
+
                 } else if (action_value.toString() == "Move_accepted") {
 
                     QString letter_from = json_message_object.value(QLatin1String("Letter_from")).toString();
@@ -689,6 +709,36 @@ FigureType Client::GetFigureTypeFromString(const QString &figure_type) {
     } else {
 
         return FigureType::EMPTY;
+
+    }
+
+}
+
+void Client::OnExitApplication() {
+
+    QJsonObject json_message;
+    json_message[QStringLiteral("Method")] = QStringLiteral("POST");
+    json_message[QStringLiteral("Action")] = QStringLiteral("Disconnect");
+
+    QByteArray byte_array = QJsonDocument(json_message).toJson();
+    byte_array.append("\n");
+
+    uint32_t size = byte_array.size();
+
+    std::shared_ptr<Message> message = std::make_shared<Message>();
+    message->message_size = size;
+    message->body = byte_array;
+
+    qDebug() << byte_array;
+
+    SendMessage(message);
+
+
+    io_context.stop();
+
+    if (context_thread.joinable()) {
+
+        context_thread.join();
 
     }
 

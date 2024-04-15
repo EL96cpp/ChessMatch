@@ -89,6 +89,8 @@ void GamesManager::ProcessGameMessages() {
 
         while (!game_messages.empty()) {
 
+            std::cout << "game messages queue is not empty!\n";
+
             std::shared_ptr<GameMessage> game_message = game_messages.pop_back();
 
             std::string message_str(game_message->body.begin(), game_message->body.end());
@@ -104,7 +106,7 @@ void GamesManager::ProcessGameMessages() {
             } else {
 
 
-                if (game_message->game->CheckIfPlayerIsAGameMember(game_message->sender)) {
+                if (game_message->game != nullptr && game_message->game->CheckIfPlayerIsAGameMember(game_message->sender)) {
 
 
                     std::cout << message_str << "\n";
@@ -659,29 +661,6 @@ void GamesManager::ProcessGameMessages() {
                             game_message->game->SendMessageToAll(game_over_message);
 
 
-
-                            /*
-                            boost::property_tree::ptree offer_draw;
-                            offer_draw.put("Action", "Draw_accepted");
-                            
-                            std::ostringstream offer_draw_json_stream;
-                            boost::property_tree::write_json(offer_draw_json_stream, offer_draw);        
-                            std::string offer_draw_json_string = offer_draw_json_stream.str();
-                            
-                            std::vector<uint8_t> offer_draw_message_body(offer_draw_json_string.begin(), offer_draw_json_string.end());
-
-                            std::shared_ptr<Message> new_message = std::make_shared<Message>();
-                            new_message->body = offer_draw_message_body;
-                            new_message->message_size = offer_draw_message_body.size();
-
-
-                            SendUpdatedRatingToPlayer(white_player);
-                            SendUpdatedRatingToPlayer(black_player);
-
-                            game_message->game->SendMessageToAll(new_message);
-                            */
-
-
                         } else {
 
 
@@ -809,6 +788,69 @@ void GamesManager::ProcessGameMessages() {
 
                         }
                         
+
+                    }
+
+
+                } else if (game_message->game == nullptr){
+
+                    
+                    std::string action = root.get<std::string>("Action");
+               
+                    if (action == "Stop_waiting") {
+
+                        
+                        if (waiting_players.contains_nickname(game_message->sender->GetNickname())) {
+
+                            
+                            std::cout << "Stop waitng for opponent accepted!\n";
+
+                            game_message->sender->SetIsWaiting(false);
+                            
+                            waiting_players.delete_connection(game_message->sender->GetNickname());
+
+                            boost::property_tree::ptree stop_waiting;
+                            stop_waiting.put("Method", "POST");
+                            stop_waiting.put("Action", "Stop_waiting_accepted");
+
+                            std::ostringstream stop_waiting_json_stream;
+                            boost::property_tree::write_json(stop_waiting_json_stream, stop_waiting);        
+                            std::string stop_waiting_json_string = stop_waiting_json_stream.str();
+                            
+                            std::vector<uint8_t> stop_waiting_message_body(stop_waiting_json_string.begin(), 
+                                                                           stop_waiting_json_string.end());
+
+                            std::shared_ptr<Message> stop_waiting_message = std::make_shared<Message>();
+                            stop_waiting_message->body = stop_waiting_message_body;
+                            stop_waiting_message->message_size = stop_waiting_message_body.size();
+
+                            game_message->sender->SendMessage(stop_waiting_message);
+
+
+                        } else {
+
+
+                            boost::property_tree::ptree stop_waiting_error;
+                            stop_waiting_error.put("Method", "POST");
+                            stop_waiting_error.put("Action", "Stop_waiting_error");
+
+                            std::ostringstream stop_waiting_error_json_stream;
+                            boost::property_tree::write_json(stop_waiting_error_json_stream, stop_waiting_error);        
+                            std::string stop_waiting_error_json_string = stop_waiting_error_json_stream.str();
+                            
+                            std::vector<uint8_t> stop_waiting_error_message_body(stop_waiting_error_json_string.begin(), 
+                                                                           stop_waiting_error_json_string.end());
+
+                            std::shared_ptr<Message> stop_waiting_error_message = std::make_shared<Message>();
+                            stop_waiting_error_message->body = stop_waiting_error_message_body;
+                            stop_waiting_error_message->message_size = stop_waiting_error_message_body.size();
+
+                            game_message->sender->SendMessage(stop_waiting_error_message);
+
+
+
+                        }
+
 
                     }
 

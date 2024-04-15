@@ -43,6 +43,7 @@ signals:
     void Logout(const QString& nickname);
     void Register(const QString& nickname, const QString& password);
     void StartWaitingForOpponent();
+    void StopWaitingForOpponent();
     void OfferDraw();
     void Resign();
     void AcceptDraw();
@@ -57,6 +58,7 @@ public slots:
     void OnLoggedout();
     void OnRegistered(const QString& nickname);
     void OnStartWaitingForOpponentAccepted();
+    void OnStopWaitingForOpponentAccepted();
     void OnGameStarted(const QString& player_color, const QString& player_nickname, const QString& opponent_nickname);
     void OnShowErrorMessage(const QString& title, const QString& error_description);
     void OnGameOver(const QString& game_result);

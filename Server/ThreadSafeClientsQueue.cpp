@@ -22,6 +22,15 @@ bool ThreadSafeClientsQueue::contains_nickname(const std::string& nickname) {
 }
 
 
+void ThreadSafeClientsQueue::delete_connection(const std::string& nickname) {
+
+    std::scoped_lock lock(blocking_mutex);
+
+    auto it = std::remove_if(deque.begin(), deque.end(), [nickname](std::shared_ptr<ClientConnection>& client) { return client->GetNickname() == nickname; });
+    deque.erase(it, deque.end());
+
+}
+
 
 void ThreadSafeClientsQueue::wait_for_players() {
 

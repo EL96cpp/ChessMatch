@@ -16,6 +16,8 @@ class ThreadSafeClientsQueue : public ThreadSafeQueue<ClientConnection> {
 public:
     ThreadSafeClientsQueue(ThreadSafeQueue<GameResult>& game_results_queue);
 
+    void delete_connection(const std::string& nickname);
+
     bool contains_nickname(const std::string& nickname); 
 
     void wait_for_players(); 
