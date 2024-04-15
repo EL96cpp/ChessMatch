@@ -106,8 +106,6 @@ void Client::OnRegister(const QString &nickname, const QString &password) {
 
 void Client::OnStartWaitingForOpponent() {
 
-    qDebug() << "Start waiting message sent!";
-
     QJsonObject json_message;
     json_message[QStringLiteral("Method")] = QStringLiteral("POST");
     json_message[QStringLiteral("Action")] = QStringLiteral("Start_waiting");
@@ -125,8 +123,6 @@ void Client::OnStartWaitingForOpponent() {
 }
 
 void Client::OnStopWaitingForOpponent() {
-
-    qDebug() << "Stop waiting message sent!";
 
     QJsonObject json_message;
     json_message[QStringLiteral("Action")] = QStringLiteral("Stop_waiting");
@@ -306,18 +302,11 @@ void Client::OnResign() {
 
 void Client::SendMessage(const std::shared_ptr<Message>& message) {
 
-    qDebug() << "Send message call";
-
-
     bool writing_message = !outcoming_messages.empty();
-
-    qDebug() << writing_message << " writing message";
 
     outcoming_messages.push_back(message);
 
     if (!writing_message) {
-
-        qDebug() << "will write message header";
 
         WriteHeader();
 
@@ -331,8 +320,6 @@ void Client::WriteHeader() {
                              [this](std::error_code ec, size_t length) {
 
         if (!ec) {
-
-            qDebug() << "Write message header";
 
             if (outcoming_messages.front()->body.size() > 0) {
 
@@ -368,8 +355,6 @@ void Client::WriteBody() {
 
         if (!ec) {
 
-            qDebug() << "Write message body";
-
             outcoming_messages.pop_front();
 
             if (!outcoming_messages.empty()) {
@@ -394,8 +379,6 @@ void Client::ReadHeader() {
                             [this](std::error_code ec, size_t length) {
 
         if (!ec) {
-
-            qDebug() << "Read header handler function";
 
             if (incoming_temporary_message.message_size > 0) {
 
@@ -425,7 +408,6 @@ void Client::ReadBody() {
 
         if (!ec) {
 
-            qDebug() << "Read message body";
             AddToIncomingMessages();
 
         } else {
@@ -439,8 +421,6 @@ void Client::ReadBody() {
 }
 
 void Client::AddToIncomingMessages() {
-
-    qDebug() << "message : " << incoming_temporary_message.body;
 
     bool messages_are_processing = !incoming_messages.empty();
     incoming_messages.push_back(std::make_shared<Message>(incoming_temporary_message));
@@ -495,14 +475,14 @@ void Client::ProcessMessages() {
 
                         this->nickname = nickname;
 
-                        QMap<QString, QString> rating_map;
+                        QList<QPair<QString, QString>> rating_map;
 
                         for (auto line : rating_array) {
 
                             foreach(const QString& player_nickname, line.toObject().keys()) {
 
                                 QJsonValue value = line.toObject().value(player_nickname);
-                                rating_map[player_nickname] = value.toString();
+                                rating_map.push_back(QPair(player_nickname, value.toString()));
 
                             }
 

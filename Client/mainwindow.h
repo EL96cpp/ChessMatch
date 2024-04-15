@@ -19,6 +19,7 @@
 
 #include <QGraphicsEffect>
 
+#include "ratingproxymodel.h"
 #include "boardcell.h"
 #include "chessfigure.h"
 #include "board.h"
@@ -54,7 +55,7 @@ public slots:
     void HideTransformPawnChoice();
     void PawnTransformFigureClicked(ChessFigure* figure);
     void GameOver(const QString& winner_color);
-    void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
+    void OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QList<QPair<QString, QString>>& rating_values);
     void OnLoggedout();
     void OnRegistered(const QString& nickname);
     void OnStartWaitingForOpponentAccepted();
@@ -111,6 +112,7 @@ private:
     QVector<ChessFigure*> pawn_transform_figures;
 
     QStandardItemModel* rating_model;
+    RatingProxyModel* rating_proxy_model;
 
     QTimer waiting_dots_timer;
     QTimer waiting_rectangles_timer;

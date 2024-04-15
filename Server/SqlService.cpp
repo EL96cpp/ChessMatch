@@ -163,6 +163,8 @@ boost::property_tree::ptree SqlService::GetTopHundredPlayersRating() {
         line.put(result[i][0].as<std::string>(), result[i][1].as<int>());
         
         ratings.push_back(std::make_pair("", line));        
+        
+        std::cout << "Rating " << result[i][1].as<int>() << "\n";
 
     }
 

@@ -46,7 +46,7 @@ public slots:
     void OnResign();
 
 signals:
-    void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values);
+    void LoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QList<QPair<QString, QString>>& rating_values);
     void Loggedout();
     void Registered(const QString& nickname);
     void StartWaitingForOpponentAccepted();

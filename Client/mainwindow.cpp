@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , client(new Client(this))
     , rating_model(new QStandardItemModel(0, 2, this))
+    , rating_proxy_model(new RatingProxyModel(this))
     , board_scene(new QGraphicsScene)
     , player_taken_figures_scene(new QGraphicsScene)
     , opponent_taken_figures_scene(new QGraphicsScene)
@@ -157,7 +158,7 @@ void MainWindow::GameOver(const QString &winner_color) {
 
 }
 
-void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QMap<QString, QString>& rating_values) {
+void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, const QString& games_played, const QList<QPair<QString, QString>>& rating_values) {
 
     ui->nickname_value_label->setText(nickname);
     ui->rating_value_label->setText(rating);
@@ -186,14 +187,16 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
     ui->ratingTableView->setColumnWidth(1, ui->ratingTableView->width()/2);
 
 
-    for (auto [key, value] : rating_values.asKeyValueRange()) {
+    for (auto& pair : rating_values) {
+
+        qDebug() << pair.first << " " << pair.second;
 
         QList<QStandardItem*> items;
-        items.append(new QStandardItem(key));
+        items.append(new QStandardItem(pair.first));
         items.last()->setTextAlignment(Qt::AlignCenter);
         items.last()->setFlags(Qt::NoItemFlags);
 
-        items.append(new QStandardItem(value));
+        items.append(new QStandardItem(pair.second));
         items.last()->setTextAlignment(Qt::AlignCenter);
         items.last()->setFlags(Qt::NoItemFlags);
 
@@ -201,9 +204,13 @@ void MainWindow::OnLoggedIn(const QString& nickname, const QString& rating, cons
 
     }
 
+    rating_proxy_model->setSourceModel(rating_model);
+    rating_proxy_model->setDynamicSortFilter(true);
+    rating_proxy_model->sort(1, Qt::DescendingOrder);
+
     ui->ratingTableView->setSortingEnabled(true);
 
-    ui->ratingTableView->setModel(rating_model);
+    ui->ratingTableView->setModel(rating_proxy_model);
 
     ui->nicknameLogLineEdit->clear();
     ui->passwordLogLineEdit->clear();
@@ -492,6 +499,7 @@ void MainWindow::SetBlackPawnTransformChoice()
     queen->setScale(0.6);
     pawn_transform_figures.push_back(queen);
     pawn_transform_scene->addItem(queen);
+
 }
 
 
