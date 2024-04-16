@@ -1,2 +1,3 @@
 Client/CMakeLists.txt.user 
 Server/build
+Server/Tests/build
