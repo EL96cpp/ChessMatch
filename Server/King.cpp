@@ -11,9 +11,6 @@ std::vector<std::pair<size_t, size_t>> King::CalculatePossibleMoves(std::vector<
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
-    std::cout << "Calculate king moves:\n";
-
-
     //Upper line
 
     if (y_index > 0) {

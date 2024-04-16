@@ -8,10 +8,7 @@ Rook::Rook(const Color& figure_color,
 
 std::vector<std::pair<size_t, size_t>> Rook::CalculatePossibleMoves(std::vector<std::vector<std::shared_ptr<ChessFigure>>>& board_cells) {
 
-    std::cout << "Calculate rook moves:\n";
-
     std::vector<std::pair<size_t, size_t>> possible_moves;
-
 
     int x_left = x_index - 1;
 

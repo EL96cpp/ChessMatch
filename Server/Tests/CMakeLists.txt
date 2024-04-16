@@ -6,7 +6,8 @@ add_executable(ChessMatchServerTests main.cpp ../ThreadSafeQueue.cpp ../ThreadSa
                ../Pawn.cpp ../Pawn.h ../Rook.cpp ../Rook.h ../Knight.cpp ../Knight.h ../Bishop.cpp ../Bishop.h ../Queen.cpp ../Queen.h ../King.cpp ../King.h
                ../ThreadSafeMessagesQueue.cpp ../ThreadSafeMessagesQueue.h ../ThreadSafeGameMessagesQueue.cpp ../ThreadSafeGameMessagesQueue.h ../GameResult.h
                ../ClientConnection.cpp ../ClientConnection.h ../Message.cpp ../Message.h ../Server.cpp ../Server.h ../GamesManager.cpp ../GamesManager.h 
-               ../GameMessage.cpp ../GameMessage.h)
+               ../GameMessage.cpp ../GameMessage.h
+               FirstMoveFixture.cpp FirstMoveFixture.h FirstMoveFixtureTests.cpp)
 
 
 

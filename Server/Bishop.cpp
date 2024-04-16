@@ -10,9 +10,6 @@ std::vector<std::pair<size_t, size_t>> Bishop::CalculatePossibleMoves(std::vecto
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
-    std::cout << "Calculate bishop moves:\n";
-
-
     int y_upper_left = y_index-1, x_upper_left = x_index-1;
     
     while (y_upper_left >= 0 && x_upper_left >= 0) {

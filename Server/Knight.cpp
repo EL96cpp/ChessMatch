@@ -11,9 +11,6 @@ std::vector<std::pair<size_t, size_t>> Knight::CalculatePossibleMoves(std::vecto
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
-    std::cout << "Calculate knight moves:\n";
-
-
     if (y_index > 0 && x_index > 1 && board_cells[y_index-1][x_index-2]->GetColor() != figure_color) {
 
         possible_moves.push_back(std::pair<size_t, size_t>(y_index-1, x_index-2));

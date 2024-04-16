@@ -11,9 +11,6 @@ std::vector<std::pair<size_t, size_t>> Queen::CalculatePossibleMoves(std::vector
 
     std::vector<std::pair<size_t, size_t>> possible_moves;
 
-    std::cout << "Calculate queen moves:\n";
-
-
     //Diagonal moves
     	
     int y_upper_left = y_index-1, x_upper_left = x_index-1;
