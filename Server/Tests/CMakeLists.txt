@@ -7,7 +7,7 @@ add_executable(ChessMatchServerTests main.cpp ../ThreadSafeQueue.cpp ../ThreadSa
                ../ThreadSafeMessagesQueue.cpp ../ThreadSafeMessagesQueue.h ../ThreadSafeGameMessagesQueue.cpp ../ThreadSafeGameMessagesQueue.h ../GameResult.h
                ../ClientConnection.cpp ../ClientConnection.h ../Message.cpp ../Message.h ../Server.cpp ../Server.h ../GamesManager.cpp ../GamesManager.h 
                ../GameMessage.cpp ../GameMessage.h
-               FirstMoveFixture.cpp FirstMoveFixture.h FirstMoveFixtureTests.cpp)
+               FirstMoveFixture.cpp FirstMoveFixture.h FirstMoveFixtureTests.cpp EmptyBoardMovesFixture.cpp EmptyBoardMovesFixture.h EmptyBoardMovesFixtureTests.cpp)
 
 
 
