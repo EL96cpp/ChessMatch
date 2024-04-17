@@ -1400,28 +1400,89 @@ TEST_F(EmptyBoardMovesFixture, king_empty_board_tests) {
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 0, 0);
+
+    std::vector<std::pair<size_t, size_t>> upper_left_corner_expected_moves;
+
+    upper_left_corner_expected_moves.emplace_back(1, 0);
+    upper_left_corner_expected_moves.emplace_back(1, 1);    
+    upper_left_corner_expected_moves.emplace_back(0, 1);
+
+    std::vector<std::pair<size_t, size_t>> upper_left_corner_moves = CalculateMovesForSelectedFigure(0, 0);
+
+    EXPECT_TRUE(std::is_permutation(upper_left_corner_expected_moves.begin(), upper_left_corner_expected_moves.end(), upper_left_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 0, 7);
+
+    std::vector<std::pair<size_t, size_t>> upper_right_corner_expected_moves;
+
+    upper_right_corner_expected_moves.emplace_back(0, 6);
+    upper_right_corner_expected_moves.emplace_back(1, 6);
+    upper_right_corner_expected_moves.emplace_back(1, 7);
+
+    std::vector<std::pair<size_t, size_t>> upper_right_corner_moves = CalculateMovesForSelectedFigure(0, 7);
+
+    EXPECT_TRUE(std::is_permutation(upper_right_corner_expected_moves.begin(), upper_right_corner_expected_moves.end(), upper_right_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 7, 7);
+
+    std::vector<std::pair<size_t, size_t>> lower_right_corner_expected_moves;
+
+    lower_right_corner_expected_moves.emplace_back(7, 6);
+    lower_right_corner_expected_moves.emplace_back(6, 6);
+    lower_right_corner_expected_moves.emplace_back(6, 7);
+
+    std::vector<std::pair<size_t, size_t>> lower_right_corner_moves = CalculateMovesForSelectedFigure(7, 7);
+
+    EXPECT_TRUE(std::is_permutation(lower_right_corner_expected_moves.begin(), lower_right_corner_expected_moves.end(), lower_right_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 7, 0);
+    
+    std::vector<std::pair<size_t, size_t>> lower_left_corner_expected_moves;
+
+    lower_left_corner_expected_moves.emplace_back(6, 0);
+    lower_left_corner_expected_moves.emplace_back(6, 1);
+    lower_left_corner_expected_moves.emplace_back(7, 1);
+
+    std::vector<std::pair<size_t, size_t>> lower_left_corner_moves = CalculateMovesForSelectedFigure(7, 0);
+
+    EXPECT_TRUE(std::is_permutation(lower_left_corner_expected_moves.begin(), lower_left_corner_expected_moves.end(), lower_left_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 4, 4);
-    TearDown();
-    SetUp();
+
+    std::vector<std::pair<size_t, size_t>> center_expected_moves;
+
+    center_expected_moves.emplace_back(3, 3);
+    center_expected_moves.emplace_back(3, 4);
+    center_expected_moves.emplace_back(3, 5);
+    center_expected_moves.emplace_back(4, 3);
+    center_expected_moves.emplace_back(4, 5);
+    center_expected_moves.emplace_back(5, 3);
+    center_expected_moves.emplace_back(5, 4);
+    center_expected_moves.emplace_back(5, 5);
+
+    std::vector<std::pair<size_t, size_t>> center_moves = CalculateMovesForSelectedFigure(4, 4);
+
+    EXPECT_TRUE(std::is_permutation(center_expected_moves.begin(), center_expected_moves.end(), center_moves.begin()));
 
 
 }
@@ -1430,28 +1491,97 @@ TEST_F(EmptyBoardMovesFixture, king_opponent_figures_tests) {
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 0, 0);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 1, 1);
+
+    std::vector<std::pair<size_t, size_t>> upper_left_corner_expected_moves;
+
+    upper_left_corner_expected_moves.emplace_back(1, 0);
+    upper_left_corner_expected_moves.emplace_back(1, 1);    
+    upper_left_corner_expected_moves.emplace_back(0, 1);
+
+    std::vector<std::pair<size_t, size_t>> upper_left_corner_moves = CalculateMovesForSelectedFigure(0, 0);
+
+    EXPECT_TRUE(std::is_permutation(upper_left_corner_expected_moves.begin(), upper_left_corner_expected_moves.end(), upper_left_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 0, 7);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 1, 6);
+
+    std::vector<std::pair<size_t, size_t>> upper_right_corner_expected_moves;
+
+    upper_right_corner_expected_moves.emplace_back(0, 6);
+    upper_right_corner_expected_moves.emplace_back(1, 6);
+    upper_right_corner_expected_moves.emplace_back(1, 7);
+
+    std::vector<std::pair<size_t, size_t>> upper_right_corner_moves = CalculateMovesForSelectedFigure(0, 7);
+
+    EXPECT_TRUE(std::is_permutation(upper_right_corner_expected_moves.begin(), upper_right_corner_expected_moves.end(), upper_right_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 7, 7);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 6, 6);
+
+    std::vector<std::pair<size_t, size_t>> lower_right_corner_expected_moves;
+
+    lower_right_corner_expected_moves.emplace_back(7, 6);
+    lower_right_corner_expected_moves.emplace_back(6, 6);
+    lower_right_corner_expected_moves.emplace_back(6, 7);
+
+    std::vector<std::pair<size_t, size_t>> lower_right_corner_moves = CalculateMovesForSelectedFigure(7, 7);
+
+    EXPECT_TRUE(std::is_permutation(lower_right_corner_expected_moves.begin(), lower_right_corner_expected_moves.end(), lower_right_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 7, 0);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 6, 1);
+
+    std::vector<std::pair<size_t, size_t>> lower_left_corner_expected_moves;
+
+    lower_left_corner_expected_moves.emplace_back(6, 0);
+    lower_left_corner_expected_moves.emplace_back(6, 1);
+    lower_left_corner_expected_moves.emplace_back(7, 1);
+
+    std::vector<std::pair<size_t, size_t>> lower_left_corner_moves = CalculateMovesForSelectedFigure(7, 0);
+
+    EXPECT_TRUE(std::is_permutation(lower_left_corner_expected_moves.begin(), lower_left_corner_expected_moves.end(), lower_left_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 4, 4);
-    TearDown();
-    SetUp();
+    CreateFigure(Color::BLACK, FigureType::PAWN, 3, 3);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 3, 5);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 4, 3);
+    CreateFigure(Color::BLACK, FigureType::PAWN, 5, 4);
+
+    std::vector<std::pair<size_t, size_t>> center_expected_moves;
+
+    center_expected_moves.emplace_back(3, 3);
+    center_expected_moves.emplace_back(3, 4);
+    center_expected_moves.emplace_back(3, 5);
+    center_expected_moves.emplace_back(4, 3);
+    center_expected_moves.emplace_back(4, 5);
+    center_expected_moves.emplace_back(5, 3);
+    center_expected_moves.emplace_back(5, 4);
+    center_expected_moves.emplace_back(5, 5);
+
+    std::vector<std::pair<size_t, size_t>> center_moves = CalculateMovesForSelectedFigure(4, 4);
+
+    EXPECT_TRUE(std::is_permutation(center_expected_moves.begin(), center_expected_moves.end(), center_moves.begin()));
 
 
 }
@@ -1460,28 +1590,90 @@ TEST_F(EmptyBoardMovesFixture, king_own_figures_tests) {
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 0, 0);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 1, 1);
+
+    std::vector<std::pair<size_t, size_t>> upper_left_corner_expected_moves;
+
+    upper_left_corner_expected_moves.emplace_back(1, 0);
+    upper_left_corner_expected_moves.emplace_back(0, 1);
+
+    std::vector<std::pair<size_t, size_t>> upper_left_corner_moves = CalculateMovesForSelectedFigure(0, 0);
+
+    EXPECT_TRUE(std::is_permutation(upper_left_corner_expected_moves.begin(), upper_left_corner_expected_moves.end(), upper_left_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 0, 7);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 1, 6);
+
+    std::vector<std::pair<size_t, size_t>> upper_right_corner_expected_moves;
+
+    upper_right_corner_expected_moves.emplace_back(0, 6);
+    upper_right_corner_expected_moves.emplace_back(1, 7);
+
+    std::vector<std::pair<size_t, size_t>> upper_right_corner_moves = CalculateMovesForSelectedFigure(0, 7);
+
+    EXPECT_TRUE(std::is_permutation(upper_right_corner_expected_moves.begin(), upper_right_corner_expected_moves.end(), upper_right_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 7, 7);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 6, 6);
+
+    std::vector<std::pair<size_t, size_t>> lower_right_corner_expected_moves;
+
+    lower_right_corner_expected_moves.emplace_back(7, 6);
+    lower_right_corner_expected_moves.emplace_back(6, 7);
+
+    std::vector<std::pair<size_t, size_t>> lower_right_corner_moves = CalculateMovesForSelectedFigure(7, 7);
+
+    EXPECT_TRUE(std::is_permutation(lower_right_corner_expected_moves.begin(), lower_right_corner_expected_moves.end(), lower_right_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 7, 0);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 6, 1);
+
+    std::vector<std::pair<size_t, size_t>> lower_left_corner_expected_moves;
+
+    lower_left_corner_expected_moves.emplace_back(6, 0);
+    lower_left_corner_expected_moves.emplace_back(7, 1);
+
+    std::vector<std::pair<size_t, size_t>> lower_left_corner_moves = CalculateMovesForSelectedFigure(7, 0);
+
+    EXPECT_TRUE(std::is_permutation(lower_left_corner_expected_moves.begin(), lower_left_corner_expected_moves.end(), lower_left_corner_moves.begin()));
+
     TearDown();
     SetUp();
+
 
 
     CreateFigure(Color::WHITE, FigureType::KING, 4, 4);
-    TearDown();
-    SetUp();
+    CreateFigure(Color::WHITE, FigureType::PAWN, 3, 3);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 3, 5);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 4, 3);
+    CreateFigure(Color::WHITE, FigureType::PAWN, 5, 4);
+
+    std::vector<std::pair<size_t, size_t>> center_expected_moves;
+
+    center_expected_moves.emplace_back(3, 4);
+    center_expected_moves.emplace_back(4, 5);
+    center_expected_moves.emplace_back(5, 3);
+    center_expected_moves.emplace_back(5, 5);
+
+    std::vector<std::pair<size_t, size_t>> center_moves = CalculateMovesForSelectedFigure(4, 4);
+
+    EXPECT_TRUE(std::is_permutation(center_expected_moves.begin(), center_expected_moves.end(), center_moves.begin()));
+
 
 
 }
