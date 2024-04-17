@@ -13,7 +13,17 @@
 
 
 Game::Game(ThreadSafeQueue<GameResult>& game_results_queue) : white_player(nullptr), black_player(nullptr), draw_offered_by(Color::EMPTY),
-                                                              game_results_queue(game_results_queue), number_of_moves(0) {}
+                                                              current_turn_color(Color::WHITE), game_results_queue(game_results_queue), number_of_moves(0) {
+
+    //Constructor for testing purposes
+
+    CreateStartField();
+    
+    game_result_type = GameResultType::IN_PROCESS;
+
+    start_timepoint = std::chrono::system_clock::now();
+
+}
 
 
 Game::Game(std::shared_ptr<ClientConnection>& white_player, 

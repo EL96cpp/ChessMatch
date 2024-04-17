@@ -9,6 +9,7 @@
 #include <map>
 #include <cmath>
 
+#include "ThreadSafeQueue.h"
 
 class ChessFigure;
 class ClientConnection;
@@ -64,7 +65,7 @@ public:
     GameResultType GetGameResultType();
 
 
-private:
+protected:
     void SwapFigures(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to);
     void CreateStartField();
     void SendStartGameMessages();
@@ -78,7 +79,7 @@ private:
     void OnGameOver();
     size_t CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, std::shared_ptr<ClientConnection>& opponent, const PlayersGameResult& game_result);
 
-private:
+protected:
     std::shared_ptr<ClientConnection> white_player;
     std::shared_ptr<ClientConnection> black_player;
        
