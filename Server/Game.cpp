@@ -205,12 +205,10 @@ void Game::ChangeCurrentTurnPlayerColorAndIncrementNumberOfMoves() {
     if (current_turn_color == Color::WHITE) {
 
         current_turn_color = Color::BLACK;
-        std::cout << "Changed current turn color to black\n";
 
     } else {
 
         current_turn_color = Color::WHITE;
-        std::cout << "Changed current turn color to white\n";
 
     }
 
@@ -294,7 +292,7 @@ bool Game::MakeMove(const size_t& y_from, const size_t& x_from, const size_t& y_
     if (CheckIfMoveIsCorrect(y_from, x_from, y_to, x_to, player_color)) {
         
         SwapFigures(y_from, x_from, y_to, x_to);
-
+    
         ChangeCurrentTurnPlayerColorAndIncrementNumberOfMoves();
 
         return true;
@@ -590,57 +588,26 @@ bool Game::CheckIfPlayerIsAGameMember(std::shared_ptr<ClientConnection>& player)
 
 bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color) {
 
-    std::cout << "Check if move is correct for " << y_from << " " << x_from << " - " << y_to << " " << x_to << "\n";
 
     if (y_from > 7 || y_from < 0 || y_to > 7 || y_to < 0 ||
         x_from > 7 || x_from < 0 || x_to > 7 || x_to < 0) {
-
-        std::cout << "Move: index out of range\n";
 
         return false;
 
     }
 
 
-    //Debug 
-    if (board_cells[y_from][x_from]->GetColor() == Color::WHITE) {
-    
-        std::cout << "white figure selected\n";
 
-    } else if (board_cells[y_from][x_from]->GetColor() == Color::BLACK) {
-
-        std::cout << "black figure selected\n";
-
-    } else {
-
-        std::cout << "empty field selected!\n";
-
-    }
-
-
-
-    if (board_cells[y_from][x_from]->GetColor() == player_color) {
+    if (board_cells[y_from][x_from]->GetColor() == player_color && player_color == current_turn_color) {
 
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
-
-        std::cout << "Possible moves size: " << possible_moves.size() << "\n";
-
-        for (auto& pair : possible_moves) {
-
-            std::cout << pair.first << " " << pair.second << " possible move\n";
-
-        }
 
         if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
             board_cells[y_to][x_to]->GetColor() == Color::EMPTY) {
             
-            std::cout << "Move accepted\n";
-
             return true;    
 
         } else {
-
-            std::cout << "Possible moves error!" << y_to << " " << x_to << "\n";
 
             return false;
 
@@ -648,8 +615,6 @@ bool Game::CheckIfMoveIsCorrect(const size_t& y_from, const size_t& x_from, cons
 
 
     } else {
-
-        std::cout << "Move: incorrect color!\n";
 
         return false;
 
@@ -666,31 +631,23 @@ bool Game::CheckIfEatFigureIsCorrect(const size_t& y_from, const size_t& x_from,
     
     }
     
-    if (board_cells[y_from][x_from]->GetColor() == player_color) {
+    if (board_cells[y_from][x_from]->GetColor() == player_color && player_color == current_turn_color) {
     
-        std::cout << "Eat figure color is correct!\n";
-
         std::vector<std::pair<size_t, size_t>> possible_moves = board_cells[y_from][x_from]->CalculatePossibleMoves(board_cells);
     
         if (std::find(possible_moves.begin(), possible_moves.end(), std::pair<size_t, size_t>(y_to, x_to)) != possible_moves.end() && 
             board_cells[y_to][x_to]->GetColor() != Color::EMPTY && board_cells[y_to][x_to]->GetColor() != player_color) {
         
-            std::cout << "Found cell in possible moves for eat\n";
-
             return true;    
     
         } else {
 
-            std::cout << "No cell in eat possible moves\n";
-    
             return false;
     
         }
     
     } else {
 
-        std::cout << "Eat figure color error\n";
-    
         return false;
     
     } 
@@ -710,12 +667,8 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
         
         if (!board_cells[y_from][x_from]->MadeFirstStep() && !board_cells[y_from][0]->MadeFirstStep() &&
             board_cells[y_from][x_from]->GetType() == FigureType::KING && board_cells[y_from][0]->GetType() == FigureType::ROOK &&
-            board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_from][0]->GetColor() == player_color) {
+            board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_from][0]->GetColor() == player_color && player_color == current_turn_color) {
            
-            
-            std::cout << "Left castling requirements are met\n";
-
-
             for (int i = 1; i < x_from; ++i) {
             
                 if (board_cells[y_from][i]->GetColor() != Color::EMPTY) {
@@ -730,15 +683,6 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
             
         } else {
 
-            std::cout << "Left castling error:\n";
-            
-            std::cout << !board_cells[y_from][x_from]->MadeFirstStep() << " " << !board_cells[y_from][0]->MadeFirstStep() << " " <<
-            (board_cells[y_from][x_from]->GetType() == FigureType::KING) << " " <<  (board_cells[y_from][0]->GetType() == FigureType::ROOK) << " " <<
-            (board_cells[y_from][x_from]->GetColor() == player_color) << " " <<  (board_cells[y_from][0]->GetColor() == player_color) << "\n";
-           
-
-
-
             return false;
 
         }
@@ -748,12 +692,8 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
 
         if (!board_cells[y_from][x_from]->MadeFirstStep() && !board_cells[y_from][7]->MadeFirstStep() &&
             board_cells[y_from][x_from]->GetType() == FigureType::KING && board_cells[y_from][7]->GetType() == FigureType::ROOK &&
-            board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_from][7]->GetColor() == player_color) {
+            board_cells[y_from][x_from]->GetColor() == player_color && board_cells[y_from][7]->GetColor() == player_color && player_color == current_turn_color) {
             
-
-            std::cout << "Right castling requirements are met\n";
-
-
             for (int i = x_from+1; i < 7; ++i) {
             
                 if (board_cells[y_from][i]->GetColor() != Color::EMPTY) {
@@ -767,13 +707,6 @@ bool Game::CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, 
             return true;
             
         } else {
-
-            std::cout << "Right castling error!\n";
-
-            std::cout << !board_cells[y_from][x_from]->MadeFirstStep() << " " << !board_cells[y_from][7]->MadeFirstStep() << " " <<
-            (board_cells[y_from][x_from]->GetType() == FigureType::KING) << " " <<  (board_cells[y_from][7]->GetType() == FigureType::ROOK) << " " <<
-            (board_cells[y_from][x_from]->GetColor() == player_color) << " " <<  (board_cells[y_from][7]->GetColor() == player_color) << "\n";
- 
 
             return false;
 
@@ -800,7 +733,7 @@ bool Game::CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t
     }
     
 
-    if (board_cells[y_from][x_from]->GetColor() == player_color) {
+    if (board_cells[y_from][x_from]->GetColor() == player_color && player_color == current_turn_color) {
 
         if (board_cells[y_from][x_from]->GetColor() == Color::WHITE && y_to == 0 ||
             board_cells[y_from][x_from]->GetColor() == Color::BLACK && y_to == 7) {
@@ -876,8 +809,6 @@ size_t Game::CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, st
 
     new_player_rating = (new_player_rating < 0) ? 0 : new_player_rating;
     
-    std::cout << "New player rating for " << player->GetNickname() << " is " << new_player_rating << "\n";
-
     return std::floor(new_player_rating);
 
 }

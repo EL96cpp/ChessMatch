@@ -40,6 +40,8 @@ public:
     void SetMadeFirstStep(const bool& made_first_step);
 
     void SetCoordinates(const size_t& y_index_to, const size_t& x_index_to);
+    size_t GetY();
+    size_t GetX();
 
     virtual std::vector<std::pair<size_t, size_t>> CalculatePossibleMoves(std::vector<std::vector<std::shared_ptr<ChessFigure>>>& board_cells);
 

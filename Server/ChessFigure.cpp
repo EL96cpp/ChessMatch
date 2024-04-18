@@ -43,6 +43,17 @@ void ChessFigure::SetCoordinates(const size_t& y_index_to, const size_t& x_index
 
 }
 
+size_t ChessFigure::GetY() {
+
+    return y_index;
+
+}
+    
+size_t ChessFigure::GetX() {
+
+    return x_index;
+
+}
 
 std::vector<std::pair<size_t, size_t>> ChessFigure::CalculatePossibleMoves(std::vector<std::vector<std::shared_ptr<ChessFigure>>>& board_cells) {
 

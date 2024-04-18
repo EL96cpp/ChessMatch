@@ -2,8 +2,10 @@
 
 #include <memory>
 #include <vector>
+#include <algorithm>
 #include <gtest/gtest.h>
 
+#include "../ChessFigure.h"
 #include "../Pawn.h"
 #include "../Rook.h"
 #include "../Knight.h"
