@@ -948,4 +948,18 @@ TEST_F(GameFixture, black_pawn_eat_and_transform_tests) {
     EXPECT_EQ(number_of_moves, 10);    
 
 
-} 
+}
+
+
+TEST_F(GameFixture, get_figure_type_from_string_tests) {
+
+    
+    EXPECT_EQ(GetFigureTypeFromString("Figure"), FigureType::EMPTY);
+    EXPECT_EQ(GetFigureTypeFromString("Rook"), FigureType::ROOK);
+    EXPECT_EQ(GetFigureTypeFromString("Knight"), FigureType::KNIGHT);
+    EXPECT_EQ(GetFigureTypeFromString("Bishop"), FigureType::BISHOP);
+    EXPECT_EQ(GetFigureTypeFromString("Queen"), FigureType::QUEEN);
+
+
+}
+

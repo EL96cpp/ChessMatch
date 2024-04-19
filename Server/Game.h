@@ -76,7 +76,6 @@ protected:
     bool CheckIfCastlingIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, const Color& player_color);
     bool CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t& x_from, const size_t& y_to, const size_t& x_to, 
                                             const Color& player_color, const std::string& figure_type);
-    void OnGameOver();
     size_t CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, std::shared_ptr<ClientConnection>& opponent, const PlayersGameResult& game_result);
 
 protected:

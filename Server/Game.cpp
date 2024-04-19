@@ -541,7 +541,6 @@ bool Game::AcceptDraw(std::shared_ptr<ClientConnection>& player) {
 
     }
 
-
 }
 
 void Game::Resign(std::shared_ptr<ClientConnection>& player) {
@@ -762,7 +761,6 @@ bool Game::CheckIfPawnTransformationIsCorrect(const size_t& y_from, const size_t
 
     } 
    
-
 }
 
 size_t Game::CalculateNewEloRating(std::shared_ptr<ClientConnection>& player, std::shared_ptr<ClientConnection>& opponent, const PlayersGameResult& game_result) {
@@ -819,9 +817,4 @@ GameResultType Game::GetGameResultType() {
 
 }
 
-void Game::OnGameOver() {
-
-
-
-}
 
