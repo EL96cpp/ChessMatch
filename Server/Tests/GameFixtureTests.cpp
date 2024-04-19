@@ -444,3 +444,319 @@ TEST_F(GameFixture, king_eats_figure_tests) {
 
 }
 
+TEST_F(GameFixture, left_castling_tests) {
+
+
+    MakeMove(7, 1, 5, 0, Color::WHITE);
+    MakeMove(1, 0, 3, 0, Color::BLACK);
+    MakeMove(6, 2, 4, 2, Color::WHITE);
+    MakeMove(1, 1, 3, 1, Color::BLACK);
+    MakeMove(6, 3, 4, 3, Color::WHITE);
+    MakeMove(1, 2, 3, 2, Color::BLACK);
+    MakeMove(7, 3, 5, 3, Color::WHITE);
+    MakeMove(1, 3, 3, 3, Color::BLACK);
+    MakeMove(7, 2, 6, 3, Color::WHITE);
+    MakeMove(1, 4, 3, 4, Color::BLACK);
+
+    EXPECT_EQ(number_of_moves, 10);
+
+
+    //White left castling
+
+    EXPECT_TRUE(MakeCastling(7, 4, 7, 2, Color::WHITE));
+    EXPECT_EQ(number_of_moves, 11);
+    EXPECT_EQ(board_cells[7][0]->GetColor(), Color::EMPTY);  
+    EXPECT_EQ(board_cells[7][0]->GetType(), FigureType::EMPTY);  
+    EXPECT_EQ(board_cells[7][4]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[7][4]->GetType(), FigureType::EMPTY);  
+
+    EXPECT_EQ(board_cells[7][2]->GetColor(), Color::WHITE);  
+    EXPECT_EQ(board_cells[7][2]->GetType(), FigureType::KING);  
+    EXPECT_EQ(board_cells[7][3]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][3]->GetType(), FigureType::ROOK);  
+ 
+    EXPECT_EQ(current_turn_color, Color::BLACK);
+
+    EXPECT_TRUE(board_cells[7][2]->MadeFirstStep());
+    EXPECT_TRUE(board_cells[7][3]->MadeFirstStep());
+
+
+    MakeMove(0, 1, 2, 0, Color::BLACK);
+    MakeMove(6, 7, 5, 7, Color::WHITE);
+    MakeMove(0, 2, 1, 3, Color::BLACK);
+    MakeMove(6, 6, 5, 6, Color::WHITE);
+    MakeMove(0, 3, 1, 4, Color::BLACK);
+    MakeMove(6, 5, 5, 5, Color::WHITE);
+
+    //Black left castling
+
+    EXPECT_TRUE(MakeCastling(0, 4, 0, 2, Color::BLACK));
+    EXPECT_EQ(number_of_moves, 18);
+    EXPECT_EQ(board_cells[0][0]->GetColor(), Color::EMPTY);  
+    EXPECT_EQ(board_cells[0][0]->GetType(), FigureType::EMPTY);  
+    EXPECT_EQ(board_cells[0][4]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[0][4]->GetType(), FigureType::EMPTY);  
+
+    EXPECT_EQ(board_cells[0][2]->GetColor(), Color::BLACK);  
+    EXPECT_EQ(board_cells[0][2]->GetType(), FigureType::KING);  
+    EXPECT_EQ(board_cells[0][3]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][3]->GetType(), FigureType::ROOK);  
+ 
+    EXPECT_EQ(current_turn_color, Color::WHITE);
+
+    EXPECT_TRUE(board_cells[0][2]->MadeFirstStep());
+    EXPECT_TRUE(board_cells[0][3]->MadeFirstStep());
+   
+
+}
+
+
+TEST_F(GameFixture, right_castling_tests) {
+
+    
+    EXPECT_TRUE(MakeMove(7, 6, 5, 7, Color::WHITE));
+    EXPECT_TRUE(MakeMove(0, 6, 2, 7, Color::BLACK));
+    EXPECT_TRUE(MakeMove(6, 4, 4, 4, Color::WHITE));
+    EXPECT_TRUE(MakeMove(1, 4, 3, 4, Color::BLACK));
+    EXPECT_TRUE(MakeMove(7, 5, 5, 3, Color::WHITE));
+    EXPECT_TRUE(MakeMove(0, 5, 2, 3, Color::BLACK));
+
+
+    //White right castling 
+    
+    EXPECT_TRUE(MakeCastling(7, 4, 7, 6, Color::WHITE));
+    EXPECT_EQ(number_of_moves, 7);
+    EXPECT_EQ(board_cells[7][7]->GetColor(), Color::EMPTY);  
+    EXPECT_EQ(board_cells[7][7]->GetType(), FigureType::EMPTY);  
+    EXPECT_EQ(board_cells[7][4]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[7][4]->GetType(), FigureType::EMPTY);  
+
+    EXPECT_EQ(board_cells[7][6]->GetColor(), Color::WHITE);  
+    EXPECT_EQ(board_cells[7][6]->GetType(), FigureType::KING);  
+    EXPECT_EQ(board_cells[7][5]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][5]->GetType(), FigureType::ROOK);  
+ 
+    EXPECT_EQ(current_turn_color, Color::BLACK);
+
+    EXPECT_TRUE(board_cells[7][6]->MadeFirstStep());
+    EXPECT_TRUE(board_cells[7][5]->MadeFirstStep());
+    
+
+    //Black right castling
+
+    EXPECT_TRUE(MakeCastling(0, 4, 0, 6, Color::BLACK));
+    EXPECT_EQ(number_of_moves, 8);
+    EXPECT_EQ(board_cells[0][7]->GetColor(), Color::EMPTY);  
+    EXPECT_EQ(board_cells[0][7]->GetType(), FigureType::EMPTY);  
+    EXPECT_EQ(board_cells[0][4]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[0][4]->GetType(), FigureType::EMPTY);  
+
+    EXPECT_EQ(board_cells[0][6]->GetColor(), Color::BLACK);  
+    EXPECT_EQ(board_cells[0][6]->GetType(), FigureType::KING);  
+    EXPECT_EQ(board_cells[0][5]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][5]->GetType(), FigureType::ROOK);  
+ 
+    EXPECT_EQ(current_turn_color, Color::WHITE);
+
+    EXPECT_TRUE(board_cells[0][6]->MadeFirstStep());
+    EXPECT_TRUE(board_cells[0][5]->MadeFirstStep());
+ 
+
+}
+
+
+TEST_F(GameFixture, white_pawn_transformation) {
+
+
+    //White pawn transforms to Rook
+
+    MakeMove(6, 2, 4, 2, Color::WHITE);
+    MakeMove(1, 1, 3, 1, Color::BLACK);
+    EatFigure(4, 2, 3, 1, Color::WHITE);
+    MakeMove(1, 7, 2, 7, Color::BLACK);
+    MakeMove(3, 1, 2, 1, Color::WHITE);
+    MakeMove(2, 7, 3, 7, Color::BLACK);
+    MakeMove(2, 1, 1, 1, Color::WHITE);
+    MakeMove(0, 1, 2, 0, Color::BLACK);
+    
+    EXPECT_TRUE(TransformPawn(1, 1, 0, 1, Color::WHITE, "Rook"));
+    EXPECT_EQ(board_cells[0][1]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[0][1]->GetType(), FigureType::ROOK);
+    EXPECT_EQ(board_cells[1][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[1][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[0][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 9);    
+
+    TearDown();
+    SetUp();
+
+    //White pawn transforms to Knight
+
+    MakeMove(6, 2, 4, 2, Color::WHITE);
+    MakeMove(1, 1, 3, 1, Color::BLACK);
+    EatFigure(4, 2, 3, 1, Color::WHITE);
+    MakeMove(1, 7, 2, 7, Color::BLACK);
+    MakeMove(3, 1, 2, 1, Color::WHITE);
+    MakeMove(2, 7, 3, 7, Color::BLACK);
+    MakeMove(2, 1, 1, 1, Color::WHITE);
+    MakeMove(0, 1, 2, 0, Color::BLACK);
+    
+    EXPECT_TRUE(TransformPawn(1, 1, 0, 1, Color::WHITE, "Knight"));
+    EXPECT_EQ(board_cells[0][1]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[0][1]->GetType(), FigureType::KNIGHT);
+    EXPECT_EQ(board_cells[1][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[1][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[0][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 9);    
+
+    TearDown();
+    SetUp();
+   
+
+    //White pawn transforms to Bishop
+
+    MakeMove(6, 2, 4, 2, Color::WHITE);
+    MakeMove(1, 1, 3, 1, Color::BLACK);
+    EatFigure(4, 2, 3, 1, Color::WHITE);
+    MakeMove(1, 7, 2, 7, Color::BLACK);
+    MakeMove(3, 1, 2, 1, Color::WHITE);
+    MakeMove(2, 7, 3, 7, Color::BLACK);
+    MakeMove(2, 1, 1, 1, Color::WHITE);
+    MakeMove(0, 1, 2, 0, Color::BLACK);
+    
+    EXPECT_TRUE(TransformPawn(1, 1, 0, 1, Color::WHITE, "Bishop"));
+    EXPECT_EQ(board_cells[0][1]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[0][1]->GetType(), FigureType::BISHOP);
+    EXPECT_EQ(board_cells[1][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[1][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[0][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 9);    
+
+    TearDown();
+    SetUp();
+
+
+    //White pawn transforms to Knight
+
+    MakeMove(6, 2, 4, 2, Color::WHITE);
+    MakeMove(1, 1, 3, 1, Color::BLACK);
+    EatFigure(4, 2, 3, 1, Color::WHITE);
+    MakeMove(1, 7, 2, 7, Color::BLACK);
+    MakeMove(3, 1, 2, 1, Color::WHITE);
+    MakeMove(2, 7, 3, 7, Color::BLACK);
+    MakeMove(2, 1, 1, 1, Color::WHITE);
+    MakeMove(0, 1, 2, 0, Color::BLACK);
+    
+    EXPECT_TRUE(TransformPawn(1, 1, 0, 1, Color::WHITE, "Queen"));
+    EXPECT_EQ(board_cells[0][1]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[0][1]->GetType(), FigureType::QUEEN);
+    EXPECT_EQ(board_cells[1][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[1][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[0][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 9);    
+
+
+}
+
+
+TEST_F(GameFixture, black_pawn_transformation) {
+
+
+    //Black pawn transforms to Rook
+
+    MakeMove(6, 1, 4, 1, Color::WHITE);
+    MakeMove(1, 0, 3, 0, Color::BLACK);
+    MakeMove(7, 1, 5, 0, Color::WHITE);
+    EatFigure(3, 0, 4, 1, Color::BLACK);
+    MakeMove(6, 7, 5, 7, Color::WHITE);
+    MakeMove(4, 1, 5, 1, Color::BLACK);
+    MakeMove(5, 7, 4, 7, Color::WHITE);
+    MakeMove(5, 1, 6, 1, Color::BLACK);
+    MakeMove(4, 7, 3, 7, Color::WHITE);
+
+    EXPECT_TRUE(TransformPawn(6, 1, 7, 1, Color::BLACK, "Rook"));
+    EXPECT_EQ(board_cells[7][1]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[7][1]->GetType(), FigureType::ROOK);
+    EXPECT_EQ(board_cells[6][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[6][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[7][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 10);    
+
+    TearDown();
+    SetUp();
+    
+
+    //Black pawn transforms to Knight
+
+    MakeMove(6, 1, 4, 1, Color::WHITE);
+    MakeMove(1, 0, 3, 0, Color::BLACK);
+    MakeMove(7, 1, 5, 0, Color::WHITE);
+    EatFigure(3, 0, 4, 1, Color::BLACK);
+    MakeMove(6, 7, 5, 7, Color::WHITE);
+    MakeMove(4, 1, 5, 1, Color::BLACK);
+    MakeMove(5, 7, 4, 7, Color::WHITE);
+    MakeMove(5, 1, 6, 1, Color::BLACK);
+    MakeMove(4, 7, 3, 7, Color::WHITE);
+
+    EXPECT_TRUE(TransformPawn(6, 1, 7, 1, Color::BLACK, "Knight"));
+    EXPECT_EQ(board_cells[7][1]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[7][1]->GetType(), FigureType::KNIGHT);
+    EXPECT_EQ(board_cells[6][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[6][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[7][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 10);    
+
+    TearDown();
+    SetUp();
+ 
+
+    //Black pawn transforms to Bishop
+
+    MakeMove(6, 1, 4, 1, Color::WHITE);
+    MakeMove(1, 0, 3, 0, Color::BLACK);
+    MakeMove(7, 1, 5, 0, Color::WHITE);
+    EatFigure(3, 0, 4, 1, Color::BLACK);
+    MakeMove(6, 7, 5, 7, Color::WHITE);
+    MakeMove(4, 1, 5, 1, Color::BLACK);
+    MakeMove(5, 7, 4, 7, Color::WHITE);
+    MakeMove(5, 1, 6, 1, Color::BLACK);
+    MakeMove(4, 7, 3, 7, Color::WHITE);
+
+    EXPECT_TRUE(TransformPawn(6, 1, 7, 1, Color::BLACK, "Bishop"));
+    EXPECT_EQ(board_cells[7][1]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[7][1]->GetType(), FigureType::BISHOP);
+    EXPECT_EQ(board_cells[6][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[6][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[7][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 10);    
+
+    TearDown();
+    SetUp();
+
+
+    //Black pawn transforms to Queen
+
+    MakeMove(6, 1, 4, 1, Color::WHITE);
+    MakeMove(1, 0, 3, 0, Color::BLACK);
+    MakeMove(7, 1, 5, 0, Color::WHITE);
+    EatFigure(3, 0, 4, 1, Color::BLACK);
+    MakeMove(6, 7, 5, 7, Color::WHITE);
+    MakeMove(4, 1, 5, 1, Color::BLACK);
+    MakeMove(5, 7, 4, 7, Color::WHITE);
+    MakeMove(5, 1, 6, 1, Color::BLACK);
+    MakeMove(4, 7, 3, 7, Color::WHITE);
+
+    EXPECT_TRUE(TransformPawn(6, 1, 7, 1, Color::BLACK, "Queen"));
+    EXPECT_EQ(board_cells[7][1]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[7][1]->GetType(), FigureType::QUEEN);
+    EXPECT_EQ(board_cells[6][1]->GetColor(), Color::EMPTY);
+    EXPECT_EQ(board_cells[6][1]->GetType(), FigureType::EMPTY);
+    EXPECT_TRUE(board_cells[7][1]->MadeFirstStep());
+    EXPECT_EQ(number_of_moves, 10);    
+
+    TearDown();
+    SetUp();
+ 
+    
+}
+
