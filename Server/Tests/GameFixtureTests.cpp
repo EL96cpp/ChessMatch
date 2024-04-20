@@ -11,6 +11,72 @@ TEST_F(GameFixture, correct_figures_setup_tests) {
     EXPECT_EQ(GetCurrentTurnPlayerColor(), Color::WHITE);
     EXPECT_EQ(number_of_moves, 0);
 
+    //Black figures
+    EXPECT_EQ(board_cells[0][0]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][0]->GetType(), FigureType::ROOK);
+    EXPECT_EQ(board_cells[0][1]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][1]->GetType(), FigureType::KNIGHT);
+    EXPECT_EQ(board_cells[0][2]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][2]->GetType(), FigureType::BISHOP);
+    EXPECT_EQ(board_cells[0][3]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][3]->GetType(), FigureType::QUEEN);
+    EXPECT_EQ(board_cells[0][4]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][4]->GetType(), FigureType::KING);
+    EXPECT_EQ(board_cells[0][5]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][5]->GetType(), FigureType::BISHOP);
+    EXPECT_EQ(board_cells[0][6]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][6]->GetType(), FigureType::KNIGHT);
+    EXPECT_EQ(board_cells[0][7]->GetColor(), Color::BLACK);
+    EXPECT_EQ(board_cells[0][7]->GetType(), FigureType::ROOK);
+
+    //Black pawns
+    for (int i = 0; i < 8; ++i) {
+
+        EXPECT_EQ(board_cells[1][i]->GetColor(), Color::BLACK);
+        EXPECT_EQ(board_cells[1][i]->GetType(), FigureType::PAWN);
+
+    }
+
+    //Empty figures
+    for (int i = 2; i < 6; ++i) {
+
+        for (int j = 0; j < 8; ++j) {
+
+            EXPECT_EQ(board_cells[i][j]->GetColor(), Color::EMPTY);
+            EXPECT_EQ(board_cells[i][j]->GetType(), FigureType::EMPTY);
+
+        }
+
+    }
+
+    //White pawns
+    for (int i = 0; i < 8; ++i) {
+
+        EXPECT_EQ(board_cells[6][i]->GetColor(), Color::WHITE);
+        EXPECT_EQ(board_cells[6][i]->GetType(), FigureType::PAWN);
+
+    }
+ 
+    //White figures
+    EXPECT_EQ(board_cells[7][0]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][0]->GetType(), FigureType::ROOK);
+    EXPECT_EQ(board_cells[7][1]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][1]->GetType(), FigureType::KNIGHT);
+    EXPECT_EQ(board_cells[7][2]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][2]->GetType(), FigureType::BISHOP);
+    EXPECT_EQ(board_cells[7][3]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][3]->GetType(), FigureType::QUEEN);
+    EXPECT_EQ(board_cells[7][4]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][4]->GetType(), FigureType::KING);
+    EXPECT_EQ(board_cells[7][5]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][5]->GetType(), FigureType::BISHOP);
+    EXPECT_EQ(board_cells[7][6]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][6]->GetType(), FigureType::KNIGHT);
+    EXPECT_EQ(board_cells[7][7]->GetColor(), Color::WHITE);
+    EXPECT_EQ(board_cells[7][7]->GetType(), FigureType::ROOK);
+
+
+
 }
 
 
