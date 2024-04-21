@@ -6,6 +6,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+#include <string>
 
 #include "ThreadSafeMessagesQueue.h"
 #include "ThreadSafeClientsQueue.h"
@@ -36,6 +37,7 @@ private:
     void OnCancelDraw(const std::string& sender_nickname);   
     void ProcessGameResults();
 
+    void SetBestPlayersRating();
 
 private:
     ThreadSafeMessagesQueue incoming_messages;

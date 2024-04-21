@@ -172,3 +172,33 @@ boost::property_tree::ptree SqlService::GetTopHundredPlayersRating() {
  
 }
 
+
+bool SqlService::CheckIfNeedToUpdateTopPlayersRating(const std::string& first_nickname, const std::string& second_nickname) {
+
+    pqxx::work work{sql_connection};
+
+    pqxx::result result = work.exec("SELECT nickname, rating FROM users ORDER BY rating DESC LIMIT 100");
+
+    boost::property_tree::ptree ratings;
+
+    for (int i = 0; i < result.size(); ++i) {
+
+        if (result[i][0].as<std::string>() == first_nickname || result[i][0].as<std::string>() == second_nickname) {
+
+            std::cout << "Need to update top hundred ratings for " << first_nickname << " " << second_nickname << "\n";
+            
+            return true;
+
+        }
+    
+    }
+
+    return false;
+
+}
+
+
+
+
+
+

@@ -88,3 +88,16 @@ std::vector<std::shared_ptr<Game>> ThreadSafeClientsQueue::create_games() {
 }
 
 
+void ThreadSafeClientsQueue::SendMessageToAllClients(std::shared_ptr<Message>& message) {
+
+    for (auto& client : deque) {
+
+        std::cout << "Send message to " << client->GetNickname() << "\n";
+
+        client->SendMessage(message);
+
+    }    
+
+}
+
+

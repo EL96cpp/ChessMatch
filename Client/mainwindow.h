@@ -64,6 +64,7 @@ public slots:
     void OnShowErrorMessage(const QString& title, const QString& error_description);
     void OnGameOver(const QString& game_result);
     void OnUpdatePlayerRatingAndGamesPlayed(const QString& new_rating);
+    void OnUpdateTopPlayersRating(const QList<QPair<QString, QString>>& rating_map);
     void OnDrawOffered();
 
 private slots:

@@ -464,8 +464,32 @@ void Server::ProcessGameResults() {
             std::shared_ptr<GameResult> result = game_results.pop_front();
              
             sql_service.AddGameResult(result->white_nickname, result->black_nickname, result->winner, result->number_of_moves, result->total_time);
+ 
             sql_service.UpdatePlayerRating(result->white_nickname, result->new_white_player_rating, result->white_player_games_played);
             sql_service.UpdatePlayerRating(result->black_nickname, result->new_black_player_rating, result->black_player_games_played);
+
+
+            if (sql_service.CheckIfNeedToUpdateTopPlayersRating(result->white_nickname, result->black_nickname)) {
+
+                boost::property_tree::ptree top_players = sql_service.GetTopHundredPlayersRating();
+
+                boost::property_tree::ptree property_tree;
+                property_tree.put("Action", "Update_top_players_rating");
+                property_tree.put_child("Top_players", top_players);
+
+                std::ostringstream json_stream;
+                boost::property_tree::write_json(json_stream, property_tree);        
+                std::string json_string = json_stream.str();
+                
+                std::vector<uint8_t> message_body(json_string.begin(), json_string.end());
+
+                std::shared_ptr<Message> message = std::make_shared<Message>();
+                message->body = message_body;
+                message->message_size = message_body.size();
+
+                client_connections.SendMessageToAllClients(message);
+
+            }
 
             std::cout << "Updated ratings for " << result->white_nickname << " and " << result->black_nickname << "\n";
 
@@ -474,6 +498,13 @@ void Server::ProcessGameResults() {
 
     }
 
+
+}
+
+
+void Server::SetBestPlayersRating() {
+
+    
 
 }
 

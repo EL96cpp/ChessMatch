@@ -39,6 +39,7 @@ public:
     LoginResult Login(const std::string& nickname, const std::string& password);
     RegisterResult Register(const std::string& nickname, const std::string& password);
     bool CheckIfUserExists(const std::string& nickname);
+    bool CheckIfNeedToUpdateTopPlayersRating(const std::string& first_nickname, const std::string& second_nickname);
     int GetPlayerRating(const std::string& nickname);
     int GetPlayersGamesPlayed(const std::string& nickname);
     void AddGameResult(const std::string& white_nickname, const std::string& black_nickname, const std::string& winner, const int& number_of_moves, const int& total_time);

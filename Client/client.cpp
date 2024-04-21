@@ -646,6 +646,27 @@ void Client::ProcessMessages() {
 
                 emit UpdatePlayerRatingAndGamesPlayed(new_rating);
 
+            } else if (action_value.toString() == "Update_top_players_rating") {
+
+                QJsonArray rating_array = json_message_object.value(QLatin1String("Top_players")).toArray();
+
+                this->nickname = nickname;
+
+                QList<QPair<QString, QString>> rating_map;
+
+                for (auto line : rating_array) {
+
+                    foreach(const QString& player_nickname, line.toObject().keys()) {
+
+                        QJsonValue value = line.toObject().value(player_nickname);
+                        rating_map.push_back(QPair(player_nickname, value.toString()));
+
+                    }
+
+                }
+
+                emit UpdateTopPlayersRating(rating_map);
+
             }
 
         }

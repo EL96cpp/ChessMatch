@@ -62,6 +62,7 @@ signals:
     void ShowErrorMessage(const QString& title, const QString& error_description);
     void GameOver(const QString& game_result);
     void UpdatePlayerRatingAndGamesPlayed(const QString& new_rating);
+    void UpdateTopPlayersRating(const QList<QPair<QString, QString>>& rating_map);
     void DrawOffered();
 
 private:

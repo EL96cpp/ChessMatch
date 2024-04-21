@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::GameStarted, this, &MainWindow::OnGameStarted);
     connect(client, &Client::GameOver, this, &MainWindow::OnGameOver);
     connect(client, &Client::UpdatePlayerRatingAndGamesPlayed, this, &MainWindow::OnUpdatePlayerRatingAndGamesPlayed);
+    connect(client, &Client::UpdateTopPlayersRating, this, &MainWindow::OnUpdateTopPlayersRating);
     connect(client, &Client::DrawOffered, this, &MainWindow::OnDrawOffered);
 
     connect(client, &Client::MakeMoveAccepted, board, &Board::OnMakeMoveAccepted);
@@ -321,6 +322,60 @@ void MainWindow::OnUpdatePlayerRatingAndGamesPlayed(const QString &new_rating) {
     int games_played = games_played_str.toInt();
     ++games_played;
     ui->games_played_value_label->setText(QString::number(games_played));
+
+}
+
+void MainWindow::OnUpdateTopPlayersRating(const QList<QPair<QString, QString> > &rating_map) {
+
+    rating_model->clear();
+
+    QStandardItem* player_item = new QStandardItem("Player");
+    QStandardItem* rating_item = new QStandardItem("Rating");
+    player_item->setFont(QFont(logo_font_family, 25));
+    player_item->setBackground(QBrush(QColor(42, 75, 63, 50)));
+    player_item->setForeground(QBrush(QColor(255, 255, 255)));
+    rating_item->setFont(QFont(logo_font_family, 20));
+    rating_item->setBackground(QBrush(QColor(42, 75, 63, 50)));
+    rating_item->setForeground(QBrush(QColor(255, 255, 255)));
+
+    QHeaderView* header = ui->ratingTableView->verticalHeader();
+    header->setSectionResizeMode(QHeaderView::Fixed);
+    header->setDefaultSectionSize(50);
+
+    ui->top_players_label->setFont(QFont(logo_font_family));
+
+    rating_model->setHorizontalHeaderItem(0, player_item);
+    rating_model->setHorizontalHeaderItem(1, rating_item);
+    ui->ratingTableView->setFont(QFont(typing_font_family, 20));
+
+    ui->ratingTableView->setColumnWidth(0, ui->ratingTableView->width()/2);
+    ui->ratingTableView->setColumnWidth(1, ui->ratingTableView->width()/2);
+
+
+    for (auto& pair : rating_map) {
+
+        qDebug() << "Update top players " << pair.first << " " << pair.second;
+
+        QList<QStandardItem*> items;
+        items.append(new QStandardItem(pair.first));
+        items.last()->setTextAlignment(Qt::AlignCenter);
+        items.last()->setFlags(Qt::NoItemFlags);
+
+        items.append(new QStandardItem(pair.second));
+        items.last()->setTextAlignment(Qt::AlignCenter);
+        items.last()->setFlags(Qt::NoItemFlags);
+
+        rating_model->appendRow(items);
+
+    }
+
+    rating_proxy_model->setSourceModel(rating_model);
+    rating_proxy_model->setDynamicSortFilter(true);
+    rating_proxy_model->sort(1, Qt::DescendingOrder);
+
+    ui->ratingTableView->setSortingEnabled(true);
+
+    ui->ratingTableView->setModel(rating_proxy_model);
 
 }
 
