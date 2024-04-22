@@ -8,8 +8,32 @@ Server is a multi-threaded application, written using Boost.Asio. Server stores 
 ### Sql database
 To store user data and game results, PostgreSQL is used. To setup required database 'chessmatch' and 'users' and 'games' tables run next line in terminal:
 <br />``` psql -U "$POSTGRES_USER" < SetupFile.sql ```<br />
+### How to build and run
+To build and run Server application on Linux, run next lines in terminal in the Server application's source code folder:
+```
+CMake -S. -B build 
+cmake --build build
+./build/ChessMatchServer
+```
 
 ### Elo rating
-To range players Elo rating is used. To get the expected number of score point user 'A' gets in a game with player 'B' used formula: $$E_A=\dfrac{1}{1 + 10^\frac{R_A-R_B}{400}}$$ 
+To range players Elo rating is used. To get the expected number of score points user 'A' gets in a game with player 'B' used formula: $$E_A=\dfrac{1}{1 + 10^\frac{R_A-R_B}{400}}$$ 
+where $R_A$ is 'A' player rating before game, $R_B$ is 'B' player rating before game.</br >
 New Elo rating is calculated using this formula: $$R_A^\prime=R_A+K*(S_A-E_A)$$
-Where $$R_A$$ and $$R_B$$ are A player and B player ratings before game correspondingly. 
+<br />
+
+| $\mathbf{S_A}$ value | Conditions |
+| :---: | :---: |
+| $$1$$ | Player 'A' lost |
+| $$0.5$$ | Game ended in a draw |
+| $$0$$ | Player 'A' won |
+
+| $\mathbf{K}$ value | Conditions |
+| :---: | :---: |
+| $$40$$ | 'A' player rating < 2400 and number of played games < 30 |
+| $$20$$ | 'A' player rating < 2400 and number of played game >= 30 |
+| $$10$$ | 'A' player rating >= 2400 |
+
+In this application player's rating can't become lower than 0. Top 100 players are shown in Client application's profile page, sorted by rating descending.
+
+
