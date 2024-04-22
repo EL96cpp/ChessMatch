@@ -7,7 +7,8 @@ Server is a multi-threaded application, written using Boost.Asio. Server stores 
 
 ### Sql database
 To store user data and game results, PostgreSQL is used. To setup required database 'chessmatch' and 'users' and 'games' tables run next line in terminal:
-<br />``` psql -U "$POSTGRES_USER" < SetupFile.sql ```<br />
+<br />``` psql -U "$POSTGRES_USER" < SetupFile.sql ```<br /> <br />
+'games' table stores nicknames of both players, total number of moves they made, game result and game duration in seconds.
 ### How to build and run
 To build and run Server application on Linux, run next lines in terminal in the Server application's source code folder:
 ```
@@ -24,9 +25,9 @@ New Elo rating is calculated using this formula: $$R_A^\prime=R_A+K*(S_A-E_A)$$
 
 | $\mathbf{S_A}$ value | Conditions |
 | :---: | :---: |
-| $$1$$ | Player 'A' lost |
+| $$1$$ | Player 'A' won |
 | $$0.5$$ | Game ended in a draw |
-| $$0$$ | Player 'A' won |
+| $$0$$ | Player 'A' lost |
 
 | $\mathbf{K}$ value | Conditions |
 | :---: | :---: |
