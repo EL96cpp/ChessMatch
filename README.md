@@ -37,4 +37,9 @@ New Elo rating is calculated using this formula: $$R_A^\prime=R_A+K*(S_A-E_A)$$
 
 In this application player's rating can't become lower than 0. Top 100 players are shown in Client application's profile page, sorted by rating descending.
 
+## UML diagrams 
+UML class diagram for the Server application was created in draw.io app. Corresponding files in .drawio and .PDF formats are in the 'UML diagrams' folder.
+
+![Server](https://github.com/EL96cpp/ChessMatch/assets/120955824/896befb4-5f36-473e-b6e5-bef47eba3e06)
+
 
