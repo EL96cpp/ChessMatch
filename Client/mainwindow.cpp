@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     , rating_model(new QStandardItemModel(0, 2, this))
     , rating_proxy_model(new RatingProxyModel(this))
     , board_scene(new QGraphicsScene)
+    , audio_manager(new AudioManager(this))
     , player_taken_figures_scene(new QGraphicsScene)
     , opponent_taken_figures_scene(new QGraphicsScene)
     , pawn_transform_scene(new QGraphicsScene) {
@@ -57,6 +58,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::EatFigureAccepted, board, &Board::OnEatFigureAccepted);
     connect(client, &Client::MakeCastlingAccepted, board, &Board::OnMakeCastlingAccepted);
     connect(client, &Client::TransformPawnAccepted, board, &Board::OnTransformPawnAccepted);
+
+    connect(client, &Client::MakeMoveAccepted, audio_manager, &AudioManager::PlayMoveSound);
+    connect(client, &Client::TransformPawnAccepted, audio_manager, &AudioManager::PlayMoveSound);
+    connect(client, &Client::MakeCastlingAccepted, audio_manager, &AudioManager::PlayCastlingSound);
+    connect(client, &Client::EatFigureAccepted, audio_manager, &AudioManager::PlayEatSound);
 
     connect(board, &Board::MakeMove, client, &Client::OnMakeMove);
     connect(board, &Board::EatFigure, client, &Client::OnEatFigure);

@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network Multimedia)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network Multimedia)
 
 
 set(PROJECT_SOURCES
@@ -29,6 +29,7 @@ set(PROJECT_SOURCES
         chessfigure.cpp
         chessfigure.h
         ChessFigures.qrc
+        Audio.qrc
         resources.qrc
         board.cpp
         board.h
@@ -50,6 +51,8 @@ set(PROJECT_SOURCES
         king.h
         message.cpp
         message.h
+        audiomanager.cpp
+        audiomanager.h
         threadsafequeue.h
 )
 
@@ -57,6 +60,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(ChessMatch
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET ChessMatch APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -79,7 +83,8 @@ endif()
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
-target_link_libraries(ChessMatch PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network ${Boost_LIBRARIES})
+target_link_libraries(ChessMatch PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Multimedia
+                      Qt${QT_VERSION_MAJOR}::Network ${Boost_LIBRARIES})
 
 set_target_properties(ChessMatch PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

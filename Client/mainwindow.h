@@ -23,6 +23,7 @@
 #include "boardcell.h"
 #include "chessfigure.h"
 #include "board.h"
+#include "audiomanager.h"
 #include "client.h"
 #include "takenfiguresmanager.h"
 
@@ -109,6 +110,7 @@ private:
     Ui::MainWindow *ui;
     Client* client;
     Board* board;
+    AudioManager* audio_manager;
     TakenFiguresManager* taken_figures_manager;
     QVector<ChessFigure*> pawn_transform_figures;
 
