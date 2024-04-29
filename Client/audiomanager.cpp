@@ -4,7 +4,8 @@ AudioManager::AudioManager(QObject *parent)
     : QObject{parent},
       move_sound_path("qrc:/Audio/move.mp3"),
       eat_sound_path("qrc:/Audio/eat.mp3"),
-      castling_sound_path("qrc:/Audio/castling.mp3") {}
+      castling_sound_path("qrc:/Audio/castling.mp3"),
+      button_click_sound_path("qrc:/Audio/click.mp3") {}
 
 void AudioManager::PlayMoveSound() {
 
@@ -40,6 +41,21 @@ void AudioManager::PlayCastlingSound() {
     player.setAudioOutput(audioOut);
 
     player.setSource(QUrl(castling_sound_path));
+    player.setPosition(0);
+    player.play();
+
+}
+
+void AudioManager::PlayButtonClickedSound() {
+
+    qDebug() << "Button clicked!";
+
+    auto audioOut = new QAudioOutput{};
+    audioOut->setDevice(QMediaDevices::defaultAudioOutput());
+    audioOut->setVolume(1.f);
+    player.setAudioOutput(audioOut);
+
+    player.setSource(QUrl(button_click_sound_path));
     player.setPosition(0);
     player.play();
 

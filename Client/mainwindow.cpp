@@ -64,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client, &Client::MakeCastlingAccepted, audio_manager, &AudioManager::PlayCastlingSound);
     connect(client, &Client::EatFigureAccepted, audio_manager, &AudioManager::PlayEatSound);
 
+    connect(this, &MainWindow::ButtonClicked, audio_manager, &AudioManager::PlayButtonClickedSound);
+
     connect(board, &Board::MakeMove, client, &Client::OnMakeMove);
     connect(board, &Board::EatFigure, client, &Client::OnEatFigure);
     connect(board, &Board::MakeCastling, client, &Client::OnMakeCastling);
@@ -567,6 +569,7 @@ void MainWindow::SetBlackPawnTransformChoice()
 
 void MainWindow::on_loginButton_clicked() {
 
+    emit ButtonClicked();
     ui->stackedWidget->setCurrentWidget(ui->login_page);
 
 }
@@ -574,6 +577,7 @@ void MainWindow::on_loginButton_clicked() {
 
 void MainWindow::on_registerButton_clicked() {
 
+    emit ButtonClicked();
     ui->stackedWidget->setCurrentWidget(ui->register_page);
 
 }
@@ -581,12 +585,15 @@ void MainWindow::on_registerButton_clicked() {
 
 void MainWindow::on_exitButton_clicked() {
 
+    emit ButtonClicked();
     qApp->exit();
 
 }
 
 
 void MainWindow::on_registerRegButton_clicked() {
+
+    emit ButtonClicked();
 
     if (ui->nicknameRegLineEdit->text().isEmpty() ||
         ui->passwordRegLineEdit->text().isEmpty() ||
@@ -609,6 +616,8 @@ void MainWindow::on_registerRegButton_clicked() {
 
 void MainWindow::on_regReturnButton_clicked() {
 
+    emit ButtonClicked();
+
     ui->nicknameRegLineEdit->clear();
     ui->passwordRegLineEdit->clear();
     ui->passwordConfirmRegLineEdit->clear();
@@ -620,6 +629,8 @@ void MainWindow::on_regReturnButton_clicked() {
 
 void MainWindow::on_logReturnButton_clicked() {
 
+    emit ButtonClicked();
+
     ui->nicknameLogLineEdit->clear();
     ui->passwordLogLineEdit->clear();
 
@@ -629,6 +640,8 @@ void MainWindow::on_logReturnButton_clicked() {
 
 
 void MainWindow::on_logLoginButton_clicked() {
+
+    emit ButtonClicked();
 
     if (ui->nicknameLogLineEdit->text().isEmpty() || ui->passwordLogLineEdit->text().isEmpty()) {
 
@@ -644,6 +657,8 @@ void MainWindow::on_logLoginButton_clicked() {
 
 
 void MainWindow::on_startGameButton_clicked() {
+
+    emit ButtonClicked();
 
     emit StartWaitingForOpponent();
 
@@ -670,12 +685,16 @@ void MainWindow::updateWaitingLabel() {
 
 void MainWindow::on_waitingExitButton_clicked() {
 
+    emit ButtonClicked();
+
     emit StopWaitingForOpponent();
 
 }
 
 
 void MainWindow::on_exitProfileButton_clicked() {
+
+    emit ButtonClicked();
 
     qApp->exit();
 
@@ -684,6 +703,8 @@ void MainWindow::on_exitProfileButton_clicked() {
 
 void MainWindow::on_logoutButton_clicked() {
 
+    emit ButtonClicked();
+
     emit Logout(ui->nickname_value_label->text());
 
 }
@@ -691,12 +712,16 @@ void MainWindow::on_logoutButton_clicked() {
 
 void MainWindow::on_gameExitButton_clicked() {
 
+    emit ButtonClicked();
+
     ui->stackedWidget->setCurrentWidget(ui->profile_page);
 
 }
 
 
 void MainWindow::on_OfferDrawButton_clicked() {
+
+    emit ButtonClicked();
 
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Offer draw", "Do you realy whant to offer draw?", QMessageBox::Yes|QMessageBox::No);
@@ -711,6 +736,8 @@ void MainWindow::on_OfferDrawButton_clicked() {
 
 
 void MainWindow::on_ResignButton_clicked() {
+
+    emit ButtonClicked();
 
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Resign", "Do you realy whant to resign?", QMessageBox::Yes|QMessageBox::No);

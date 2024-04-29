@@ -3,5 +3,6 @@
         <file>Audio/castling.mp3</file>
         <file>Audio/eat.mp3</file>
         <file>Audio/move.mp3</file>
+        <file>Audio/click.mp3</file>
     </qresource>
 </RCC>

@@ -49,6 +49,7 @@ signals:
     void OfferDraw();
     void Resign();
     void AcceptDraw();
+    void ButtonClicked();
 
 public slots:
     void SetPlayerTurn(const QString& turn);

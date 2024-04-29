@@ -7,8 +7,6 @@
 #include <QMediaDevices>
 #include <QAudioDevice>
 
-#include <thread>
-#include <chrono>
 
 class AudioManager : public QObject
 {
@@ -20,6 +18,7 @@ public slots:
     void PlayMoveSound();
     void PlayEatSound();
     void PlayCastlingSound();
+    void PlayButtonClickedSound();
 
 signals:
 
@@ -28,6 +27,7 @@ private:
     QString move_sound_path;
     QString eat_sound_path;
     QString castling_sound_path;
+    QString button_click_sound_path;
 
 };
 
