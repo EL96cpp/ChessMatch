@@ -1,0 +1,21 @@
+FROM ubuntu:latest
+
+RUN apt-get update -y
+RUN apt-get upgrade -y 
+
+
+RUN apt-get install -y g++ cmake libboost-all-dev libpqxx-dev postgresql
+
+COPY . /usr/src/ChessMatchServer/
+WORKDIR /usr/src/ChessMatchServer
+
+#RUN psql -U postgres
+#RUN psql -U postgres < SetupFile.sql
+
+
+RUN cmake -S. -B build
+RUN cmake --build build
+CMD ["./build/ChessMatchServer"]
+
+
+
